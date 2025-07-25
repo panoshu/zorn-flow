@@ -3,5 +3,4 @@ plugins {
 }
 
 dependencies {
-  api(project(":engine:engine-type"))
 }
