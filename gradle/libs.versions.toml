@@ -5,6 +5,7 @@ javaLanguageVersion = "21"
 
 lombok = "1.18.36"
 mapstruct = "1.6.3"
+logback="1.5.18"
 junit = "5.13.1"
 mockito = "5.18.0"
 slf4j2-mock = "2.4.0"
@@ -22,6 +23,8 @@ hutool-all = "5.8.35"
 lombok = {module = "org.projectlombok:lombok", version.ref = "lombok"}
 mapstruct = {module = "org.mapstruct:mapstruct", version.ref = "mapstruct"}
 mapstruct-processor = {module = "org.mapstruct:mapstruct-processor", version.ref = "mapstruct"}
+
+logback-clssic = {module = "ch.qos.logback:logback-classic", version.ref = "logback"}
 
 junit-bom = {module = "org.junit:junit-bom", version.ref = "junit"}
 junit-jupiter = {module = "org.junit.jupiter:junit-jupiter"}
