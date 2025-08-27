@@ -1,0 +1,13 @@
+process-engine:
+  config:
+    sources:
+      yaml:
+        enabled: true
+        # 1. 共享规则文件位置
+        shared-rules-location: "classpath:/definitions/share-rules/*.yml"
+        # 2. 规则链定义文件位置
+        rule-chains-location: "classpath:/definitions/rule-chains/*.yml"
+        # 3. 共享节点文件位置
+        shared-nodes-location: "classpath:/definitions/share-nodes/*.yml"
+        # 4. 流程定义文件位置
+        processes-location: "classpath:/definitions/processes/*.yml"

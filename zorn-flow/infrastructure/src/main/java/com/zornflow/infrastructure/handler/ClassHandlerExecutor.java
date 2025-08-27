@@ -1,4 +1,4 @@
-package handler;
+package com.zornflow.infrastructure.handler;
 
 import com.zornflow.domain.common.types.BusinessContext;
 import com.zornflow.domain.rule.service.HandlerExecutor;

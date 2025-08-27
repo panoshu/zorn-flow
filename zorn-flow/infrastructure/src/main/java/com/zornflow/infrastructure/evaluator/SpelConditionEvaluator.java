@@ -1,4 +1,4 @@
-package evaluator;
+package com.zornflow.infrastructure.evaluator;
 
 import com.zornflow.domain.common.types.BusinessContext;
 import com.zornflow.domain.rule.service.ConditionEvaluator;
