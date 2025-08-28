@@ -1,6 +1,6 @@
 package com.zornflow.domain.process.entity;
 
-import com.ddd.contract.aggregate.AggregateRoot;
+import com.domain.contract.aggregate.AggregateRoot;
 import com.zornflow.domain.common.types.Version;
 import com.zornflow.domain.process.types.ProcessChainId;
 import com.zornflow.domain.process.types.ProcessChainName;

@@ -1,10 +1,9 @@
 package com.zornflow.domain.process.types;
 
-import com.ddd.contract.valueobject.DomainPrimitive;
-import com.ddd.contract.valueobject.Identifier;
+import com.domain.contract.valueobject.DomainPrimitive;
+import com.domain.contract.valueobject.Identifier;
 import com.github.f4b6a3.ulid.Ulid;
 import com.github.f4b6a3.ulid.UlidCreator;
-import com.zornflow.domain.common.types.UlidIdentifier;
 import lombok.NonNull;
 
 import java.time.Instant;

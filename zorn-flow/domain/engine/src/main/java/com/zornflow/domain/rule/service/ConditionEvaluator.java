@@ -1,6 +1,6 @@
 package com.zornflow.domain.rule.service;
 
-import com.zornflow.domain.common.types.BusinessContext;
+import com.zornflow.domain.common.valueobject.BusinessContext;
 import com.zornflow.domain.rule.types.Condition;
 
 /**

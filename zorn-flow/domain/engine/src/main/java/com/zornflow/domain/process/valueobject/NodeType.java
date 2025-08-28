@@ -1,6 +1,6 @@
 package com.zornflow.domain.process.valueobject;
 
-import com.ddd.contract.valueobject.BaseValueObject;
+import com.domain.contract.valueobject.BaseValueObject;
 import lombok.Getter;
 
 /**

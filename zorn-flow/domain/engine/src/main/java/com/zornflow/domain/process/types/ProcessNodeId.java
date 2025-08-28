@@ -1,12 +1,7 @@
 package com.zornflow.domain.process.types;
 
-import com.ddd.contract.valueobject.Identifier;
-import com.zornflow.domain.common.types.BaseIdentifier;
-import com.ddd.contract.valueobject.DomainPrimitive;
-import com.zornflow.domain.common.types.UlidIdentifier;
-
-import java.time.Instant;
-import java.util.Objects;
+import com.domain.contract.valueobject.Identifier;
+import com.domain.contract.valueobject.DomainPrimitive;
 
 /**
  * 流程节点 ID 领域原语

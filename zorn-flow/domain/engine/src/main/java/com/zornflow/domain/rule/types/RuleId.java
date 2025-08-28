@@ -1,8 +1,7 @@
 package com.zornflow.domain.rule.types;
 
-import com.ddd.contract.valueobject.Identifier;
-import com.zornflow.domain.common.types.BaseIdentifier;
-import com.ddd.contract.valueobject.DomainPrimitive;
+import com.domain.contract.valueobject.Identifier;
+import com.domain.contract.valueobject.DomainPrimitive;
 
 /**
  * 规则ID 领域原语

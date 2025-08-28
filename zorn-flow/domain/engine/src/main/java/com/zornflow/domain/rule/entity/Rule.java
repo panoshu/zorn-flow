@@ -1,6 +1,6 @@
 package com.zornflow.domain.rule.entity;
 
-import com.ddd.contract.aggregate.Entity;
+import com.domain.contract.aggregate.Entity;
 import com.zornflow.domain.rule.types.Condition;
 import com.zornflow.domain.rule.types.Priority;
 import com.zornflow.domain.rule.types.RuleId;

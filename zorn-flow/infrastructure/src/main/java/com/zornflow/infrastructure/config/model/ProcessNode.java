@@ -1,18 +1,26 @@
 package com.zornflow.infrastructure.config.model;
 
-import lombok.Data;
+import lombok.Builder;
+
+import java.util.List;
 import java.util.Map;
 
 /**
- * 流程节点模型
+ * description
+ *
+ * @author <a href="mailto: panoshu@gmail.com">panoshu</a>
+ * @version 1.0
+ * @since 2025/8/28 13:21
  */
-@Data
-public class ProcessNode {
-    private String id;
-    private String name;
-    private String type;
-    private String ruleChain;
-    private Map<String, Object> properties;
-    private String next;
-    private List<GatewayCondition> conditions;
+@Builder
+public record ProcessNode(
+  String id,
+  String name,
+  String next,
+  NodeType type,
+  String ruleChain,
+  List<ConditionBranch> conditions,
+  Map<String, Object> properties) implements EngineDto {
+
+  public enum NodeType { BUSINESS, APPROVAL, GATEWAY }
 }

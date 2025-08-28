@@ -1,6 +1,6 @@
 package com.zornflow.domain.process.repository;
 
-import com.ddd.contract.repository.BaseRepository;
+import com.domain.contract.repository.BaseRepository;
 import com.zornflow.domain.process.entity.ProcessInstance;
 import com.zornflow.domain.process.types.ProcessInstanceId;
 

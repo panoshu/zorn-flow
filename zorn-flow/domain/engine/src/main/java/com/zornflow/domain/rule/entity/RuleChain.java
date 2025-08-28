@@ -1,6 +1,6 @@
 package com.zornflow.domain.rule.entity;
 
-import com.ddd.contract.aggregate.AggregateRoot;
+import com.domain.contract.aggregate.AggregateRoot;
 import com.zornflow.domain.common.types.Version;
 import com.zornflow.domain.rule.types.RuleChainId;
 import com.zornflow.domain.rule.types.RuleChainName;

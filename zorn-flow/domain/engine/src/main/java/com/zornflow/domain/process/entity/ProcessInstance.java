@@ -1,7 +1,7 @@
 package com.zornflow.domain.process.entity;
 
-import com.ddd.contract.aggregate.AggregateRoot;
-import com.zornflow.domain.common.types.BusinessContext;
+import com.domain.contract.aggregate.AggregateRoot;
+import com.zornflow.domain.common.valueobject.BusinessContext;
 import com.zornflow.domain.process.types.ProcessChainId;
 import com.zornflow.domain.process.types.ProcessInstanceId;
 import com.zornflow.domain.process.types.ProcessNodeId;
@@ -17,7 +17,7 @@ import lombok.Getter;
 
 @Getter
 public class ProcessInstance extends AggregateRoot<ProcessInstanceId> {
-  private final ProcessChainId processChainId;
+  private ProcessChainId processChainId;
   private ProcessInstanceStatus status;
   private ProcessNodeId currentNodeId;
   private BusinessContext context;

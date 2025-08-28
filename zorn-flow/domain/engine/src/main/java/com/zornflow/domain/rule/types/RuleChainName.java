@@ -1,6 +1,6 @@
 package com.zornflow.domain.rule.types;
 
-import com.ddd.contract.valueobject.DomainPrimitive;
+import com.domain.contract.valueobject.DomainPrimitive;
 
 /**
  * 规则链名称领域原语

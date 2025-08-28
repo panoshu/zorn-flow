@@ -1,0 +1,8 @@
+zornflow:
+  config:
+    source: db
+    root: "classpath:/zornflow/"   # 可改为 file:/opt/zornflow/...
+    rules: "rules"                  # 子目录名随意
+    nodes: "nodes"
+    rule-chains: "rule-chains"
+    flows: "flow-chains"

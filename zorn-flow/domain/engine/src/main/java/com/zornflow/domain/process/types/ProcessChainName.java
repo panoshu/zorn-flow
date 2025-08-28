@@ -1,7 +1,7 @@
 package com.zornflow.domain.process.types;
 
-import com.ddd.contract.valueobject.DomainPrimitive;
-import com.ddd.contract.valueobject.Identifier;
+import com.domain.contract.valueobject.DomainPrimitive;
+import com.domain.contract.valueobject.Identifier;
 
 /**
  * description

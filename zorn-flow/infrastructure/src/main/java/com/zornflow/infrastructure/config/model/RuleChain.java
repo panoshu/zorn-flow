@@ -1,16 +1,20 @@
 package com.zornflow.infrastructure.config.model;
 
-import lombok.Data;
+import lombok.Builder;
+
 import java.util.List;
 
 /**
- * 规则链模型
+ * description
+ *
+ * @author <a href="mailto: panoshu@gmail.com">panoshu</a>
+ * @version 1.0
+ * @since 2025/8/28 13:21
  */
-@Data
-public class RuleChain {
-    private String id;
-    private String name;
-    private String version;
-    private String description;
-    private List<Rule> rules;
-}
+@Builder
+public record RuleChain(
+  String id,
+  String name,
+  String version,
+  String description,
+  List<Rule> rules) implements EngineDto { }

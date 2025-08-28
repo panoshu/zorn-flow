@@ -1,6 +1,6 @@
 package com.zornflow.domain.process.service.impl;
 
-import com.zornflow.domain.common.types.BusinessContext;
+import com.zornflow.domain.common.valueobject.BusinessContext;
 import com.zornflow.domain.process.entity.ProcessChain;
 import com.zornflow.domain.process.entity.ProcessInstance;
 import com.zornflow.domain.process.entity.ProcessNode;

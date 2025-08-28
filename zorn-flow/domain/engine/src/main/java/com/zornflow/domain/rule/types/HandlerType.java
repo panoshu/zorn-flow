@@ -1,6 +1,6 @@
 package com.zornflow.domain.rule.types;
 
-import com.ddd.contract.valueobject.DomainPrimitive;
+import com.domain.contract.valueobject.DomainPrimitive;
 
 import java.util.Collections;
 import java.util.HashMap;

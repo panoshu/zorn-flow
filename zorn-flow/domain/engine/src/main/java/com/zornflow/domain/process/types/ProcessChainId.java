@@ -1,9 +1,7 @@
 package com.zornflow.domain.process.types;
 
-import com.ddd.contract.valueobject.DomainPrimitive;
-import com.ddd.contract.valueobject.Identifier;
-
-import java.util.Objects;
+import com.domain.contract.valueobject.DomainPrimitive;
+import com.domain.contract.valueobject.Identifier;
 
 /**
  * 流程 ID 领域原语

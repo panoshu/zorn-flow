@@ -1,6 +1,6 @@
 package com.zornflow.domain.process.entity;
 
-import com.ddd.contract.aggregate.Entity;
+import com.domain.contract.aggregate.Entity;
 import com.zornflow.domain.process.types.ProcessNodeId;
 import com.zornflow.domain.process.types.ProcessNodeName;
 import com.zornflow.domain.process.valueobject.GatewayCondition;

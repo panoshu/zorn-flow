@@ -1,0 +1,7 @@
+test-node:
+  id: test-node
+  name: "共享节点"
+  type: BUSINESS
+  ruleChain: common-risk-rules
+  properties:
+    count: 1000

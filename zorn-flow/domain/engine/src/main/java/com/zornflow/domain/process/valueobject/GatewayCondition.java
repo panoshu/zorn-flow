@@ -1,6 +1,6 @@
 package com.zornflow.domain.process.valueobject;
 
-import com.ddd.contract.valueobject.BaseValueObject;
+import com.domain.contract.valueobject.BaseValueObject;
 import com.zornflow.domain.process.types.ProcessNodeId;
 import com.zornflow.domain.rule.types.Condition;
 

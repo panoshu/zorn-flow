@@ -1,6 +1,6 @@
 package com.zornflow.domain.rule.valueobject;
 
-import com.ddd.contract.valueobject.BaseValueObject;
+import com.domain.contract.valueobject.BaseValueObject;
 import com.zornflow.domain.rule.types.HandlerType;
 
 import java.util.Collections;

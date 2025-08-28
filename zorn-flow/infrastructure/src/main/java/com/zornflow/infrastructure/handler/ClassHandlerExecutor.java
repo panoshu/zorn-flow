@@ -1,6 +1,6 @@
 package com.zornflow.infrastructure.handler;
 
-import com.zornflow.domain.common.types.BusinessContext;
+import com.zornflow.domain.common.valueobject.BusinessContext;
 import com.zornflow.domain.rule.service.HandlerExecutor;
 import com.zornflow.domain.rule.valueobject.HandlerConfig;
 import lombok.AllArgsConstructor;

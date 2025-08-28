@@ -1,0 +1,16 @@
+test-flow:
+  id: test-flow
+  name: "测试流程"
+  version: "1.0"
+  description: "单元测试流程"
+  nodes:
+    - id: test-node
+      next: test-node2
+      properties:
+        count: 888  # 覆盖节点属性
+    - id: test-node2
+      next: ""
+      type: BUSINESS
+      ruleChain: test-rule-chain
+      properties:
+        num: "1000"

@@ -1,6 +1,6 @@
 package com.zornflow.domain.rule.repository;
 
-import com.ddd.contract.repository.BaseRepository;
+import com.domain.contract.repository.BaseRepository;
 import com.zornflow.domain.rule.entity.RuleChain;
 import com.zornflow.domain.rule.types.RuleChainId;
 

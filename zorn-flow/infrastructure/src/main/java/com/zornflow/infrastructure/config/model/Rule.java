@@ -1,15 +1,26 @@
 package com.zornflow.infrastructure.config.model;
 
-import lombok.Data;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Builder;
+
+import java.util.Map;
 
 /**
- * 规则模型
+ * description
+ *
+ * @author <a href="mailto: panoshu@gmail.com">panoshu</a>
+ * @version 1.0
+ * @since 2025/8/28 13:20
  */
-@Data
-public class Rule {
-    private String id;
-    private String name;
-    private Integer priority = 100; // 默认优先级
-    private String condition;
-    private Handle handle;
+@Builder
+public record Rule(
+  String id,
+  String name,
+  @JsonProperty(defaultValue = "100") Integer priority,
+  String condition,
+  Handler handle) implements EngineDto {
+
+  public record Handler(Type type, String handler, Map<String, Object> parameters) {
+    public enum Type { CLASS, SCRIPT, JAR }
+  }
 }
