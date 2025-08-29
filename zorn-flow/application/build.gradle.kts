@@ -3,5 +3,6 @@ plugins {
 }
 
 dependencies {
-  api(project(":zorn-flow:infrastructure"))
+  implementation(project(":zorn-flow:domain:engine"))
+  implementation(project(":zorn-flow:infrastructure"))
 }

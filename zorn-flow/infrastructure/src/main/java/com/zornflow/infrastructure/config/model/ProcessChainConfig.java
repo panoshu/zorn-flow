@@ -12,9 +12,9 @@ import java.util.List;
  * @since 2025/8/28 13:22
  */
 @Builder
-public record FlowChain(
+public record ProcessChainConfig(
   String id,
   String name,
   String version,
   String description,
-  List<ProcessNode> nodes) implements EngineDto { }
+  List<ProcessNodeConfig> nodes) implements EngineModelConfigDTO { }

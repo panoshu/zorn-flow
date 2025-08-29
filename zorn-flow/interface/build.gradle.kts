@@ -3,6 +3,6 @@ plugins {
 }
 
 dependencies {
-  api(project(":zorn-flow:api"))
-  api(project(":zorn-flow:application"))
+  implementation(project(":zorn-flow:api"))
+  implementation(project(":zorn-flow:application"))
 }

@@ -13,12 +13,13 @@ import java.util.Map;
  * @since 2025/8/28 13:20
  */
 @Builder
-public record Rule(
+public record RuleConfig(
   String id,
   String name,
   @JsonProperty(defaultValue = "100") Integer priority,
   String condition,
-  Handler handle) implements EngineDto {
+  Handler handle
+) implements EngineModelConfigDTO {
 
   public record Handler(Type type, String handler, Map<String, Object> parameters) {
     public enum Type { CLASS, SCRIPT, JAR }

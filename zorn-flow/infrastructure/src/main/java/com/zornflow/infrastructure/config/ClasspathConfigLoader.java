@@ -23,10 +23,10 @@ public class ClasspathConfigLoader {
   private final ResourcePatternResolver resolver;
 
   /* ========== 内存仓库（同前） ========== */
-  private final Map<String, Rule>        globalRules      = new ConcurrentHashMap<>();
-  private final Map<String, ProcessNode> globalNodes      = new ConcurrentHashMap<>();
-  private final Map<String, RuleChain>   globalRuleChains = new ConcurrentHashMap<>();
-  private final Map<String, FlowChain>   globalFlows      = new ConcurrentHashMap<>();
+  private final Map<String, RuleConfig>        globalRules      = new ConcurrentHashMap<>();
+  private final Map<String, ProcessNodeConfig> globalNodes      = new ConcurrentHashMap<>();
+  private final Map<String, RuleChainConfig>   globalRuleChains = new ConcurrentHashMap<>();
+  private final Map<String, ProcessChainConfig>   globalFlows      = new ConcurrentHashMap<>();
 
   public ClasspathConfigLoader(ResourcePatternResolver resolver, ConfigLocationProperties props) {
     this.props = props;
@@ -48,9 +48,9 @@ public class ClasspathConfigLoader {
   }
 
   /* ---------- 通用加载模板 ---------- */
-  private <T extends EngineDto> void loadGlobals(String folder,
-                                                 Map<String, T> repo,
-                                                 TypeReference<Map<String, T>> typeRef) throws IOException {
+  private <T extends EngineModelConfigDTO> void loadGlobals(String folder,
+                                                            Map<String, T> repo,
+                                                            TypeReference<Map<String, T>> typeRef) throws IOException {
     Resource[] resources = resolver.getResources(props.getRoot() + folder + "/*.yml");
     for (Resource res : resources) {
       Map<String, T> map = mapper.readValue(res.getInputStream(), typeRef);
@@ -66,15 +66,15 @@ public class ClasspathConfigLoader {
   private void loadRuleChains(String folder) throws IOException {
     Resource[] resources = resolver.getResources(props.getRoot() + folder + "/*.yml");
     for (Resource res : resources) {
-      Map<String, RuleChain> rawMap = mapper.readValue(res.getInputStream(), new TypeReference<>() {});
+      Map<String, RuleChainConfig> rawMap = mapper.readValue(res.getInputStream(), new TypeReference<>() {});
       for (var e : rawMap.entrySet()) {
-        List<Rule> resolved = new ArrayList<>();
-        for (Rule r : e.getValue().rules()) {
+        List<RuleConfig> resolved = new ArrayList<>();
+        for (RuleConfig r : e.getValue().rules()) {
           resolved.add(resolveRule(r, res));
         }
-        resolved.sort(Comparator.comparingInt(Rule::priority));
+        resolved.sort(Comparator.comparingInt(RuleConfig::priority));
         globalRuleChains.put(e.getKey(),
-          new RuleChain(e.getValue().id(), e.getValue().name(),
+          new RuleChainConfig(e.getValue().id(), e.getValue().name(),
             e.getValue().version(), e.getValue().description(), resolved));
       }
     }
@@ -83,45 +83,45 @@ public class ClasspathConfigLoader {
   private void loadFlows(String folder) throws IOException {
     Resource[] resources = resolver.getResources(props.getRoot() + folder + "/*.yml");
     for (Resource res : resources) {
-      Map<String, FlowChain> rawMap = mapper.readValue(res.getInputStream(), new TypeReference<>() {});
+      Map<String, ProcessChainConfig> rawMap = mapper.readValue(res.getInputStream(), new TypeReference<>() {});
       for (var e : rawMap.entrySet()) {
-        List<ProcessNode> resolved = new ArrayList<>();
-        for (ProcessNode n : e.getValue().nodes()) {
+        List<ProcessNodeConfig> resolved = new ArrayList<>();
+        for (ProcessNodeConfig n : e.getValue().nodes()) {
           resolved.add(resolveNode(n, res));
         }
         globalFlows.put(e.getKey(),
-          new FlowChain(e.getValue().id(), e.getValue().name(),
+          new ProcessChainConfig(e.getValue().id(), e.getValue().name(),
             e.getValue().version(), e.getValue().description(), resolved));
       }
     }
   }
 
-  private Rule resolveRule(Rule yamlRule, Resource res) {
-    Rule base = globalRules.get(yamlRule.id());
+  private RuleConfig resolveRule(RuleConfig yamlRuleConfig, Resource res) {
+    RuleConfig base = globalRules.get(yamlRuleConfig.id());
     if (base == null) {
-      globalRules.putIfAbsent(yamlRule.id(), yamlRule);
-      return yamlRule;
+      globalRules.putIfAbsent(yamlRuleConfig.id(), yamlRuleConfig);
+      return yamlRuleConfig;
     }
-    return new Rule(base.id(), base.name(),
-      yamlRule.priority() != null ? yamlRule.priority() : base.priority(),
-      yamlRule.condition() != null ? yamlRule.condition() : base.condition(),
+    return new RuleConfig(base.id(), base.name(),
+      yamlRuleConfig.priority() != null ? yamlRuleConfig.priority() : base.priority(),
+      yamlRuleConfig.condition() != null ? yamlRuleConfig.condition() : base.condition(),
       base.handle());
   }
 
-  private ProcessNode resolveNode(ProcessNode yamlNode, Resource res) {
-    ProcessNode base = globalNodes.get(yamlNode.id());
+  private ProcessNodeConfig resolveNode(ProcessNodeConfig yamlNode, Resource res) {
+    ProcessNodeConfig base = globalNodes.get(yamlNode.id());
     if (base == null) {
       globalNodes.putIfAbsent(yamlNode.id(), yamlNode);
       return yamlNode;
     }
-    return new ProcessNode(base.id(), base.name(), base.next(), base.type(),
+    return new ProcessNodeConfig(base.id(), base.name(), base.next(), base.type(),
       yamlNode.ruleChain() != null ? yamlNode.ruleChain() : base.ruleChain(),
       base.conditions(),
       yamlNode.properties() != null ? yamlNode.properties() : base.properties());
   }
 
-  public Optional<Rule>        rule(String id)        { return Optional.ofNullable(globalRules.get(id)); }
-  public Optional<ProcessNode> node(String id)        { return Optional.ofNullable(globalNodes.get(id)); }
-  public Optional<RuleChain>   ruleChain(String id)  { return Optional.ofNullable(globalRuleChains.get(id)); }
-  public Optional<FlowChain>   flow(String id)       { return Optional.ofNullable(globalFlows.get(id)); }
+  public Optional<RuleConfig>        rule(String id)        { return Optional.ofNullable(globalRules.get(id)); }
+  public Optional<ProcessNodeConfig> node(String id)        { return Optional.ofNullable(globalNodes.get(id)); }
+  public Optional<RuleChainConfig>   ruleChain(String id)  { return Optional.ofNullable(globalRuleChains.get(id)); }
+  public Optional<ProcessChainConfig>   flow(String id)       { return Optional.ofNullable(globalFlows.get(id)); }
 }

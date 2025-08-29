@@ -12,9 +12,9 @@ import java.util.List;
  * @since 2025/8/28 13:21
  */
 @Builder
-public record RuleChain(
+public record RuleChainConfig(
   String id,
   String name,
   String version,
   String description,
-  List<Rule> rules) implements EngineDto { }
+  List<RuleConfig> rules) implements EngineModelConfigDTO { }

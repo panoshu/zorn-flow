@@ -13,14 +13,14 @@ import java.util.Map;
  * @since 2025/8/28 13:21
  */
 @Builder
-public record ProcessNode(
+public record ProcessNodeConfig(
   String id,
   String name,
   String next,
   NodeType type,
   String ruleChain,
-  List<ConditionBranch> conditions,
-  Map<String, Object> properties) implements EngineDto {
+  List<GatewayConditionConfig> conditions,
+  Map<String, Object> properties) implements EngineModelConfigDTO {
 
   public enum NodeType { BUSINESS, APPROVAL, GATEWAY }
 }

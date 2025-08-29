@@ -7,5 +7,5 @@ package com.zornflow.infrastructure.config.model;
  * @version 1.0
  * @since 2025/8/28 18:10
  */
-public interface EngineDto {
+public interface EngineModelConfigDTO {
 }

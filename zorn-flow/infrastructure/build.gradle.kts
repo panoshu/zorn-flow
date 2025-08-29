@@ -3,7 +3,7 @@ plugins {
 }
 
 dependencies {
-  api(project(":zorn-flow:domain:engine"))
+  implementation(project(":zorn-flow:domain:engine"))
 
   implementation("org.springframework:spring-context")
   implementation("org.springframework:spring-expression")
@@ -12,8 +12,10 @@ dependencies {
   implementation("org.springframework:spring-jdbc")
 
   implementation("ch.qos.logback:logback-classic")
-  implementation("org.yaml:snakeyaml")
   implementation("com.fasterxml.jackson.core:jackson-databind")
   implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml")
   implementation("jakarta.annotation:jakarta.annotation-api")
+
+  implementation(libs.mapstruct)
+  annotationProcessor(libs.mapstruct.processor)
 }
