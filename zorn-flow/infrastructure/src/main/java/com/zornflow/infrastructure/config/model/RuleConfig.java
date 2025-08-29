@@ -22,6 +22,6 @@ public record RuleConfig(
 ) implements EngineModelConfigDTO {
 
   public record Handler(Type type, String handler, Map<String, Object> parameters) {
-    public enum Type { CLASS, SCRIPT, JAR }
+    public enum Type {CLASS, SCRIPT, JAR}
   }
 }

@@ -17,7 +17,7 @@ import lombok.Getter;
 
 @Getter
 public class ProcessInstance extends AggregateRoot<ProcessInstanceId> {
-  private ProcessChainId processChainId;
+  private final ProcessChainId processChainId;
   private ProcessInstanceStatus status;
   private ProcessNodeId currentNodeId;
   private BusinessContext context;
@@ -30,16 +30,16 @@ public class ProcessInstance extends AggregateRoot<ProcessInstanceId> {
     this.currentNodeId = startNodeId;
   }
 
-  @Override
-  protected void validateInvariants() {
-
-  }
-
   public static ProcessInstance start(ProcessChainId definitionId, BusinessContext initialContext, ProcessNodeId startNodeId) {
     if (definitionId == null || initialContext == null || startNodeId == null) {
       throw new IllegalArgumentException("ProcessChainId, InitialContext, and StartNodeId are required to start a process.");
     }
     return new ProcessInstance(ProcessInstanceId.generate(), definitionId, initialContext, startNodeId);
+  }
+
+  @Override
+  protected void validateInvariants() {
+
   }
 
   public void moveToNextNode(ProcessNodeId nextNodeId, BusinessContext updatedContext) {

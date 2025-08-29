@@ -9,7 +9,9 @@ import com.zornflow.domain.rule.types.RuleChainId;
 import lombok.Builder;
 import lombok.Getter;
 
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 /**
  * description
@@ -39,13 +41,14 @@ public class ProcessNode extends Entity<ProcessNodeId> {
     this.type = Objects.requireNonNull(type, "节点类型不能为空");
     this.properties = Objects.requireNonNullElse(Map.copyOf(properties), Map.of());
     this.conditions = Objects.requireNonNullElse(List.copyOf(conditions), List.of());
-    this.ruleChainId = Objects.requireNonNull(ruleChainId,"Rule Chain Id could not be null");
+    this.ruleChainId = Objects.requireNonNull(ruleChainId, "Rule Chain Id could not be null");
     this.nextNodeId = nextNodeId;
     validateInvariants();
   }
 
   /**
    * 更新下一个节点ID
+   *
    * @param nextNodeId 下一个节点ID
    */
   public void updateNextNodeId(ProcessNodeId nextNodeId) {
@@ -54,6 +57,7 @@ public class ProcessNode extends Entity<ProcessNodeId> {
 
   /**
    * 判断是否有下一个节点
+   *
    * @return true表示有下一个节点
    */
   public boolean hasNextNode() {
@@ -62,6 +66,7 @@ public class ProcessNode extends Entity<ProcessNodeId> {
 
   /**
    * 判断是否包含指定属性
+   *
    * @param propertyName 属性名称
    * @return true表示包含该属性
    */
@@ -71,6 +76,7 @@ public class ProcessNode extends Entity<ProcessNodeId> {
 
   /**
    * 获取属性值
+   *
    * @param propertyName 属性名称
    * @return 属性值，如果不存在返回null
    */

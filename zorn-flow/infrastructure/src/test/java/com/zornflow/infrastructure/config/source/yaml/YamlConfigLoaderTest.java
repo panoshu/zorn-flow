@@ -1,7 +1,7 @@
-package com.zornflow.infrastructure.config;
+package com.zornflow.infrastructure.config.source.yaml;
 
-import com.zornflow.infrastructure.config.model.RuleConfig;
 import com.zornflow.infrastructure.config.model.RuleChainConfig;
+import com.zornflow.infrastructure.config.model.RuleConfig;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -12,7 +12,7 @@ import org.springframework.core.io.support.ResourcePatternResolver;
 import java.util.List;
 import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * description
@@ -22,15 +22,15 @@ import static org.assertj.core.api.Assertions.*;
  * @since 2025/8/28 22:15
  **/
 @ExtendWith(MockitoExtension.class)
-class ClasspathConfigLoaderTest {
+class YamlConfigLoaderTest {
 
-  private static ClasspathConfigLoader loader;
+  private static YamlConfigLoader loader;
 
   @BeforeAll
   static void setup() {
     ResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
-    ConfigLocationProperties props = new ConfigLocationProperties();
-    loader = new ClasspathConfigLoader(resolver, props);
+    YamlConfigProperties props = new YamlConfigProperties();
+    loader = new YamlConfigLoader(resolver, props);
   }
 
   /* ===== 正案例 ===== */

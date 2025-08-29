@@ -15,6 +15,7 @@ import com.zornflow.domain.rule.entity.RuleChain;
 public interface RuleChainConverter {
   /**
    * 将规则链配置转换为规则链领域对象
+   *
    * @param config 规则链配置
    * @return 规则链领域对象
    */

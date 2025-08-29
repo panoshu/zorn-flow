@@ -11,5 +11,5 @@ import com.domain.contract.valueobject.Identifier;
  * @since 2025/7/24 16:32
  */
 public sealed interface Repository<A extends AggregateRoot<ID>, ID extends Identifier>
-  permits BaseRepository{
+  permits BaseRepository {
 }

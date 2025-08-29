@@ -27,5 +27,6 @@ public non-sealed interface BaseDomainEvent<ID extends Identifier> extends Domai
   Instant occurredOn = Instant.now();
 
   ID eventId();
+
   Instant occurredOn();
 }

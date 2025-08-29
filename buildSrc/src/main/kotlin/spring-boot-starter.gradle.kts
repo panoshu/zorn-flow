@@ -3,14 +3,14 @@ import org.gradle.accessors.dm.LibrariesForLibs
 private val Project.libs: LibrariesForLibs
   get() = extensions.getByType()
 
-plugins{
+plugins {
   id("java-common")
   id("custom-naming")
   id("org.springframework.boot")
   id("io.spring.dependency-management")
 }
 
-dependencies{
+dependencies {
   implementation(platform(libs.spring.boot.dependency))
   implementation(platform(libs.spring.cloud.dependency))
 

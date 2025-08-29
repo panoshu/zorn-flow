@@ -1,7 +1,7 @@
 package com.zornflow.domain.process.types;
 
-import com.domain.contract.valueobject.Identifier;
 import com.domain.contract.valueobject.DomainPrimitive;
+import com.domain.contract.valueobject.Identifier;
 
 /**
  * 流程节点 ID 领域原语
@@ -22,6 +22,7 @@ public record ProcessNodeId(String value) implements DomainPrimitive, Identifier
 
   /**
    * 从字符串创建流程ID
+   *
    * @param value 字符串值
    * @return 流程ID实例
    */

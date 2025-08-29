@@ -26,6 +26,7 @@ public record Condition(String expression) implements DomainPrimitive {
 
   /**
    * 从表达式字符串创建条件对象
+   *
    * @param expression EL表达式
    * @return 条件对象
    */
@@ -38,6 +39,7 @@ public record Condition(String expression) implements DomainPrimitive {
 
   /**
    * 获取纯表达式内容（去除前后的#{和}）
+   *
    * @return 纯表达式字符串
    */
   public String getPureExpression() {

@@ -18,30 +18,35 @@ import java.util.Map;
 public interface RuleConfig {
   /**
    * 获取规则ID
+   *
    * @return 规则ID
    */
   RuleId getId();
 
   /**
    * 获取规则名称
+   *
    * @return 规则名称
    */
   RuleName getName();
 
   /**
    * 获取规则优先级
+   *
    * @return 规则优先级
    */
   Priority getPriority();
 
   /**
    * 获取规则类型
+   *
    * @return 规则类型
    */
   String getType();
 
   /**
    * 获取规则参数配置
+   *
    * @return 参数配置键值对
    */
   Map<String, Object> getParameters();

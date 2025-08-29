@@ -14,5 +14,6 @@ import java.util.Collection;
 
 public interface ProcessChainProvider {
   Collection<ProcessChain> loadProcessDefinitions();
+
   String getSourceName();
 }

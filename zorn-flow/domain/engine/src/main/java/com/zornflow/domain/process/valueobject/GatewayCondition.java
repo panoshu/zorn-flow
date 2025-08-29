@@ -12,7 +12,7 @@ import com.zornflow.domain.rule.types.Condition;
  * @since 2025/8/25 22:21
  **/
 
-public record GatewayCondition (
+public record GatewayCondition(
   Condition condition,
   ProcessNodeId nextNodeId
 ) implements BaseValueObject {

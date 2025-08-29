@@ -19,14 +19,8 @@ import org.springframework.stereotype.Component;
 @AllArgsConstructor
 public class ClassHandlerExecutor implements HandlerExecutor {
 
-  private final ApplicationContext applicationContext; // 用于从Spring容器中获取Bean
-
-  // 定义一个业务模块需要实现的接口，以规范化调用
-  public interface RuleExecutable {
-    void execute(BusinessContext context);
-  }
-
   private static final String HANDLER_TYPE = "class";
+  private final ApplicationContext applicationContext; // 用于从Spring容器中获取Bean
 
   @Override
   public boolean supports(HandlerConfig handler) {
@@ -50,5 +44,10 @@ public class ClassHandlerExecutor implements HandlerExecutor {
     } catch (Exception e) {
       throw new RuntimeException("Failed to execute class handler: " + handler.getClass().getSimpleName(), e);
     }
+  }
+
+  // 定义一个业务模块需要实现的接口，以规范化调用
+  public interface RuleExecutable {
+    void execute(BusinessContext context);
   }
 }

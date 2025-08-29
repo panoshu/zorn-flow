@@ -15,6 +15,7 @@ public interface HandlerExecutor {
 
   /**
    * 根据规则配置中的处理器信息执行规则处理
+   *
    * @param handler 规则配置
    * @param context 执行上下文
    */
@@ -22,6 +23,7 @@ public interface HandlerExecutor {
 
   /**
    * 检查是否支持该处理器类型
+   *
    * @param handler 处理器类型
    * @return 是否支持
    */

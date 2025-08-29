@@ -59,6 +59,7 @@ public class RuleChain extends AggregateRoot<RuleChainId> {
 
   /**
    * 添加规则到规则链
+   *
    * @param rule 要添加的规则
    * @throws IllegalArgumentException 如果规则ID已存在
    */
@@ -74,6 +75,7 @@ public class RuleChain extends AggregateRoot<RuleChainId> {
 
   /**
    * 从规则链中移除规则
+   *
    * @param ruleId 规则ID
    * @return 被移除的规则，如果不存在则返回null
    */
@@ -88,6 +90,7 @@ public class RuleChain extends AggregateRoot<RuleChainId> {
 
   /**
    * 获取规则链中的所有规则（按优先级排序）
+   *
    * @return 不可修改的规则列表
    */
   public List<Rule> getRules() {
@@ -96,6 +99,7 @@ public class RuleChain extends AggregateRoot<RuleChainId> {
 
   /**
    * 根据ID获取规则
+   *
    * @param ruleId 规则ID
    * @return 规则的Optional
    */
@@ -105,6 +109,7 @@ public class RuleChain extends AggregateRoot<RuleChainId> {
 
   /**
    * 判断规则链是否包含指定规则
+   *
    * @param ruleId 规则ID
    * @return true表示包含该规则
    */
@@ -114,6 +119,7 @@ public class RuleChain extends AggregateRoot<RuleChainId> {
 
   /**
    * 获取规则数量
+   *
    * @return 规则数量
    */
   public int getRuleCount() {

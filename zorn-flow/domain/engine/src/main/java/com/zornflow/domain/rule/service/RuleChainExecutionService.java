@@ -13,5 +13,5 @@ import com.zornflow.domain.rule.entity.RuleChain;
  */
 
 public interface RuleChainExecutionService {
-  public BusinessContext execute(RuleChain ruleChain, BusinessContext context);
+  BusinessContext execute(RuleChain ruleChain, BusinessContext context);
 }

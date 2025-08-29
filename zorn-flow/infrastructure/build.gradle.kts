@@ -9,12 +9,13 @@ dependencies {
   implementation("org.springframework:spring-expression")
   implementation("org.springframework.boot:spring-boot")
   implementation("org.springframework.boot:spring-boot-autoconfigure")
-  implementation("org.springframework:spring-jdbc")
 
   implementation("ch.qos.logback:logback-classic")
   implementation("com.fasterxml.jackson.core:jackson-databind")
   implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml")
   implementation("jakarta.annotation:jakarta.annotation-api")
+
+  implementation(libs.jooq)
 
   implementation(libs.mapstruct)
   annotationProcessor(libs.mapstruct.processor)

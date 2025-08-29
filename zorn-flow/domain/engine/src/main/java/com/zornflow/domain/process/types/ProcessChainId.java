@@ -22,6 +22,7 @@ public record ProcessChainId(String value) implements DomainPrimitive, Identifie
 
   /**
    * 从字符串创建流程ID
+   *
    * @param value 字符串值
    * @return 流程ID实例
    */

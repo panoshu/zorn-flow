@@ -21,7 +21,6 @@ public enum HandlerType implements DomainPrimitive {
   SCRIPT("script"),
   JAR("jar");
 
-  private final String value;
   private static final Map<String, HandlerType> VALUE_MAP;
 
   static {
@@ -33,12 +32,10 @@ public enum HandlerType implements DomainPrimitive {
     VALUE_MAP = Collections.unmodifiableMap(map);
   }
 
+  private final String value;
+
   HandlerType(String value) {
     this.value = value;
-  }
-
-  public String value() {
-    return value;
   }
 
   /**
@@ -55,5 +52,9 @@ public enum HandlerType implements DomainPrimitive {
   public static HandlerType from(String value) {
     return tryFrom(value)
       .orElseThrow(() -> new IllegalArgumentException("无效的动作类型: " + value));
+  }
+
+  public String value() {
+    return value;
   }
 }

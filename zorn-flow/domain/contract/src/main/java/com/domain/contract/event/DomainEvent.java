@@ -10,5 +10,5 @@ import com.domain.contract.valueobject.Identifier;
  * @since 2025/7/24 11:40
  */
 public sealed interface DomainEvent<ID extends Identifier>
-  permits BaseDomainEvent{
+  permits BaseDomainEvent {
 }

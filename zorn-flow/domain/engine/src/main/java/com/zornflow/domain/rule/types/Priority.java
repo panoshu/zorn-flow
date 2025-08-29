@@ -19,6 +19,7 @@ public record Priority(int value) implements DomainPrimitive, Comparable<Priorit
 
   /**
    * 创建优先级实例
+   *
    * @param value 优先级数值
    * @return 优先级对象
    */
@@ -28,6 +29,7 @@ public record Priority(int value) implements DomainPrimitive, Comparable<Priorit
 
   /**
    * 获取默认优先级(100)
+   *
    * @return 默认优先级对象
    */
   public static Priority defaultPriority() {

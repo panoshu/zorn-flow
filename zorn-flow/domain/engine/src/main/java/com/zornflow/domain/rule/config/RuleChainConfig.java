@@ -18,30 +18,35 @@ import java.util.List;
 public interface RuleChainConfig {
   /**
    * 获取规则链ID
+   *
    * @return 规则链ID
    */
   RuleChainId getId();
 
   /**
    * 获取规则链名称
+   *
    * @return 规则链名称
    */
   RuleChainName getName();
 
   /**
    * 获取版本号
+   *
    * @return 版本号
    */
   Version getVersion();
 
   /**
    * 获取规则链描述
+   *
    * @return 规则链描述
    */
   String getDescription();
 
   /**
    * 获取规则配置列表
+   *
    * @return 规则配置列表
    */
   List<RuleConfig> getRules();

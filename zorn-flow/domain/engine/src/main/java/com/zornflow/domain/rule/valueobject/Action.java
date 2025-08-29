@@ -30,8 +30,9 @@ public record Action(
 
   /**
    * 创建动作对象
-   * @param type 动作类型
-   * @param handler 处理器标识
+   *
+   * @param type       动作类型
+   * @param handler    处理器标识
    * @param parameters 参数映射
    * @return 动作对象
    */
@@ -41,7 +42,8 @@ public record Action(
 
   /**
    * 创建无参数的动作对象
-   * @param type 动作类型
+   *
+   * @param type    动作类型
    * @param handler 处理器标识
    * @return 动作对象
    */
@@ -51,6 +53,7 @@ public record Action(
 
   /**
    * 判断是否包含指定参数
+   *
    * @param paramName 参数名称
    * @return true表示包含该参数
    */
@@ -60,6 +63,7 @@ public record Action(
 
   /**
    * 获取参数值
+   *
    * @param paramName 参数名称
    * @return 参数值，如果不存在返回null
    */

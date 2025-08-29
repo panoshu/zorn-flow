@@ -14,5 +14,6 @@ import java.util.Collection;
 
 public interface RuleChainProvider {
   Collection<RuleChain> loadRuleChainDefinitions();
+
   String getSourceName();
 }

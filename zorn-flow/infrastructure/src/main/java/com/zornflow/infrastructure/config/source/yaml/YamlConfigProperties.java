@@ -1,4 +1,4 @@
-package com.zornflow.infrastructure.config;
+package com.zornflow.infrastructure.config.source.yaml;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -15,14 +15,18 @@ import org.springframework.stereotype.Component;
 @Data
 @Component
 @ConfigurationProperties(prefix = "zornflow.config")
-public class ConfigLocationProperties {
+public class YamlConfigProperties {
 
-  /** 根目录，默认保持向后兼容 */
+  /**
+   * 根目录，默认保持向后兼容
+   */
   private String root = "classpath:/zornflow/";
 
-  /** 子目录名，均可被外部覆盖 */
-  private String rules     = "rules";
-  private String nodes     = "nodes";
+  /**
+   * 子目录名，均可被外部覆盖
+   */
+  private String rules = "rules";
+  private String nodes = "nodes";
   private String ruleChains = "rule-chains";
-  private String flows     = "flow-chains";
+  private String flows = "flow-chains";
 }

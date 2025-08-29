@@ -1,13 +1,13 @@
-loan-process:       #流程链ID
+loan-process: # 流程链ID
   id: loan-process
-  name: "贷款审批流程"  #流程链名称, 如果没有默认等于流程链ID
+  name: "贷款审批流程"  # 流程链名称, 如果没有默认等于流程链ID
   version: "1.0"
-  description: "个人贷款审批完整流程"   #流程链描述, 如果没有默认等于流程链名称
+  description: "个人贷款审批完整流程"   # 流程链描述, 如果没有默认等于流程链名称
   nodes:
     - id: "process-node1"
       next: "process-node2"
       ruleChain: "loan-risk-rules"   # 覆盖process-node1节点的默认值
-      properties:             # 覆盖process-node1节点的默认值
+      properties: # 覆盖process-node1节点的默认值
         count: 500
         start-index: 30
 

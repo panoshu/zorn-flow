@@ -8,7 +8,10 @@ import com.zornflow.domain.process.types.ProcessNodeId;
 import lombok.Builder;
 import lombok.Getter;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 /**
  * 流程聚合根
@@ -88,6 +91,7 @@ public class ProcessChain extends AggregateRoot<ProcessChainId> {
 
   /**
    * 设置起始节点
+   *
    * @param startNodeId 起始节点ID
    * @throws IllegalArgumentException 如果节点ID不存在
    */
@@ -101,6 +105,7 @@ public class ProcessChain extends AggregateRoot<ProcessChainId> {
 
   /**
    * 根据ID获取节点
+   *
    * @param nodeId 节点ID
    * @return 节点实例
    * @throws IllegalArgumentException 如果节点不存在
@@ -115,6 +120,7 @@ public class ProcessChain extends AggregateRoot<ProcessChainId> {
 
   /**
    * 根据ID字符串获取节点
+   *
    * @param nodeIdStr 节点ID字符串
    * @return 节点实例
    * @throws IllegalArgumentException 如果节点不存在
@@ -129,13 +135,16 @@ public class ProcessChain extends AggregateRoot<ProcessChainId> {
 
   /**
    * 获取所有节点
+   *
    * @return 不可修改的节点列表
    */
   public List<ProcessNode> getAllNodes() {
     return List.copyOf(nodes.values());
   }
 
-  public boolean hasStartNode() { return startNodeId != null; }
+  public boolean hasStartNode() {
+    return startNodeId != null;
+  }
 
   @Override
   protected void validateInvariants() {

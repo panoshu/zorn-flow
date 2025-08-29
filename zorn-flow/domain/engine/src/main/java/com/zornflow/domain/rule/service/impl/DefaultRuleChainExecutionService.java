@@ -3,9 +3,11 @@ package com.zornflow.domain.rule.service.impl;
 import com.zornflow.domain.common.valueobject.BusinessContext;
 import com.zornflow.domain.rule.entity.Rule;
 import com.zornflow.domain.rule.entity.RuleChain;
-import com.zornflow.domain.rule.service.*;
+import com.zornflow.domain.rule.service.ConditionEvaluator;
+import com.zornflow.domain.rule.service.HandlerExecutorFactory;
+import com.zornflow.domain.rule.service.RuleChainExecutionService;
 
-import java.util.*;
+import java.util.Comparator;
 
 /**
  * description
@@ -30,6 +32,7 @@ public class DefaultRuleChainExecutionService implements RuleChainExecutionServi
 
   /**
    * 执行一个规则链
+   *
    * @param ruleChain 规则链定义
    * @param context   当前的业务上下文
    * @return 执行完毕后，可能被修改过的业务上下文

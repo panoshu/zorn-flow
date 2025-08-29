@@ -31,6 +31,7 @@ public class DefaultProcessOrchestrationService implements ProcessOrchestrationS
 
   /**
    * 执行流程实例下一步
+   *
    * @param instance 流程实例聚合根（将被直接修改）
    */
   public void executeNextStep(ProcessInstance instance) {
@@ -45,7 +46,7 @@ public class DefaultProcessOrchestrationService implements ProcessOrchestrationS
 
     // 3. 使用 JDK 21 的模式匹配 switch 处理不同类型的节点
     switch (currentNode.getType()) {
-      case NodeType.BUSINESS, NodeType.APPROVAL-> handleBusinessNode(instance, currentNode);
+      case NodeType.BUSINESS, NodeType.APPROVAL -> handleBusinessNode(instance, currentNode);
       case NodeType.GATEWAY -> handleGatewayNode(instance, currentNode);
       default -> throw new UnsupportedOperationException("Unsupported node type: " + currentNode.getType());
     }

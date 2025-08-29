@@ -26,6 +26,7 @@ public enum NodeType implements BaseValueObject {
 
   /**
    * 根据字符串值获取对应的枚举
+   *
    * @param value 字符串值
    * @return 对应的枚举实例
    * @throws IllegalArgumentException 如果值无效

@@ -11,5 +11,6 @@ package com.domain.contract.exception;
 
 public interface ErrorInfo {
   String getCode();
+
   String getMessage();
 }

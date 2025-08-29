@@ -8,5 +8,5 @@ package com.domain.contract.valueobject;
  * @since 2025/7/24 11:15
  */
 public sealed interface ValueObject
-  permits BaseValueObject, DomainPrimitive{
+  permits BaseValueObject, DomainPrimitive {
 }

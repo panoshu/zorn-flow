@@ -22,6 +22,7 @@ public record RuleChainName(String value) implements DomainPrimitive {
 
   /**
    * 从字符串创建规则链名称
+   *
    * @param value 字符串值
    * @return 规则链名称实例
    */

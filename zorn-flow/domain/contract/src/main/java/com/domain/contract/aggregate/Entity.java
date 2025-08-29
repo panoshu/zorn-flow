@@ -50,7 +50,7 @@ public abstract class Entity<ID extends Identifier> {
     return Objects.hash(id);
   }
 
-  public ID getId(){
+  public ID getId() {
     return this.id;
   }
 }

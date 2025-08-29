@@ -22,6 +22,7 @@ public record Version(String value) {
 
   /**
    * 创建版本号实例
+   *
    * @param value 版本号字符串
    * @return 版本号对象
    */
@@ -31,6 +32,7 @@ public record Version(String value) {
 
   /**
    * 创建默认版本号(1.0.0)
+   *
    * @return 默认版本号对象
    */
   public static Version defaultVersion() {
@@ -39,6 +41,7 @@ public record Version(String value) {
 
   /**
    * 比较当前版本是否高于另一个版本
+   *
    * @param other 其他版本
    * @return true表示当前版本更高
    */
