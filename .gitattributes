@@ -1,0 +1,40 @@
+# 统一文本文件使用 LF
+* text=auto
+
+# 确保以下类型的文件作为文本处理，并转换为 LF
+*.txt text eol=lf
+*.md text eol=lf
+*.json text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+*.xml text eol=lf
+*.html text eol=lf
+*.css text eol=lf
+*.js text eol=lf
+*.ts text eol=lf
+*.java text eol=lf
+*.py text eol=lf
+*.sh text eol=lf
+*.properties text eol=lf
+*.gitignore text eol=lf
+*.editorconfig text eol=lf
+
+# 脚本文件（Unix 执行）
+*.sh text eol=lf
+
+# 配置文件
+*.conf text eol=lf
+*.env text eol=lf
+
+# 日志文件（不纳入版本控制，但防止误提交）
+*.log binary
+
+# 二进制文件标记为 binary，防止意外转换
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.pdf binary
+*.zip binary
+*.jar binary
