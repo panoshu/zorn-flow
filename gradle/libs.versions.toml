@@ -2,6 +2,7 @@
 # https://docs.gradle.org/current/userguide/platforms.html#sub::toml-dependencies-format
 [versions]
 javaLanguageVersion = "21"
+kotlin = "2.0.0"
 
 lombok = "1.18.36"
 mapstruct = "1.6.3"
