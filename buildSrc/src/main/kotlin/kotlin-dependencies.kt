@@ -1,14 +1,10 @@
-/**
- * description
- *
- * @author <a href="mailto: me@panoshu.top">panoshu</a>
- * @version 1.0
- * @since 2025/8/30 19:15
- **/
 object Versions {
-  const val kotlin = "1.7.20"
-  const val androidGradlePlugin = "7.3.0"
-  const val coroutines = "1.6.4"
+  // 建议升级到最新稳定版
+  const val kotlin = "2.2.0"
+  // 对应版本的 Android Gradle Plugin 请查看官方兼容性说明
+  const val androidGradlePlugin = "8.4.0"
+  // 协程库也建议升级到最新稳定版
+  const val coroutines = "1.8.0"
 }
 
 object Libs {
