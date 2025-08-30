@@ -20,7 +20,7 @@ public record ProcessNodeConfig(
   NodeType type,
   String ruleChain,
   List<GatewayConditionConfig> conditions,
-  Map<String, Object> properties) implements EngineModelConfigDTO {
+  Map<String, Object> properties) {
 
-  public enum NodeType {BUSINESS, APPROVAL, GATEWAY}
+  public enum NodeType { BUSINESS, APPROVAL, GATEWAY }
 }

@@ -9,5 +9,4 @@ package com.zornflow.infrastructure.config.model;
  */
 public record GatewayConditionConfig(
   String condition,
-  String next) {
-}
+  String next) { }

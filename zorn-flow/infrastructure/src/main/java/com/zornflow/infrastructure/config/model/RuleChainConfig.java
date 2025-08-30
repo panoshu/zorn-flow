@@ -17,5 +17,4 @@ public record RuleChainConfig(
   String name,
   String version,
   String description,
-  List<RuleConfig> rules) implements EngineModelConfigDTO {
-}
+  List<RuleConfig> rules) { }

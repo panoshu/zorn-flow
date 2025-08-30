@@ -1,6 +1,7 @@
 package com.zornflow.domain.common.valueobject;
 
 import com.domain.contract.valueobject.BaseValueObject;
+import com.zornflow.domain.common.service.BusinessContextSerializer;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -35,5 +36,13 @@ public record BusinessContext(Map<String, Object> data) implements BaseValueObje
     var newData = new ConcurrentHashMap<>(this.data);
     newData.putAll(otherData);
     return new BusinessContext(newData);
+  }
+
+  public String toJson(BusinessContextSerializer serializer) {
+    return serializer.serialize(this);
+  }
+
+  public static BusinessContext fromJson(String json, BusinessContextSerializer deserializer) {
+    return deserializer.deserialize(json);
   }
 }

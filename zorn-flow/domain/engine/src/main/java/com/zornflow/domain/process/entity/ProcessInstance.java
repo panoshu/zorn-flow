@@ -5,6 +5,7 @@ import com.zornflow.domain.common.valueobject.BusinessContext;
 import com.zornflow.domain.process.types.ProcessChainId;
 import com.zornflow.domain.process.types.ProcessInstanceId;
 import com.zornflow.domain.process.types.ProcessNodeId;
+import lombok.Builder;
 import lombok.Getter;
 
 /**
@@ -22,6 +23,7 @@ public class ProcessInstance extends AggregateRoot<ProcessInstanceId> {
   private ProcessNodeId currentNodeId;
   private BusinessContext context;
 
+  @Builder
   protected ProcessInstance(ProcessInstanceId processInstanceId, ProcessChainId processChainId,
                             BusinessContext initialContext, ProcessNodeId startNodeId) {
     super(processInstanceId);
