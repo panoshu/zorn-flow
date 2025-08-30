@@ -1,13 +1,87 @@
-process-engine:
+spring:
+  application:
+    name: zornflow-engine
+
+  # 使用Spring Boot标准数据源配置
+  datasource:
+    url: jdbc:postgresql://localhost:5432/zornflow
+    username: zornflow_user
+    password: zornflow_password
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 20
+      minimum-idle: 5
+      connection-timeout: 30000
+      idle-timeout: 600000
+      max-lifetime: 1800000
+
+  # JOOQ配置
+  jooq:
+    sql-dialect: POSTGRES
+
+  # Flyway数据库迁移配置
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+    locations: classpath:db/migration
+
+# ZornFlow配置管理（简化后的配置）
+zornflow:
   config:
-    sources:
-      yaml:
-        enabled: true
-        # 1. 共享规则文件位置
-        shared-rules-location: "classpath:/definitions/share-rules/*.yml"
-        # 2. 规则链定义文件位置
-        rule-chains-location: "classpath:/definitions/rule-chains/*.yml"
-        # 3. 共享节点文件位置
-        shared-nodes-location: "classpath:/definitions/share-nodes/*.yml"
-        # 4. 流程定义文件位置
-        processes-location: "classpath:/definitions/processes/*.yml"
+    # 组合配置源设置
+    composite:
+      enabled: true
+      cache-enabled: true
+      cache-expire-time-ms: 300000  # 5分钟缓存过期
+      # 数据源优先级设置
+      source-priorities:
+        - database  # 数据库优先级最高
+        - yaml      # YAML优先级较低
+
+    # YAML配置源设置
+    yaml:
+      enabled: true
+      base-path: "classpath*:zornflow/**/*.yml"
+      rule-chains-path: "classpath*:zornflow/rule-chains/*.yml"
+      process-chains-path: "classpath*:zornflow/flow-chains/*.yml"
+      global-rules-path: "classpath*:zornflow/rules/*.yml"
+      global-nodes-path: "classpath*:zornflow/nodes/*.yml"
+
+    # 数据库配置源设置
+    database:
+      enabled: true
+      # 数据库表名配置
+      table-names:
+        global-rules: "zornflow_global_rules"
+        global-nodes: "zornflow_global_nodes"
+        rule-chains: "zornflow_rule_chains"
+        rule-chain-rules: "zornflow_rule_chain_rules"
+        process-chains: "zornflow_process_chains"
+        process-chain-nodes: "zornflow_process_chain_nodes"
+        gateway-conditions: "zornflow_gateway_conditions"
+
+    # 配置管理服务设置
+    management:
+      enabled: true
+
+    # 定时刷新设置
+    refresh:
+      scheduled: false  # 是否启用定时刷新
+      interval: 600000  # 刷新间隔（毫秒），默认10分钟
+
+# 日志配置
+logging:
+  level:
+    com.zornflow.infrastructure.config: DEBUG
+    com.zornflow.infrastructure.repository: DEBUG
+    org.jooq: DEBUG
+
+# 管理端点配置（用于监控配置源状态）
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,configsource
+  endpoint:
+    health:
+      show-details: always

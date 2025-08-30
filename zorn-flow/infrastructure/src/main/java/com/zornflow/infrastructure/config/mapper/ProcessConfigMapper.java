@@ -18,7 +18,10 @@ import org.mapstruct.Mapping;
 import org.mapstruct.Named;
 import org.mapstruct.factory.Mappers;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * 流程配置映射器
@@ -41,7 +44,7 @@ public interface ProcessConfigMapper {
     @Mapping(target = "version", source = "version", qualifiedByName = "stringToVersion")
     @Mapping(target = "source", constant = "YAML")
     @Mapping(target = "description", source = "description")
-    @Mapping(target = "nodes", source = "nodes")
+    @Mapping(target = "nodes", source = "nodes", qualifiedByName = "listNodesToMap")
     ProcessChain toProcessChain(ProcessChainConfig config);
 
     /**
@@ -70,7 +73,7 @@ public interface ProcessConfigMapper {
     @Mapping(target = "name", source = "name", qualifiedByName = "processChainNameToString")
     @Mapping(target = "version", source = "version", qualifiedByName = "versionToString")
     @Mapping(target = "description", source = "description")
-    @Mapping(target = "nodes", source = "nodes")
+    @Mapping(target = "nodes", source = "nodes", qualifiedByName = "mapNodesToList")
     ProcessChainConfig toProcessChainConfig(ProcessChain processChain);
 
     /**
@@ -186,6 +189,26 @@ public interface ProcessConfigMapper {
     default String versionToString(Version version) {
         return version != null ? version.value() : "1.0.0";
     }
+
+  @Named("listNodesToMap")
+  default List<ProcessNode> listNodesToMap(List<ProcessNodeConfig> nodeConfigs) {
+    if (nodeConfigs == null || nodeConfigs.isEmpty()) {
+      return new ArrayList<>();
+    }
+    return nodeConfigs.stream()
+      .map(this::toProcessNode)
+      .collect(Collectors.toList());
+  }
+
+  @Named("mapNodesToList")
+  default List<ProcessNodeConfig> mapNodesToList(Map<ProcessNodeId, ProcessNode> nodes) {
+    if (nodes == null || nodes.isEmpty()) {
+      return new java.util.ArrayList<>();
+    }
+    return nodes.values().stream()
+      .map(this::toProcessNodeConfig)
+      .collect(java.util.stream.Collectors.toList());
+  }
 
     @Named("nodeTypeToConfigType")
     default ProcessNodeConfig.NodeType nodeTypeToConfigType(NodeType nodeType) {

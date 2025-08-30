@@ -3,8 +3,10 @@ package com.zornflow.infrastructure.presistence.serializer;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.zornflow.domain.common.service.BusinessContextSerializer;
 import com.zornflow.domain.common.valueobject.BusinessContext;
+import org.springframework.stereotype.Service;
 
 import java.util.Map;
 
@@ -15,9 +17,8 @@ import java.util.Map;
  * @version 1.0
  * @since 2025/8/30 15:30
  **/
-
-public class BusinessContextJacksonSerializer
-  implements BusinessContextSerializer{
+@Service
+public class BusinessContextJacksonSerializer implements BusinessContextSerializer{
 
   private static final ObjectMapper objectMapper = new ObjectMapper()
     .registerModule(new JavaTimeModule());

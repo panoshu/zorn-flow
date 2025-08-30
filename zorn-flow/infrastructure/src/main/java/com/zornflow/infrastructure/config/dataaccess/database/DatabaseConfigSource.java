@@ -277,13 +277,27 @@ public class DatabaseConfigSource implements ReadWriteConfigSource {
         }
     }
 
+  @Override
+  public boolean refresh() {
+    // 数据库配置源不需要特殊的刷新逻辑，因为每次查询都是实时的
+    // 这里返回true表示刷新成功
+    log.debug("数据库配置源无需刷新");
+    return true;
+  }
+
+  @Override
+  public void clearCache() {
+    // 数据库配置源没有缓存需要清除
+    log.debug("数据库配置源没有缓存, 无需清除");
+  }
+
     // =============== 写入操作 ===============
 
     @Override
     @Transactional
     public void saveRuleChainConfig(RuleChainConfig config) {
         try {
-            helper.saveRuleChainConfig(dsl, config);
+            helper.saveRuleChainConfig(dsl, config, RULE_CHAINS, RULE_CHAIN_RULES);
             log.info("保存规则链配置成功: {}", config.id());
         } catch (Exception e) {
             log.error("保存规则链配置失败: {}", config.id(), e);
@@ -295,7 +309,7 @@ public class DatabaseConfigSource implements ReadWriteConfigSource {
     @Transactional
     public void saveProcessChainConfig(ProcessChainConfig config) {
         try {
-            helper.saveProcessChainConfig(dsl, config);
+            helper.saveProcessChainConfig(dsl, config, PROCESS_CHAINS, PROCESS_CHAIN_NODES, GATEWAY_CONDITIONS);
             log.info("保存流程链配置成功: {}", config.id());
         } catch (Exception e) {
             log.error("保存流程链配置失败: {}", config.id(), e);
@@ -307,7 +321,7 @@ public class DatabaseConfigSource implements ReadWriteConfigSource {
     @Transactional
     public void saveGlobalRule(GlobalRuleConfig config) {
         try {
-            helper.saveGlobalRule(dsl, config);
+            helper.saveGlobalRule(dsl, config, GLOBAL_RULES);
             log.info("保存全局规则成功: {}", config.id());
         } catch (Exception e) {
             log.error("保存全局规则失败: {}", config.id(), e);
@@ -319,7 +333,7 @@ public class DatabaseConfigSource implements ReadWriteConfigSource {
     @Transactional
     public void saveGlobalProcessNode(ProcessNodeConfig config) {
         try {
-            helper.saveGlobalProcessNode(dsl, config);
+            helper.saveGlobalProcessNode(dsl, config, GLOBAL_NODES);
             log.info("保存全局流程节点成功: {}", config.id());
         } catch (Exception e) {
             log.error("保存全局流程节点失败: {}", config.id(), e);
