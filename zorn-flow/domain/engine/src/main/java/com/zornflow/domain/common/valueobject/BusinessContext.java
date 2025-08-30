@@ -19,6 +19,10 @@ public record BusinessContext(Map<String, Object> data) implements BaseValueObje
     data = new ConcurrentHashMap<>(data != null ? data : Map.of());
   }
 
+  public static BusinessContext fromJson(String json, BusinessContextSerializer deserializer) {
+    return deserializer.deserialize(json);
+  }
+
   public <T> T get(String key, Class<T> type) {
     return type.cast(data.get(key));
   }
@@ -40,9 +44,5 @@ public record BusinessContext(Map<String, Object> data) implements BaseValueObje
 
   public String toJson(BusinessContextSerializer serializer) {
     return serializer.serialize(this);
-  }
-
-  public static BusinessContext fromJson(String json, BusinessContextSerializer deserializer) {
-    return deserializer.deserialize(json);
   }
 }

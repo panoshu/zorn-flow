@@ -14,13 +14,14 @@ import java.util.Map;
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public record GlobalRuleDto(
-    String id,
-    String name,
-    Integer priority,
-    String conditionExpr,
-    String handlerType,
-    String handlerClass,
-    Map<String, Object> handlerParameters,
-    LocalDateTime createdAt,
-    LocalDateTime updatedAt
-) {}
+  String id,
+  String name,
+  Integer priority,
+  String conditionExpr,
+  String handlerType,
+  String handlerClass,
+  Map<String, Object> handlerParameters,
+  LocalDateTime createdAt,
+  LocalDateTime updatedAt
+) {
+}

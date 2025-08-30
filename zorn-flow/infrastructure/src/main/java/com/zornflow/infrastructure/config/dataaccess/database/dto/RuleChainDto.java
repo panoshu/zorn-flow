@@ -13,10 +13,11 @@ import java.time.LocalDateTime;
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public record RuleChainDto(
-    String id,
-    String name,
-    String version,
-    String description,
-    LocalDateTime createdAt,
-    LocalDateTime updatedAt
-) {}
+  String id,
+  String name,
+  String version,
+  String description,
+  LocalDateTime createdAt,
+  LocalDateTime updatedAt
+) {
+}

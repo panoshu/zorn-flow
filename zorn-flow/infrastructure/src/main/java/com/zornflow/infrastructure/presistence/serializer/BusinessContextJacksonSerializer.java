@@ -18,7 +18,7 @@ import java.util.Map;
  * @since 2025/8/30 15:30
  **/
 @Service
-public class BusinessContextJacksonSerializer implements BusinessContextSerializer{
+public class BusinessContextJacksonSerializer implements BusinessContextSerializer {
 
   private static final ObjectMapper objectMapper = new ObjectMapper()
     .registerModule(new JavaTimeModule());
@@ -36,7 +36,8 @@ public class BusinessContextJacksonSerializer implements BusinessContextSerializ
   public BusinessContext deserialize(String json) {
     try {
       TypeReference<Map<String, Object>> typeRef =
-        new TypeReference<Map<String, Object>>() {};
+        new TypeReference<Map<String, Object>>() {
+        };
       Map<String, Object> data = objectMapper.readValue(json, typeRef);
       return new BusinessContext(data);
     } catch (JsonProcessingException e) {

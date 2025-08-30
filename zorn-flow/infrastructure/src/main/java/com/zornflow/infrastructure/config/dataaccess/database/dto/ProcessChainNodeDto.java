@@ -17,7 +17,7 @@ import java.util.Map;
  * @since 2025/8/29
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
-public record ProcessChainNodeDto (
+public record ProcessChainNodeDto(
   Long id,
   String processChainId,
   String nodeId,
@@ -30,4 +30,5 @@ public record ProcessChainNodeDto (
   Integer nodeOrder,
   LocalDateTime createdAt,
   LocalDateTime updatedAt
-) {}
+) {
+}

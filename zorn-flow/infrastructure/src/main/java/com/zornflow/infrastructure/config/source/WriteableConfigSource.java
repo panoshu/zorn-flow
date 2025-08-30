@@ -17,68 +17,68 @@ import java.util.List;
  */
 public non-sealed interface WriteableConfigSource extends ConfigSource {
 
-    /**
-     * 保存规则链配置
-     */
-    void saveRuleChainConfig(RuleChainConfig config);
+  /**
+   * 保存规则链配置
+   */
+  void saveRuleChainConfig(RuleChainConfig config);
 
-    /**
-     * 保存流程链配置
-     */
-    void saveProcessChainConfig(ProcessChainConfig config);
+  /**
+   * 保存流程链配置
+   */
+  void saveProcessChainConfig(ProcessChainConfig config);
 
-    /**
-     * 保存全局规则配置
-     */
-    void saveGlobalRule(GlobalRuleConfig config);
+  /**
+   * 保存全局规则配置
+   */
+  void saveGlobalRule(GlobalRuleConfig config);
 
-    /**
-     * 保存全局流程节点配置
-     */
-    void saveGlobalProcessNode(ProcessNodeConfig config);
+  /**
+   * 保存全局流程节点配置
+   */
+  void saveGlobalProcessNode(ProcessNodeConfig config);
 
-    /**
-     * 删除规则链配置
-     */
-    void deleteRuleChainConfig(String ruleChainId);
+  /**
+   * 删除规则链配置
+   */
+  void deleteRuleChainConfig(String ruleChainId);
 
-    /**
-     * 删除流程链配置
-     */
-    void deleteProcessChainConfig(String processChainId);
+  /**
+   * 删除流程链配置
+   */
+  void deleteProcessChainConfig(String processChainId);
 
-    /**
-     * 删除全局规则配置
-     */
-    void deleteGlobalRule(String ruleId);
+  /**
+   * 删除全局规则配置
+   */
+  void deleteGlobalRule(String ruleId);
 
-    /**
-     * 删除全局流程节点配置
-     */
-    void deleteGlobalProcessNode(String nodeId);
+  /**
+   * 删除全局流程节点配置
+   */
+  void deleteGlobalProcessNode(String nodeId);
 
-    /**
-     * 批量保存规则链配置
-     */
-    void saveRuleChainConfigs(List<RuleChainConfig> configs);
+  /**
+   * 批量保存规则链配置
+   */
+  void saveRuleChainConfigs(List<RuleChainConfig> configs);
 
-    /**
-     * 批量保存流程链配置
-     */
-    void saveProcessChainConfigs(List<ProcessChainConfig> configs);
+  /**
+   * 批量保存流程链配置
+   */
+  void saveProcessChainConfigs(List<ProcessChainConfig> configs);
 
-    /**
-     * 批量保存全局规则配置
-     */
-    void saveGlobalRules(List<GlobalRuleConfig> configs);
+  /**
+   * 批量保存全局规则配置
+   */
+  void saveGlobalRules(List<GlobalRuleConfig> configs);
 
-    /**
-     * 批量保存全局流程节点配置
-     */
-    void saveGlobalProcessNodes(List<ProcessNodeConfig> configs);
+  /**
+   * 批量保存全局流程节点配置
+   */
+  void saveGlobalProcessNodes(List<ProcessNodeConfig> configs);
 
-    /**
-     * 清空所有配置数据
-     */
-    void clearAll();
+  /**
+   * 清空所有配置数据
+   */
+  void clearAll();
 }

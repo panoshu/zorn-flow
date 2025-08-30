@@ -10,29 +10,31 @@ package com.zornflow.infrastructure.config.source;
  */
 public interface ReadWriteConfigSource extends ReadableConfigSource, WriteableConfigSource {
 
-    /**
-     * 获取配置源优先级
-     * 数值越小优先级越高
-     * @return 优先级数值
-     */
-    int getPriority();
+  /**
+   * 获取配置源优先级
+   * 数值越小优先级越高
+   *
+   * @return 优先级数值
+   */
+  int getPriority();
 
-    /**
-     * 检查配置源是否可用
-     * @return true如果配置源可用
-     */
-    boolean isAvailable();
+  /**
+   * 检查配置源是否可用
+   *
+   * @return true如果配置源可用
+   */
+  boolean isAvailable();
 
-    /**
-     * 刷新配置源
-     * 重新加载配置数据
-     *
-     * @return
-     */
-    boolean refresh();
+  /**
+   * 刷新配置源
+   * 重新加载配置数据
+   *
+   * @return
+   */
+  boolean refresh();
 
-    /**
-     * 清空缓存（如果有的话）
-     */
-    void clearCache();
+  /**
+   * 清空缓存（如果有的话）
+   */
+  void clearCache();
 }

@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
  * @since 2025/8/29
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
-public record GatewayConditionDto (
+public record GatewayConditionDto(
   Long id,
   String nodeId,
   String processChainId,
@@ -20,4 +20,5 @@ public record GatewayConditionDto (
   String nextNodeId,
   Integer conditionOrder,
   LocalDateTime createdAt
-) {}
+) {
+}

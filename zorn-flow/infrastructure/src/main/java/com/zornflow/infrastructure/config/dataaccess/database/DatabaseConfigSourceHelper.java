@@ -365,7 +365,8 @@ public class DatabaseConfigSourceHelper {
       return new HashMap<>();
     }
     try {
-      return objectMapper.readValue(jsonb.data(), new TypeReference<Map<String, Object>>() {});
+      return objectMapper.readValue(jsonb.data(), new TypeReference<Map<String, Object>>() {
+      });
     } catch (Exception e) {
       log.warn("解析JSONB失败: {}", jsonb.data(), e);
       return new HashMap<>();

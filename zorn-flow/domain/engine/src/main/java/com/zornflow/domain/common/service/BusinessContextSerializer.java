@@ -14,5 +14,6 @@ import java.util.Map;
 
 public interface BusinessContextSerializer {
   String serialize(BusinessContext context);
+
   BusinessContext deserialize(String json);
 }

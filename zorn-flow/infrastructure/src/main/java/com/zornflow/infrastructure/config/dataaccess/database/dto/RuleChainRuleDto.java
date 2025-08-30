@@ -14,17 +14,18 @@ import java.util.Map;
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public record RuleChainRuleDto(
-    Long id,
-    String ruleChainId,
-    String ruleId,
-    String ruleName,
-    Integer priority,
-    String conditionExpr,
-    String handlerType,
-    String handlerClass,
-    Map<String, Object> handlerParameters,
-    Boolean isGlobalReference,
-    Integer ruleOrder,
-    LocalDateTime createdAt,
-    LocalDateTime updatedAt
-) {}
+  Long id,
+  String ruleChainId,
+  String ruleId,
+  String ruleName,
+  Integer priority,
+  String conditionExpr,
+  String handlerType,
+  String handlerClass,
+  Map<String, Object> handlerParameters,
+  Boolean isGlobalReference,
+  Integer ruleOrder,
+  LocalDateTime createdAt,
+  LocalDateTime updatedAt
+) {
+}

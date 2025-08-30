@@ -19,4 +19,5 @@ public record GlobalRuleConfig(
   Integer priority,
   String condition,
   RuleConfig.Handler handle
-) { }
+) {
+}

@@ -17,7 +17,7 @@ import java.util.Map;
  * @since 2025/8/29
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
-public record GlobalNodeDto (
+public record GlobalNodeDto(
   String id,
   String name,
   String nextNodeId,
@@ -26,4 +26,5 @@ public record GlobalNodeDto (
   Map<String, Object> properties,
   LocalDateTime createdAt,
   LocalDateTime updatedAt
-) {}
+) {
+}

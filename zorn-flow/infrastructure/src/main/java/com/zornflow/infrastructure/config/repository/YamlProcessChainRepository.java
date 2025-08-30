@@ -29,81 +29,82 @@ import java.util.Optional;
 @ConditionalOnProperty(name = "zornflow.config.repository.type", havingValue = "yaml", matchIfMissing = true)
 public class YamlProcessChainRepository implements ProcessChainRepository {
 
-    private final ReadableConfigSource readableConfigSource;
+  private final ReadableConfigSource readableConfigSource;
 
-    @Override
-    public Optional<ProcessChain> findById(ProcessChainId id) {
-        if (id == null) {
-            return Optional.empty();
-        }
-
-        try {
-            Optional<ProcessChainConfig> configOpt = readableConfigSource.loadProcessChainConfig(id.value());
-            if (configOpt.isPresent()) {
-                ProcessChain processChain = ProcessConfigMapper.INSTANCE.toProcessChain(configOpt.get());
-                log.debug("从配置源加载流程链: {}", id.value());
-                return Optional.of(processChain);
-            }
-
-            log.debug("未找到流程链配置: {}", id.value());
-            return Optional.empty();
-        } catch (Exception e) {
-            log.error("加载流程链失败: {}", id.value(), e);
-            return Optional.empty();
-        }
+  @Override
+  public Optional<ProcessChain> findById(ProcessChainId id) {
+    if (id == null) {
+      return Optional.empty();
     }
 
-    @Override
-    public Collection<ProcessChain> findAll() {
-        try {
-            Map<String, ProcessChainConfig> allConfigs = readableConfigSource.loadProcessChainConfigs();
-            Collection<ProcessChain> processChains = allConfigs.values()
-                .stream()
-                .map(ProcessConfigMapper.INSTANCE::toProcessChain)
-                .toList();
+    try {
+      Optional<ProcessChainConfig> configOpt = readableConfigSource.loadProcessChainConfig(id.value());
+      if (configOpt.isPresent()) {
+        ProcessChain processChain = ProcessConfigMapper.INSTANCE.toProcessChain(configOpt.get());
+        log.debug("从配置源加载流程链: {}", id.value());
+        return Optional.of(processChain);
+      }
 
-            log.debug("加载所有流程链，共 {} 个", processChains.size());
-            return processChains;
-        } catch (Exception e) {
-            log.error("加载所有流程链失败", e);
-            return java.util.Collections.emptyList();
-        }
+      log.debug("未找到流程链配置: {}", id.value());
+      return Optional.empty();
+    } catch (Exception e) {
+      log.error("加载流程链失败: {}", id.value(), e);
+      return Optional.empty();
     }
+  }
 
-    @Override
-    public ProcessChain save(ProcessChain aggregateRoot) {
-        log.warn("YAML配置源不支持保存操作，流程链ID: {}", aggregateRoot.getId().value());
-        throw new UnsupportedOperationException("YAML配置源不支持保存操作");
-    }
+  @Override
+  public Collection<ProcessChain> findAll() {
+    try {
+      Map<String, ProcessChainConfig> allConfigs = readableConfigSource.loadProcessChainConfigs();
+      Collection<ProcessChain> processChains = allConfigs.values()
+        .stream()
+        .map(ProcessConfigMapper.INSTANCE::toProcessChain)
+        .toList();
 
-    @Override
-    public void delete(ProcessChain aggregateRoot) {
-        log.warn("YAML配置源不支持删除操作，流程链ID: {}", aggregateRoot.getId().value());
-        throw new UnsupportedOperationException("YAML配置源不支持删除操作");
+      log.debug("加载所有流程链，共 {} 个", processChains.size());
+      return processChains;
+    } catch (Exception e) {
+      log.error("加载所有流程链失败", e);
+      return java.util.Collections.emptyList();
     }
+  }
 
-    @Override
-    public void deleteById(ProcessChainId id) {
-        log.warn("YAML配置源不支持删除操作，流程链ID: {}", id.value());
-        throw new UnsupportedOperationException("YAML配置源不支持删除操作");
-    }
+  @Override
+  public ProcessChain save(ProcessChain aggregateRoot) {
+    log.warn("YAML配置源不支持保存操作，流程链ID: {}", aggregateRoot.getId().value());
+    throw new UnsupportedOperationException("YAML配置源不支持保存操作");
+  }
 
-    /**
-     * 刷新配置源
-     * @return 是否刷新成功
-     */
-    public boolean refresh() {
-        try {
-            boolean result = readableConfigSource.refresh();
-            if (result) {
-                log.info("流程链配置源刷新成功");
-            } else {
-                log.warn("流程链配置源刷新失败");
-            }
-            return result;
-        } catch (Exception e) {
-            log.error("流程链配置源刷新异常", e);
-            return false;
-        }
+  @Override
+  public void delete(ProcessChain aggregateRoot) {
+    log.warn("YAML配置源不支持删除操作，流程链ID: {}", aggregateRoot.getId().value());
+    throw new UnsupportedOperationException("YAML配置源不支持删除操作");
+  }
+
+  @Override
+  public void deleteById(ProcessChainId id) {
+    log.warn("YAML配置源不支持删除操作，流程链ID: {}", id.value());
+    throw new UnsupportedOperationException("YAML配置源不支持删除操作");
+  }
+
+  /**
+   * 刷新配置源
+   *
+   * @return 是否刷新成功
+   */
+  public boolean refresh() {
+    try {
+      boolean result = readableConfigSource.refresh();
+      if (result) {
+        log.info("流程链配置源刷新成功");
+      } else {
+        log.warn("流程链配置源刷新失败");
+      }
+      return result;
+    } catch (Exception e) {
+      log.error("流程链配置源刷新异常", e);
+      return false;
     }
+  }
 }

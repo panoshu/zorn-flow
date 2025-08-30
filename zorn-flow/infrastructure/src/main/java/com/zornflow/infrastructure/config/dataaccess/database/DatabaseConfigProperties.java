@@ -17,51 +17,51 @@ import org.springframework.stereotype.Component;
 @ConfigurationProperties(prefix = "zornflow.config.database")
 public class DatabaseConfigProperties {
 
+  /**
+   * 是否启用数据库配置源
+   */
+  private boolean enabled = true;
+
+  /**
+   * 数据库表名配置
+   */
+  private TableNames tableNames = new TableNames();
+
+  @Data
+  public static class TableNames {
     /**
-     * 是否启用数据库配置源
+     * 全局规则表名
      */
-    private boolean enabled = true;
+    private String globalRules = "zornflow_global_rules";
 
     /**
-     * 数据库表名配置
+     * 全局流程节点表名
      */
-    private TableNames tableNames = new TableNames();
+    private String globalNodes = "zornflow_global_nodes";
 
-    @Data
-    public static class TableNames {
-        /**
-         * 全局规则表名
-         */
-        private String globalRules = "zornflow_global_rules";
+    /**
+     * 规则链配置表名
+     */
+    private String ruleChains = "zornflow_rule_chains";
 
-        /**
-         * 全局流程节点表名
-         */
-        private String globalNodes = "zornflow_global_nodes";
+    /**
+     * 规则链-规则关联表名
+     */
+    private String ruleChainRules = "zornflow_rule_chain_rules";
 
-        /**
-         * 规则链配置表名
-         */
-        private String ruleChains = "zornflow_rule_chains";
+    /**
+     * 流程链配置表名
+     */
+    private String processChains = "zornflow_process_chains";
 
-        /**
-         * 规则链-规则关联表名
-         */
-        private String ruleChainRules = "zornflow_rule_chain_rules";
+    /**
+     * 流程链-节点关联表名
+     */
+    private String processChainNodes = "zornflow_process_chain_nodes";
 
-        /**
-         * 流程链配置表名
-         */
-        private String processChains = "zornflow_process_chains";
-
-        /**
-         * 流程链-节点关联表名
-         */
-        private String processChainNodes = "zornflow_process_chain_nodes";
-
-        /**
-         * 网关条件配置表名
-         */
-        private String gatewayConditions = "zornflow_gateway_conditions";
-    }
+    /**
+     * 网关条件配置表名
+     */
+    private String gatewayConditions = "zornflow_gateway_conditions";
+  }
 }

@@ -17,33 +17,33 @@ import org.springframework.stereotype.Component;
 @ConfigurationProperties(prefix = "zornflow.config.yaml")
 public class YamlConfigProperties {
 
-    /**
-     * 是否启用YAML配置源
-     */
-    private boolean enabled = true;
+  /**
+   * 是否启用YAML配置源
+   */
+  private boolean enabled = true;
 
-    /**
-     * 基础配置路径
-     */
-    private String basePath = "classpath*:zornflow/**/*.yml";
+  /**
+   * 基础配置路径
+   */
+  private String basePath = "classpath*:zornflow/**/*.yml";
 
-    /**
-     * 规则链配置路径
-     */
-    private String ruleChainsPath = "classpath*:zornflow/rule-chains/*.yml";
+  /**
+   * 规则链配置路径
+   */
+  private String ruleChainsPath = "classpath*:zornflow/rule-chains/*.yml";
 
-    /**
-     * 流程链配置路径
-     */
-    private String processChainsPath = "classpath*:zornflow/flow-chains/*.yml";
+  /**
+   * 流程链配置路径
+   */
+  private String processChainsPath = "classpath*:zornflow/flow-chains/*.yml";
 
-    /**
-     * 全局规则配置路径
-     */
-    private String globalRulesPath = "classpath*:zornflow/rules/*.yml";
+  /**
+   * 全局规则配置路径
+   */
+  private String globalRulesPath = "classpath*:zornflow/rules/*.yml";
 
-    /**
-     * 全局节点配置路径
-     */
-    private String globalNodesPath = "classpath*:zornflow/nodes/*.yml";
+  /**
+   * 全局节点配置路径
+   */
+  private String globalNodesPath = "classpath*:zornflow/nodes/*.yml";
 }

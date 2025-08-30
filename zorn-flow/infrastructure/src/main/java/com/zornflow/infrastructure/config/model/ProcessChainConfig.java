@@ -17,4 +17,5 @@ public record ProcessChainConfig(
   String name,
   String version,
   String description,
-  List<ProcessNodeConfig> nodes) { }
+  List<ProcessNodeConfig> nodes) {
+}

@@ -26,12 +26,10 @@ import java.util.Optional;
 @Slf4j
 public class YamlConfigSource implements ReadableConfigSource {
 
-  // 使用ConfigurationProperties管理配置
-  private final YamlConfigProperties yamlConfigProperties;
-
   final ObjectMapper yamlMapper = new ObjectMapper(new YAMLFactory());
   final ResourcePatternResolver resourceResolver = new PathMatchingResourcePatternResolver();
-
+  // 使用ConfigurationProperties管理配置
+  private final YamlConfigProperties yamlConfigProperties;
   // 缓存配置数据 - package-private for helper access
   volatile Map<String, RuleChainConfig> ruleChainConfigs = new HashMap<>();
   volatile Map<String, ProcessChainConfig> processChainConfigs = new HashMap<>();
@@ -45,12 +43,12 @@ public class YamlConfigSource implements ReadableConfigSource {
 
   @Override
   public String getSourceName() {
-      return "YamlConfigSource";
+    return "YamlConfigSource";
   }
 
   @Override
   public ConfigSourceType getSourceType() {
-      return ConfigSourceType.YAML;
+    return ConfigSourceType.YAML;
   }
 
   public String getRuleChainsPath() {
@@ -75,38 +73,38 @@ public class YamlConfigSource implements ReadableConfigSource {
 
   @Override
   public synchronized Map<String, RuleChainConfig> loadRuleChainConfigs() {
-      ensureLoaded();
-      return new HashMap<>(ruleChainConfigs);
+    ensureLoaded();
+    return new HashMap<>(ruleChainConfigs);
   }
 
   @Override
   public Optional<RuleChainConfig> loadRuleChainConfig(String ruleChainId) {
-      ensureLoaded();
-      return Optional.ofNullable(ruleChainConfigs.get(ruleChainId));
+    ensureLoaded();
+    return Optional.ofNullable(ruleChainConfigs.get(ruleChainId));
   }
 
   @Override
   public synchronized Map<String, ProcessChainConfig> loadProcessChainConfigs() {
-      ensureLoaded();
-      return new HashMap<>(processChainConfigs);
+    ensureLoaded();
+    return new HashMap<>(processChainConfigs);
   }
 
   @Override
   public Optional<ProcessChainConfig> loadProcessChainConfig(String processChainId) {
-      ensureLoaded();
-      return Optional.ofNullable(processChainConfigs.get(processChainId));
+    ensureLoaded();
+    return Optional.ofNullable(processChainConfigs.get(processChainId));
   }
 
   @Override
   public synchronized Map<String, RuleConfig> loadGlobalRules() {
-      ensureLoaded();
-      return new HashMap<>(globalRules);
+    ensureLoaded();
+    return new HashMap<>(globalRules);
   }
 
   @Override
   public synchronized Map<String, ProcessNodeConfig> loadGlobalNodes() {
-      ensureLoaded();
-      return new HashMap<>(globalNodes);
+    ensureLoaded();
+    return new HashMap<>(globalNodes);
   }
 
   @Override
@@ -121,11 +119,11 @@ public class YamlConfigSource implements ReadableConfigSource {
         YamlConfigSourceHelper.loadAllConfigurations(this);
         loaded = true;
       }
-        return true;
+      return true;
     } catch (Exception e) {
-          log.error("刷新YAML配置源失败", e);
-          return false;
-      }
+      log.error("刷新YAML配置源失败", e);
+      return false;
+    }
   }
 
   /**

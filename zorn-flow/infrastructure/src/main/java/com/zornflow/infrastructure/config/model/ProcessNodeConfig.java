@@ -22,5 +22,5 @@ public record ProcessNodeConfig(
   List<GatewayConditionConfig> conditions,
   Map<String, Object> properties) {
 
-  public enum NodeType { BUSINESS, APPROVAL, GATEWAY }
+  public enum NodeType {BUSINESS, APPROVAL, GATEWAY}
 }

@@ -31,124 +31,125 @@ import java.util.Optional;
 @ConditionalOnProperty(name = "zornflow.config.repository.type", havingValue = "composite", matchIfMissing = true)
 public class CompositeProcessChainRepository implements ProcessChainRepository {
 
-    private final ReadWriteConfigSource readWriteConfigSource;
+  private final ReadWriteConfigSource readWriteConfigSource;
 
-    @Override
-    public Optional<ProcessChain> findById(ProcessChainId id) {
-        if (id == null) {
-            return Optional.empty();
-        }
-
-        try {
-            Optional<ProcessChainConfig> configOpt = readWriteConfigSource.loadProcessChainConfig(id.value());
-            if (configOpt.isPresent()) {
-                ProcessChain processChain = ProcessConfigMapper.INSTANCE.toProcessChain(configOpt.get());
-                log.debug("从组合配置源加载流程链: {}", id.value());
-                return Optional.of(processChain);
-            }
-
-            log.debug("未找到流程链配置: {}", id.value());
-            return Optional.empty();
-        } catch (Exception e) {
-            log.error("加载流程链失败: {}", id.value(), e);
-            return Optional.empty();
-        }
+  @Override
+  public Optional<ProcessChain> findById(ProcessChainId id) {
+    if (id == null) {
+      return Optional.empty();
     }
 
-    @Override
-    public Collection<ProcessChain> findAll() {
-        try {
-            Map<String, ProcessChainConfig> allConfigs = readWriteConfigSource.loadProcessChainConfigs();
-            Collection<ProcessChain> processChains = allConfigs.values()
-                .stream()
-                .map(ProcessConfigMapper.INSTANCE::toProcessChain)
-                .toList();
+    try {
+      Optional<ProcessChainConfig> configOpt = readWriteConfigSource.loadProcessChainConfig(id.value());
+      if (configOpt.isPresent()) {
+        ProcessChain processChain = ProcessConfigMapper.INSTANCE.toProcessChain(configOpt.get());
+        log.debug("从组合配置源加载流程链: {}", id.value());
+        return Optional.of(processChain);
+      }
 
-            log.debug("从组合配置源加载所有流程链，共 {} 个", processChains.size());
-            return processChains;
-        } catch (Exception e) {
-            log.error("加载所有流程链失败", e);
-            return java.util.Collections.emptyList();
-        }
+      log.debug("未找到流程链配置: {}", id.value());
+      return Optional.empty();
+    } catch (Exception e) {
+      log.error("加载流程链失败: {}", id.value(), e);
+      return Optional.empty();
     }
+  }
 
-    @Override
-    public ProcessChain save(ProcessChain aggregateRoot) {
-        try {
-            // 将领域对象转换为配置对象
-            ProcessChainConfig config = ProcessConfigMapper.INSTANCE.toProcessChainConfig(aggregateRoot);
+  @Override
+  public Collection<ProcessChain> findAll() {
+    try {
+      Map<String, ProcessChainConfig> allConfigs = readWriteConfigSource.loadProcessChainConfigs();
+      Collection<ProcessChain> processChains = allConfigs.values()
+        .stream()
+        .map(ProcessConfigMapper.INSTANCE::toProcessChain)
+        .toList();
 
-            // 保存到配置源
-            readWriteConfigSource.saveProcessChainConfig(config);
-
-            log.info("保存流程链成功: {}", aggregateRoot.getId().value());
-            return aggregateRoot;
-        } catch (Exception e) {
-            log.error("保存流程链失败: {}", aggregateRoot.getId().value(), e);
-            throw new RuntimeException("保存流程链失败", e);
-        }
+      log.debug("从组合配置源加载所有流程链，共 {} 个", processChains.size());
+      return processChains;
+    } catch (Exception e) {
+      log.error("加载所有流程链失败", e);
+      return java.util.Collections.emptyList();
     }
+  }
 
-    @Override
-    public void delete(ProcessChain aggregateRoot) {
-        deleteById(aggregateRoot.getId());
-    }
+  @Override
+  public ProcessChain save(ProcessChain aggregateRoot) {
+    try {
+      // 将领域对象转换为配置对象
+      ProcessChainConfig config = ProcessConfigMapper.INSTANCE.toProcessChainConfig(aggregateRoot);
 
-    @Override
-    public void deleteById(ProcessChainId id) {
-        try {
-            readWriteConfigSource.deleteProcessChainConfig(id.value());
-            log.info("删除流程链成功: {}", id.value());
-        } catch (Exception e) {
-            log.error("删除流程链失败: {}", id.value(), e);
-            throw new RuntimeException("删除流程链失败", e);
-        }
-    }
+      // 保存到配置源
+      readWriteConfigSource.saveProcessChainConfig(config);
 
-    /**
-     * 刷新配置源
-     * @return 是否刷新成功
-     */
-    public boolean refresh() {
-        try {
-            boolean result = readWriteConfigSource.refresh();
-            if (result) {
-                log.info("流程链组合配置源刷新成功");
-            } else {
-                log.warn("流程链组合配置源刷新失败");
-            }
-            return result;
-        } catch (Exception e) {
-            log.error("流程链组合配置源刷新异常", e);
-            return false;
-        }
+      log.info("保存流程链成功: {}", aggregateRoot.getId().value());
+      return aggregateRoot;
+    } catch (Exception e) {
+      log.error("保存流程链失败: {}", aggregateRoot.getId().value(), e);
+      throw new RuntimeException("保存流程链失败", e);
     }
+  }
 
-    /**
-     * 清空缓存
-     */
-    public void clearCache() {
-        try {
-            readWriteConfigSource.clearCache();
-            log.info("清空流程链配置缓存成功");
-        } catch (Exception e) {
-            log.error("清空流程链配置缓存失败", e);
-        }
-    }
+  @Override
+  public void delete(ProcessChain aggregateRoot) {
+    deleteById(aggregateRoot.getId());
+  }
 
-    /**
-     * 批量保存流程链
-     */
-    public void saveAll(Collection<ProcessChain> processChains) {
-        for (ProcessChain processChain : processChains) {
-            save(processChain);
-        }
+  @Override
+  public void deleteById(ProcessChainId id) {
+    try {
+      readWriteConfigSource.deleteProcessChainConfig(id.value());
+      log.info("删除流程链成功: {}", id.value());
+    } catch (Exception e) {
+      log.error("删除流程链失败: {}", id.value(), e);
+      throw new RuntimeException("删除流程链失败", e);
     }
+  }
 
-    /**
-     * 检查配置源是否可用
-     */
-    public boolean isAvailable() {
-        return readWriteConfigSource.isAvailable();
+  /**
+   * 刷新配置源
+   *
+   * @return 是否刷新成功
+   */
+  public boolean refresh() {
+    try {
+      boolean result = readWriteConfigSource.refresh();
+      if (result) {
+        log.info("流程链组合配置源刷新成功");
+      } else {
+        log.warn("流程链组合配置源刷新失败");
+      }
+      return result;
+    } catch (Exception e) {
+      log.error("流程链组合配置源刷新异常", e);
+      return false;
     }
+  }
+
+  /**
+   * 清空缓存
+   */
+  public void clearCache() {
+    try {
+      readWriteConfigSource.clearCache();
+      log.info("清空流程链配置缓存成功");
+    } catch (Exception e) {
+      log.error("清空流程链配置缓存失败", e);
+    }
+  }
+
+  /**
+   * 批量保存流程链
+   */
+  public void saveAll(Collection<ProcessChain> processChains) {
+    for (ProcessChain processChain : processChains) {
+      save(processChain);
+    }
+  }
+
+  /**
+   * 检查配置源是否可用
+   */
+  public boolean isAvailable() {
+    return readWriteConfigSource.isAvailable();
+  }
 }

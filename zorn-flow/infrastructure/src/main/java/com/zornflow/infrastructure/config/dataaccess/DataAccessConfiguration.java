@@ -36,7 +36,7 @@ public class DataAccessConfiguration {
 
   @Bean
   @ConditionalOnProperty(name = "zornflow.config.yaml.enabled", havingValue = "true", matchIfMissing = true)
-  public YamlConfigProperties yamlConfigProperties(){
+  public YamlConfigProperties yamlConfigProperties() {
     return new YamlConfigProperties();
   }
 
@@ -87,6 +87,7 @@ public class DataAccessConfiguration {
   public CompositeConfigSourceProperties compositeConfigSourceProperties() {
     return new CompositeConfigSourceProperties();
   }
+
   /**
    * 创建组合配置源Bean - 终极版本
    * 使用新的混合构造函数，自动分类配置源类型
@@ -108,7 +109,7 @@ public class DataAccessConfiguration {
     compositeSource.setCacheExpireTime(properties.getCacheExpireTimeMs());
 
     log.info("组合配置源创建成功 - 缓存: {}, 过期时间: {}ms",
-        properties.isCacheEnabled(), properties.getCacheExpireTimeMs());
+      properties.isCacheEnabled(), properties.getCacheExpireTimeMs());
 
     return compositeSource;
   }
