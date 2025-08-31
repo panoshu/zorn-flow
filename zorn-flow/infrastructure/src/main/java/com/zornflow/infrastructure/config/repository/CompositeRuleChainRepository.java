@@ -32,6 +32,7 @@ import java.util.Optional;
 public class CompositeRuleChainRepository implements RuleChainRepository {
 
   private final ReadWriteConfigSource readWriteConfigSource;
+  private final RuleConfigMapper ruleConfigMapper;
 
   @Override
   public Optional<RuleChain> findById(RuleChainId id) {
@@ -42,7 +43,7 @@ public class CompositeRuleChainRepository implements RuleChainRepository {
     try {
       Optional<RuleChainConfig> configOpt = readWriteConfigSource.loadRuleChainConfig(id.value());
       if (configOpt.isPresent()) {
-        RuleChain ruleChain = RuleConfigMapper.INSTANCE.toRuleChain(configOpt.get());
+        RuleChain ruleChain = ruleConfigMapper.toRuleChain(configOpt.get());
         log.debug("从组合配置源加载规则链: {}", id.value());
         return Optional.of(ruleChain);
       }
@@ -61,7 +62,7 @@ public class CompositeRuleChainRepository implements RuleChainRepository {
       Map<String, RuleChainConfig> allConfigs = readWriteConfigSource.loadRuleChainConfigs();
       Collection<RuleChain> ruleChains = allConfigs.values()
         .stream()
-        .map(RuleConfigMapper.INSTANCE::toRuleChain)
+        .map(ruleConfigMapper::toRuleChain)
         .toList();
 
       log.debug("从组合配置源加载所有规则链，共 {} 个", ruleChains.size());
@@ -76,7 +77,7 @@ public class CompositeRuleChainRepository implements RuleChainRepository {
   public RuleChain save(RuleChain aggregateRoot) {
     try {
       // 将领域对象转换为配置对象
-      RuleChainConfig config = RuleConfigMapper.INSTANCE.toRuleChainConfig(aggregateRoot);
+      RuleChainConfig config = ruleConfigMapper.toRuleChainConfig(aggregateRoot);
 
       // 保存到配置源
       readWriteConfigSource.saveRuleChainConfig(config);

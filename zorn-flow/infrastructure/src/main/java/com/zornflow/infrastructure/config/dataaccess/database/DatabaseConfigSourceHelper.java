@@ -112,7 +112,7 @@ public class DatabaseConfigSourceHelper {
         .name(getStringValueOrDefault(record, "rule_name", globalRule.name()))
         .priority(getIntegerValueOrDefault(record, "priority", globalRule.priority()))
         .condition(getStringValueOrDefault(record, "condition_expr", globalRule.condition()))
-        .handle(getHandlerValueOrDefault(record, globalRule.handle()))
+        .handlerConfig(getHandlerValueOrDefault(record, globalRule.handlerConfig()))
         .build();
     } else {
       // 私有规则
@@ -148,7 +148,7 @@ public class DatabaseConfigSourceHelper {
    * 将数据库记录转换为RuleConfig（从全局规则表或规则链关联表）
    */
   public RuleConfig convertToRuleConfig(Record record) {
-    RuleConfig.Handler.Type handlerType = RuleConfig.Handler.Type.valueOf(
+    RuleConfig.HandlerConfig.Type handlerType = RuleConfig.HandlerConfig.Type.valueOf(
       record.get("handler_type", String.class));
     String handlerClass = record.get("handler_class", String.class);
     Map<String, Object> handlerParams = parseJsonToMap(record.get("handler_parameters", JSONB.class));
@@ -158,7 +158,7 @@ public class DatabaseConfigSourceHelper {
       .name(record.get("name", String.class))
       .priority(record.get("priority", Integer.class))
       .condition(record.get("condition_expr", String.class))
-      .handle(new RuleConfig.Handler(handlerType, handlerClass, handlerParams))
+      .handlerConfig(new RuleConfig.HandlerConfig(handlerType, handlerClass, handlerParams))
       .build();
   }
 
@@ -186,7 +186,7 @@ public class DatabaseConfigSourceHelper {
       .name(dto.name())
       .version(dto.version())
       .description(dto.description())
-      .rules(Collections.emptyList()) // 会在外部设置
+      .ruleConfigs(Collections.emptyList()) // 会在外部设置
       .build();
   }
 
@@ -215,9 +215,9 @@ public class DatabaseConfigSourceHelper {
       .execute();
 
     // 3. 保存新的规则关联
-    if (config.rules() != null && !config.rules().isEmpty()) {
-      for (int i = 0; i < config.rules().size(); i++) {
-        RuleConfig rule = config.rules().get(i);
+    if (config.ruleConfigs() != null && !config.ruleConfigs().isEmpty()) {
+      for (int i = 0; i < config.ruleConfigs().size(); i++) {
+        RuleConfig rule = config.ruleConfigs().get(i);
         saveRuleChainRule(dsl, config.id(), rule, i + 1, ruleChainRulesTable);
       }
     }
@@ -319,9 +319,9 @@ public class DatabaseConfigSourceHelper {
       .set(field("rule_name"), rule.name())
       .set(field("priority"), rule.priority())
       .set(field("condition_expr"), rule.condition())
-      .set(field("handler_type"), rule.handle().type().name())
-      .set(field("handler_class"), rule.handle().handler())
-      .set(field("handler_parameters"), JSONB.valueOf(mapToJson(rule.handle().parameters())))
+      .set(field("handler_type"), rule.handlerConfig().type().name())
+      .set(field("handler_class"), rule.handlerConfig().handler())
+      .set(field("handler_parameters"), JSONB.valueOf(mapToJson(rule.handlerConfig().parameters())))
       .set(field("is_global_reference"), isGlobalReference)
       .set(field("rule_order"), order)
       .execute();
@@ -408,14 +408,14 @@ public class DatabaseConfigSourceHelper {
     return defaultValue != null ? defaultValue : new HashMap<>();
   }
 
-  private RuleConfig.Handler getHandlerValueOrDefault(Record record, RuleConfig.Handler defaultValue) {
+  private RuleConfig.HandlerConfig getHandlerValueOrDefault(Record record, RuleConfig.HandlerConfig defaultValue) {
     String handlerType = record.get("handler_type", String.class);
     String handlerClass = record.get("handler_class", String.class);
     JSONB handlerParams = record.get("handler_parameters", JSONB.class);
 
     if (handlerType != null && handlerClass != null) {
-      return new RuleConfig.Handler(
-        RuleConfig.Handler.Type.valueOf(handlerType),
+      return new RuleConfig.HandlerConfig(
+        RuleConfig.HandlerConfig.Type.valueOf(handlerType),
         handlerClass,
         parseJsonToMap(handlerParams)
       );

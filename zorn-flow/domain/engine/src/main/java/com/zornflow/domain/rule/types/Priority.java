@@ -33,7 +33,7 @@ public record Priority(int value) implements DomainPrimitive, Comparable<Priorit
    * @return 默认优先级对象
    */
   public static Priority defaultPriority() {
-    return new Priority(50);
+    return new Priority(100);
   }
 
   /**

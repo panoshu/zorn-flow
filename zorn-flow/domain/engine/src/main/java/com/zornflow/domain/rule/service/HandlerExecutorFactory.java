@@ -1,6 +1,6 @@
 package com.zornflow.domain.rule.service;
 
-import com.zornflow.domain.rule.valueobject.HandlerConfig;
+import com.zornflow.domain.rule.valueobject.Handler;
 
 import java.util.Optional;
 
@@ -14,5 +14,5 @@ import java.util.Optional;
  **/
 
 public interface HandlerExecutorFactory {
-  Optional<HandlerExecutor> getExecutor(HandlerConfig handler);
+  Optional<HandlerExecutor> getExecutor(Handler handler);
 }

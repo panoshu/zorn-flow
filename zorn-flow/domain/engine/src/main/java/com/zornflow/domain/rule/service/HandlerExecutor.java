@@ -1,7 +1,7 @@
 package com.zornflow.domain.rule.service;
 
 import com.zornflow.domain.common.valueobject.BusinessContext;
-import com.zornflow.domain.rule.valueobject.HandlerConfig;
+import com.zornflow.domain.rule.valueobject.Handler;
 
 /**
  * 定义处理器执行的抽象，隔离外部实现
@@ -19,7 +19,7 @@ public interface HandlerExecutor {
    * @param handler 规则配置
    * @param context 执行上下文
    */
-  void execute(HandlerConfig handler, BusinessContext context);
+  void execute(Handler handler, BusinessContext context);
 
   /**
    * 检查是否支持该处理器类型
@@ -27,5 +27,5 @@ public interface HandlerExecutor {
    * @param handler 处理器类型
    * @return 是否支持
    */
-  boolean supports(HandlerConfig handler);
+  boolean supports(Handler handler);
 }

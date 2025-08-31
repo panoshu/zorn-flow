@@ -2,7 +2,8 @@ package com.zornflow.infrastructure.handler;
 
 import com.zornflow.domain.common.valueobject.BusinessContext;
 import com.zornflow.domain.rule.service.HandlerExecutor;
-import com.zornflow.domain.rule.valueobject.HandlerConfig;
+import com.zornflow.domain.rule.types.HandlerType;
+import com.zornflow.domain.rule.valueobject.Handler;
 import lombok.AllArgsConstructor;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
@@ -19,16 +20,15 @@ import org.springframework.stereotype.Component;
 @AllArgsConstructor
 public class ClassHandlerExecutor implements HandlerExecutor {
 
-  private static final String HANDLER_TYPE = "class";
   private final ApplicationContext applicationContext; // 用于从Spring容器中获取Bean
 
   @Override
-  public boolean supports(HandlerConfig handler) {
-    return HANDLER_TYPE.equalsIgnoreCase(handler.type().value());
+  public boolean supports(Handler handler) {
+    return HandlerType.CLASS.equals(handler.type());
   }
 
   @Override
-  public void execute(HandlerConfig handler, BusinessContext context) {
+  public void execute(Handler handler, BusinessContext context) {
     try {
       // handler.identifier() 应该是Spring Bean的名称
       String beanName = handler.getClass().getSimpleName();

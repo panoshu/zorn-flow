@@ -123,7 +123,7 @@ public class DatabaseConfigSource implements ReadWriteConfigSource {
         List<RuleConfig> rules = helper.loadRuleChainRules(dsl, ruleChainId, globalRules, RULE_CHAIN_RULES);
 
         RuleChainConfig config = entry.getValue()
-          .rules(rules)
+          .ruleConfigs(rules)
           .build();
         result.put(ruleChainId, config);
       }
@@ -159,7 +159,7 @@ public class DatabaseConfigSource implements ReadWriteConfigSource {
         .name(ruleChainRecord.get("name", String.class))
         .version(ruleChainRecord.get("version", String.class))
         .description(ruleChainRecord.get("description", String.class))
-        .rules(rules)
+        .ruleConfigs(rules)
         .build();
 
       return Optional.of(config);

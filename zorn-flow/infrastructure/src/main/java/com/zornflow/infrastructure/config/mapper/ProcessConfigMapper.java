@@ -31,7 +31,7 @@ import java.util.stream.Collectors;
  * @version 1.0
  * @since 2025/8/29 11:30
  */
-@Mapper
+@Mapper(config = MapstructConfig.class)
 public interface ProcessConfigMapper {
 
   ProcessConfigMapper INSTANCE = Mappers.getMapper(ProcessConfigMapper.class);
@@ -113,21 +113,6 @@ public interface ProcessConfigMapper {
   @Named("stringToProcessNodeName")
   default ProcessNodeName stringToProcessNodeName(String name) {
     return name != null ? ProcessNodeName.of(name) : null;
-  }
-
-  @Named("stringToVersion")
-  default Version stringToVersion(String version) {
-    if (version == null || version.isBlank()) {
-      return Version.of("1.0.0");
-    }
-    // 如果版本号不符合 x.y.z 格式，自动补充
-    String[] parts = version.split("\\.");
-    if (parts.length == 2) {
-      return Version.of(version + ".0");
-    } else if (parts.length == 1) {
-      return Version.of(version + ".0.0");
-    }
-    return Version.of(version);
   }
 
   @Named("configNodeTypeToValueObject")

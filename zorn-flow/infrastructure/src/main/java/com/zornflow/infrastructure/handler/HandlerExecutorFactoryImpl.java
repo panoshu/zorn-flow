@@ -2,7 +2,8 @@ package com.zornflow.infrastructure.handler;
 
 import com.zornflow.domain.rule.service.HandlerExecutor;
 import com.zornflow.domain.rule.service.HandlerExecutorFactory;
-import com.zornflow.domain.rule.valueobject.HandlerConfig;
+import com.zornflow.domain.rule.valueobject.Handler;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -17,21 +18,13 @@ import java.util.Optional;
  **/
 
 @Component
+@AllArgsConstructor
 public class HandlerExecutorFactoryImpl implements HandlerExecutorFactory {
 
   private final List<HandlerExecutor> executors;
 
-  /**
-   * Spring会自动将容器中所有IHandlerExecutor的实现类注入到这个List中。
-   *
-   * @param executors 所有IHandlerExecutor的Bean实例
-   */
-  public HandlerExecutorFactoryImpl(List<HandlerExecutor> executors) {
-    this.executors = executors;
-  }
-
   @Override
-  public Optional<HandlerExecutor> getExecutor(HandlerConfig handler) {
+  public Optional<HandlerExecutor> getExecutor(Handler handler) {
     return executors.stream()
       .filter(executor -> executor.supports(handler))
       .findFirst();

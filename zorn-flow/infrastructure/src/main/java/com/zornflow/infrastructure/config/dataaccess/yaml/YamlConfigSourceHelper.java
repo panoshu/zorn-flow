@@ -174,7 +174,7 @@ public class YamlConfigSourceHelper {
 
     // 处理规则列表
     List<RuleConfig> rules = new ArrayList<>();
-    Object rulesData = data.get("rules");
+    Object rulesData = data.get("ruleConfigs");
     if (rulesData instanceof List) {
       List<Map<String, Object>> rulesList = (List<Map<String, Object>>) rulesData;
       for (Map<String, Object> ruleData : rulesList) {
@@ -182,7 +182,7 @@ public class YamlConfigSourceHelper {
         rules.add(ruleConfig);
       }
     }
-    builder.rules(rules);
+    builder.ruleConfigs(rules);
 
     return builder.build();
   }
@@ -203,7 +203,7 @@ public class YamlConfigSourceHelper {
         .name(getStringValue(localRuleData, "name", globalRule.name()))
         .priority(getIntegerValue(localRuleData, "priority", globalRule.priority()))
         .condition(getStringValue(localRuleData, "condition", globalRule.condition()))
-        .handle(getHandlerValue(localRuleData, "handle", globalRule.handle()))
+        .handlerConfig(getHandlerValue(localRuleData, "handlerConfig", globalRule.handlerConfig()))
         .build();
     } else {
       // 纯局部规则
@@ -224,16 +224,16 @@ public class YamlConfigSourceHelper {
     builder.condition((String) data.get("condition"));
 
     // 处理handler
-    Object handleData = data.get("handle");
+    Object handleData = data.get("handlerConfig");
     if (handleData instanceof Map) {
       Map<String, Object> handleMap = (Map<String, Object>) handleData;
-      RuleConfig.Handler.Type type = RuleConfig.Handler.Type.valueOf((String) handleMap.get("type"));
+      RuleConfig.HandlerConfig.Type type = RuleConfig.HandlerConfig.Type.valueOf((String) handleMap.get("type"));
       String handler = (String) handleMap.get("handler");
       @SuppressWarnings("unchecked")
       Map<String, Object> parameters = (Map<String, Object>) handleMap.get("parameters");
 
-      RuleConfig.Handler handlerObj = new RuleConfig.Handler(type, handler, parameters);
-      builder.handle(handlerObj);
+      RuleConfig.HandlerConfig handlerConfigObj = new RuleConfig.HandlerConfig(type, handler, parameters);
+      builder.handlerConfig(handlerConfigObj);
     }
 
     return builder.build();
@@ -326,17 +326,17 @@ public class YamlConfigSourceHelper {
     return value != null ? (Integer) value : defaultValue;
   }
 
-  private static RuleConfig.Handler getHandlerValue(Map<String, Object> data, String key, RuleConfig.Handler defaultValue) {
+  private static RuleConfig.HandlerConfig getHandlerValue(Map<String, Object> data, String key, RuleConfig.HandlerConfig defaultValue) {
     Object value = data.get(key);
     return value != null ? convertToHandler((Map<String, Object>) value) : defaultValue;
   }
 
   @SuppressWarnings("unchecked")
-  private static RuleConfig.Handler convertToHandler(Map<String, Object> handleMap) {
-    RuleConfig.Handler.Type type = RuleConfig.Handler.Type.valueOf((String) handleMap.get("type"));
+  private static RuleConfig.HandlerConfig convertToHandler(Map<String, Object> handleMap) {
+    RuleConfig.HandlerConfig.Type type = RuleConfig.HandlerConfig.Type.valueOf((String) handleMap.get("type"));
     String handler = (String) handleMap.get("handler");
     Map<String, Object> parameters = (Map<String, Object>) handleMap.get("parameters");
-    return new RuleConfig.Handler(type, handler, parameters);
+    return new RuleConfig.HandlerConfig(type, handler, parameters);
   }
 
   private static ProcessNodeConfig.NodeType getNodeTypeValue(Map<String, Object> data, String key, ProcessNodeConfig.NodeType defaultValue) {

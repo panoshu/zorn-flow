@@ -1,8 +1,7 @@
 package com.zornflow.infrastructure.config.model;
 
+import com.zornflow.domain.common.config.model.ModelConfig;
 import lombok.Builder;
-
-import java.util.Map;
 
 /**
  * 全局规则配置
@@ -18,6 +17,6 @@ public record GlobalRuleConfig(
   String name,
   Integer priority,
   String condition,
-  RuleConfig.Handler handle
-) {
+  RuleConfig.HandlerConfig handle
+) implements ModelConfig {
 }

@@ -34,14 +34,14 @@ class YamlConfigSourceTest {
     void setUp() throws IOException {
         // 创建测试YAML文件
         createTestYamlFiles();
-        
+
         yamlConfigProperties = new YamlConfigProperties();
         yamlConfigProperties.setBasePath(tempDir.toString());
         yamlConfigProperties.setRuleChainsPath("rule-chains");
         yamlConfigProperties.setProcessChainsPath("process-chains");
-        yamlConfigProperties.setGlobalRulesPath("global-rules");
+        yamlConfigProperties.setGlobalRulesPath("global-ruleConfigs");
         yamlConfigProperties.setGlobalNodesPath("global-nodes");
-        
+
         yamlConfigSource = new YamlConfigSource(yamlConfigProperties);
     }
 
@@ -49,14 +49,14 @@ class YamlConfigSourceTest {
         // 创建测试规则链文件
         File ruleChainsDir = tempDir.resolve("rule-chains").toFile();
         ruleChainsDir.mkdirs();
-        
+
         File ruleChainFile = new File(ruleChainsDir, "test-rule-chain.yaml");
         String ruleChainContent = """
             id: "test-rule-chain"
             name: "Test Rule Chain"
             version: "1.0"
             description: "Test rule chain for unit testing"
-            rules:
+            ruleConfigs:
               - id: "rule-1"
                 name: "Test Rule 1"
                 description: "A test rule"
@@ -64,11 +64,11 @@ class YamlConfigSourceTest {
                 action: "ALLOW"
             """;
         java.nio.file.Files.write(ruleChainFile.toPath(), ruleChainContent.getBytes());
-        
+
         // 创建测试流程链文件
         File processChainsDir = tempDir.resolve("process-chains").toFile();
         processChainsDir.mkdirs();
-        
+
         File processChainFile = new File(processChainsDir, "test-process-chain.yaml");
         String processChainContent = """
             id: "test-process-chain"
@@ -100,26 +100,26 @@ class YamlConfigSourceTest {
         assertNotNull(ruleChainConfigs);
         assertFalse(ruleChainConfigs.isEmpty());
         assertTrue(ruleChainConfigs.containsKey("test-rule-chain"));
-        
+
         RuleChainConfig config = ruleChainConfigs.get("test-rule-chain");
         assertEquals("test-rule-chain", config.id());
         assertEquals("Test Rule Chain", config.name());
         assertEquals("1.0", config.version());
-        assertNotNull(config.rules());
-        assertFalse(config.rules().isEmpty());
+        assertNotNull(config.ruleConfigs());
+        assertFalse(config.ruleConfigs().isEmpty());
     }
 
     @Test
     void testLoadRuleChainConfig() {
         Optional<RuleChainConfig> configOpt = yamlConfigSource.loadRuleChainConfig("test-rule-chain");
         assertTrue(configOpt.isPresent());
-        
+
         RuleChainConfig config = configOpt.get();
         assertEquals("test-rule-chain", config.id());
         assertEquals("Test Rule Chain", config.name());
         assertEquals("1.0", config.version());
-        assertNotNull(config.rules());
-        assertFalse(config.rules().isEmpty());
+        assertNotNull(config.ruleConfigs());
+        assertFalse(config.ruleConfigs().isEmpty());
     }
 
     @Test
@@ -128,7 +128,7 @@ class YamlConfigSourceTest {
         assertNotNull(processChainConfigs);
         assertFalse(processChainConfigs.isEmpty());
         assertTrue(processChainConfigs.containsKey("test-process-chain"));
-        
+
         ProcessChainConfig config = processChainConfigs.get("test-process-chain");
         assertEquals("test-process-chain", config.id());
         assertEquals("Test Process Chain", config.name());
@@ -141,7 +141,7 @@ class YamlConfigSourceTest {
     void testLoadProcessChainConfig() {
         Optional<ProcessChainConfig> configOpt = yamlConfigSource.loadProcessChainConfig("test-process-chain");
         assertTrue(configOpt.isPresent());
-        
+
         ProcessChainConfig config = configOpt.get();
         assertEquals("test-process-chain", config.id());
         assertEquals("Test Process Chain", config.name());
@@ -154,7 +154,7 @@ class YamlConfigSourceTest {
     void testRefresh() {
         boolean result = yamlConfigSource.refresh();
         assertTrue(result);
-        
+
         // 验证刷新后仍能正确加载数据
         Map<String, RuleChainConfig> ruleChainConfigs = yamlConfigSource.loadRuleChainConfigs();
         assertFalse(ruleChainConfigs.isEmpty());
@@ -191,9 +191,9 @@ class YamlConfigSourceTest {
         props.setBasePath("/invalid/path/that/does/not/exist");
         props.setRuleChainsPath("rule-chains");
         props.setProcessChainsPath("process-chains");
-        props.setGlobalRulesPath("global-rules");
+        props.setGlobalRulesPath("global-ruleConfigs");
         props.setGlobalNodesPath("global-nodes");
-        
+
         YamlConfigSource source = new YamlConfigSource(props);
         boolean result = source.refresh();
         // 即使加载失败，refresh方法也应该返回false而不是抛出异常
@@ -205,14 +205,14 @@ class YamlConfigSourceTest {
         // 创建一个包含无效YAML内容的文件
         File ruleChainsDir = tempDir.resolve("rule-chains").toFile();
         ruleChainsDir.mkdirs();
-        
+
         File invalidRuleChainFile = new File(ruleChainsDir, "invalid-rule-chain.yaml");
         String invalidContent = """
             id: "invalid-rule-chain"
             name: "Invalid Rule Chain"
             version: "1.0"
             description: "Invalid rule chain with malformed YAML"
-            rules:
+            ruleConfigs:
               - id: "rule-1"
                 name: "Test Rule 1"
                 description: "A test rule"
@@ -222,12 +222,12 @@ class YamlConfigSourceTest {
             invalid-indented-line
             """;
         java.nio.file.Files.write(invalidRuleChainFile.toPath(), invalidContent.getBytes());
-        
+
         // 刷新配置源以重新加载
         boolean refreshResult = yamlConfigSource.refresh();
         // 即使部分文件无效，refresh也应该返回true（因为其他文件可能有效）
         assertTrue(refreshResult);
-        
+
         // 验证加载的配置数量
         Map<String, RuleChainConfig> ruleChainConfigs = yamlConfigSource.loadRuleChainConfigs();
         assertNotNull(ruleChainConfigs);
@@ -240,7 +240,7 @@ class YamlConfigSourceTest {
         // 清空现有的测试文件，创建空目录
         File ruleChainsDir = tempDir.resolve("rule-chains").toFile();
         File processChainsDir = tempDir.resolve("process-chains").toFile();
-        
+
         // 删除现有文件
         for (File file : ruleChainsDir.listFiles()) {
             file.delete();
@@ -248,15 +248,15 @@ class YamlConfigSourceTest {
         for (File file : processChainsDir.listFiles()) {
             file.delete();
         }
-        
+
         // 刷新配置源
         boolean refreshResult = yamlConfigSource.refresh();
         assertTrue(refreshResult);
-        
+
         // 验证加载空配置
         Map<String, RuleChainConfig> ruleChainConfigs = yamlConfigSource.loadRuleChainConfigs();
         Map<String, ProcessChainConfig> processChainConfigs = yamlConfigSource.loadProcessChainConfigs();
-        
+
         assertNotNull(ruleChainConfigs);
         assertNotNull(processChainConfigs);
         assertTrue(ruleChainConfigs.isEmpty());
@@ -266,9 +266,9 @@ class YamlConfigSourceTest {
     @Test
     void testLoadGlobalRulesFromResources() throws IOException {
         // 创建全局规则测试文件
-        File globalRulesDir = tempDir.resolve("global-rules").toFile();
+        File globalRulesDir = tempDir.resolve("global-ruleConfigs").toFile();
         globalRulesDir.mkdirs();
-        
+
         File globalRuleFile = new File(globalRulesDir, "test-global-rule.yaml");
         String globalRuleContent = """
             id: "test-global-rule"
@@ -278,17 +278,17 @@ class YamlConfigSourceTest {
             action: "ALLOW"
             """;
         java.nio.file.Files.write(globalRuleFile.toPath(), globalRuleContent.getBytes());
-        
+
         // 刷新配置源以重新加载
         boolean refreshResult = yamlConfigSource.refresh();
         assertTrue(refreshResult);
-        
+
         // 验证加载全局规则
         Map<String, RuleConfig> globalRules = yamlConfigSource.loadGlobalRules();
         assertNotNull(globalRules);
         assertFalse(globalRules.isEmpty());
         assertTrue(globalRules.containsKey("test-global-rule"));
-        
+
         RuleConfig rule = globalRules.get("test-global-rule");
         assertEquals("test-global-rule", rule.id());
         assertEquals("Test Global Rule", rule.name());
@@ -299,7 +299,7 @@ class YamlConfigSourceTest {
         // 创建全局节点测试文件
         File globalNodesDir = tempDir.resolve("global-nodes").toFile();
         globalNodesDir.mkdirs();
-        
+
         File globalNodeFile = new File(globalNodesDir, "test-global-node.yaml");
         String globalNodeContent = """
             id: "test-global-node"
@@ -308,17 +308,17 @@ class YamlConfigSourceTest {
             description: "A test global node"
             """;
         java.nio.file.Files.write(globalNodeFile.toPath(), globalNodeContent.getBytes());
-        
+
         // 刷新配置源以重新加载
         boolean refreshResult = yamlConfigSource.refresh();
         assertTrue(refreshResult);
-        
+
         // 验证加载全局节点
         Map<String, ProcessNodeConfig> globalNodes = yamlConfigSource.loadGlobalNodes();
         assertNotNull(globalNodes);
         assertFalse(globalNodes.isEmpty());
         assertTrue(globalNodes.containsKey("test-global-node"));
-        
+
         ProcessNodeConfig node = globalNodes.get("test-global-node");
         assertEquals("test-global-node", node.id());
         assertEquals("Test Global Node", node.name());
@@ -328,9 +328,9 @@ class YamlConfigSourceTest {
     @Test
     void testLoadGlobalRulesWithInvalidYaml() throws IOException {
         // 创建包含无效YAML的全局规则文件
-        File globalRulesDir = tempDir.resolve("global-rules").toFile();
+        File globalRulesDir = tempDir.resolve("global-ruleConfigs").toFile();
         globalRulesDir.mkdirs();
-        
+
         File invalidGlobalRuleFile = new File(globalRulesDir, "invalid-global-rule.yaml");
         String invalidContent = """
             id: "invalid-global-rule"
@@ -342,12 +342,12 @@ class YamlConfigSourceTest {
             invalid-indented-line
             """;
         java.nio.file.Files.write(invalidGlobalRuleFile.toPath(), invalidContent.getBytes());
-        
+
         // 刷新配置源以重新加载
         boolean refreshResult = yamlConfigSource.refresh();
         // 即使部分文件无效，refresh也应该返回true（因为其他文件可能有效）
         assertTrue(refreshResult);
-        
+
         // 验证加载的全局规则数量
         Map<String, RuleConfig> globalRules = yamlConfigSource.loadGlobalRules();
         assertNotNull(globalRules);
@@ -360,7 +360,7 @@ class YamlConfigSourceTest {
         // 创建包含无效YAML的全局节点文件
         File globalNodesDir = tempDir.resolve("global-nodes").toFile();
         globalNodesDir.mkdirs();
-        
+
         File invalidGlobalNodeFile = new File(globalNodesDir, "invalid-global-node.yaml");
         String invalidContent = """
             id: "invalid-global-node"
@@ -371,12 +371,12 @@ class YamlConfigSourceTest {
             invalid-indented-line
             """;
         java.nio.file.Files.write(invalidGlobalNodeFile.toPath(), invalidContent.getBytes());
-        
+
         // 刷新配置源以重新加载
         boolean refreshResult = yamlConfigSource.refresh();
         // 即使部分文件无效，refresh也应该返回true（因为其他文件可能有效）
         assertTrue(refreshResult);
-        
+
         // 验证加载的全局节点数量
         Map<String, ProcessNodeConfig> globalNodes = yamlConfigSource.loadGlobalNodes();
         assertNotNull(globalNodes);

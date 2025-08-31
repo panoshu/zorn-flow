@@ -36,7 +36,9 @@ public class RuleChain extends AggregateRoot<RuleChainId> {
     this.version = Objects.requireNonNull(version, "版本不能为空");
     this.source = source != null ? source : "";
     this.description = description != null ? description : "";
-    this.rules = new ArrayList<>(rules);
+    this.rules = new ArrayList<>(Optional.ofNullable(rules)
+      .filter(r -> !r.isEmpty())
+      .orElseThrow(() -> new IllegalArgumentException("Rules cannot be null or empty")));
     this.ruleIndex = createRuleIndex(this.rules);
     validateInvariants();
     sortRulesByPriority();

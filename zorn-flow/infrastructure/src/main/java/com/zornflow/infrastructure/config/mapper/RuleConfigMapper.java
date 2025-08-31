@@ -4,7 +4,7 @@ import com.zornflow.domain.common.types.Version;
 import com.zornflow.domain.rule.entity.Rule;
 import com.zornflow.domain.rule.entity.RuleChain;
 import com.zornflow.domain.rule.types.*;
-import com.zornflow.domain.rule.valueobject.HandlerConfig;
+import com.zornflow.domain.rule.valueobject.Handler;
 import com.zornflow.infrastructure.config.model.RuleChainConfig;
 import com.zornflow.infrastructure.config.model.RuleConfig;
 import org.mapstruct.Mapper;
@@ -22,7 +22,7 @@ import java.util.List;
  * @version 1.0
  * @since 2025/8/29 11:35
  */
-@Mapper
+@Mapper(config = MapstructConfig.class)
 public interface RuleConfigMapper {
 
   RuleConfigMapper INSTANCE = Mappers.getMapper(RuleConfigMapper.class);
@@ -35,7 +35,7 @@ public interface RuleConfigMapper {
   @Mapping(target = "version", source = "version", qualifiedByName = "stringToVersion")
   @Mapping(target = "source", constant = "YAML")
   @Mapping(target = "description", source = "description")
-  @Mapping(target = "rules", source = "rules")
+  @Mapping(target = "rules", source = "ruleConfigs")
   RuleChain toRuleChain(RuleChainConfig config);
 
   /**
@@ -45,7 +45,7 @@ public interface RuleConfigMapper {
   @Mapping(target = "name", source = "name", qualifiedByName = "stringToRuleName")
   @Mapping(target = "priority", source = "priority", qualifiedByName = "intToPriority")
   @Mapping(target = "condition", source = "condition", qualifiedByName = "stringToCondition")
-  @Mapping(target = "handlerConfig", source = "handle", qualifiedByName = "configToHandlerConfig")
+  @Mapping(target = "handler", source = "handlerConfig", qualifiedByName = "handlerConfigToHandler")
   Rule toRule(RuleConfig config);
 
   /**
@@ -62,7 +62,7 @@ public interface RuleConfigMapper {
   @Mapping(target = "name", source = "name", qualifiedByName = "ruleChainNameToString")
   @Mapping(target = "version", source = "version", qualifiedByName = "versionToString")
   @Mapping(target = "description", source = "description")
-  @Mapping(target = "rules", source = "rules")
+  @Mapping(target = "ruleConfigs", source = "rules")
   RuleChainConfig toRuleChainConfig(RuleChain ruleChain);
 
   /**
@@ -72,7 +72,7 @@ public interface RuleConfigMapper {
   @Mapping(target = "name", source = "name", qualifiedByName = "ruleNameToString")
   @Mapping(target = "priority", source = "priority", qualifiedByName = "priorityToInt")
   @Mapping(target = "condition", source = "condition", qualifiedByName = "conditionToString")
-  @Mapping(target = "handle", source = "handlerConfig", qualifiedByName = "handlerConfigToConfig")
+  @Mapping(target = "handlerConfig", source = "handler", qualifiedByName = "handlerToHandlerConfig")
   RuleConfig toRuleConfig(Rule rule);
 
   /**
@@ -104,22 +104,7 @@ public interface RuleConfigMapper {
 
   @Named("intToPriority")
   default Priority intToPriority(Integer priority) {
-    return priority != null ? Priority.of(priority) : Priority.of(100);
-  }
-
-  @Named("stringToVersion")
-  default Version stringToVersion(String version) {
-    if (version == null || version.isBlank()) {
-      return Version.of("1.0.0");
-    }
-    // 如果版本号不符合 x.y.z 格式，自动补充
-    String[] parts = version.split("\\.");
-    if (parts.length == 2) {
-      return Version.of(version + ".0");
-    } else if (parts.length == 1) {
-      return Version.of(version + ".0.0");
-    }
-    return Version.of(version);
+    return priority != null ? Priority.of(priority) : Priority.defaultPriority();
   }
 
   @Named("stringToCondition")
@@ -127,19 +112,19 @@ public interface RuleConfigMapper {
     return condition != null ? Condition.of(condition) : null;
   }
 
-  @Named("configToHandlerConfig")
-  default HandlerConfig configToHandlerConfig(RuleConfig.Handler handle) {
-    if (handle == null) {
+  @Named("handlerConfigToHandler")
+  default Handler handlerConfigToHandler(RuleConfig.HandlerConfig handlerConfig) {
+    if (handlerConfig == null) {
       return null;
     }
 
-    HandlerType type = switch (handle.type()) {
+    HandlerType type = switch (handlerConfig.type()) {
       case CLASS -> HandlerType.CLASS;
       case SCRIPT -> HandlerType.SCRIPT;
       case JAR -> HandlerType.JAR;
     };
 
-    return HandlerConfig.of(type, handle.handler(), handle.parameters());
+    return Handler.of(type, handlerConfig.handler(), handlerConfig.parameters());
   }
 
   // =============== 反向转换辅助方法 ===============
@@ -179,18 +164,18 @@ public interface RuleConfigMapper {
     return condition != null ? condition.expression() : null;
   }
 
-  @Named("handlerConfigToConfig")
-  default RuleConfig.Handler handlerConfigToConfig(HandlerConfig handlerConfig) {
-    if (handlerConfig == null) {
+  @Named("handlerToHandlerConfig")
+  default RuleConfig.HandlerConfig handlerToHandlerConfig(Handler handler) {
+    if (handler == null) {
       return null;
     }
 
-    RuleConfig.Handler.Type type = switch (handlerConfig.type()) {
-      case CLASS -> RuleConfig.Handler.Type.CLASS;
-      case SCRIPT -> RuleConfig.Handler.Type.SCRIPT;
-      case JAR -> RuleConfig.Handler.Type.JAR;
+    RuleConfig.HandlerConfig.Type type = switch (handler.type()) {
+      case CLASS -> RuleConfig.HandlerConfig.Type.CLASS;
+      case SCRIPT -> RuleConfig.HandlerConfig.Type.SCRIPT;
+      case JAR -> RuleConfig.HandlerConfig.Type.JAR;
     };
 
-    return new RuleConfig.Handler(type, handlerConfig.handler(), handlerConfig.parameters());
+    return new RuleConfig.HandlerConfig(type, handler.handler(), handler.parameters());
   }
 }

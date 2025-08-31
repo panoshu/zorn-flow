@@ -54,12 +54,12 @@ public class DefaultRuleChainExecutionService implements RuleChainExecutionServi
       if (conditionEvaluator.evaluate(rule.getCondition(), context)) {
 
         // 3. 使用HandlerExecutorFactory SPI获取对应的执行器
-        var executor = handlerExecutorFactory.getExecutor(rule.getHandlerConfig())
-          .orElseThrow(() -> new IllegalStateException("No handler executor found for type: " + rule.getHandlerConfig().type()));
+        var executor = handlerExecutorFactory.getExecutor(rule.getHandler())
+          .orElseThrow(() -> new IllegalStateException("No handler executor found for type: " + rule.getHandler().type()));
 
         // 4. 执行Handler，Handler可能会修改上下文
         // 注意：由于BusinessContext是不可变的record，execute方法需要返回一个新的实例
-        executor.execute(rule.getHandlerConfig(), context);
+        executor.execute(rule.getHandler(), context);
       }
     }
 

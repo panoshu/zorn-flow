@@ -1,6 +1,7 @@
 package com.zornflow.infrastructure.config.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.zornflow.domain.common.config.model.ModelConfig;
 import lombok.Builder;
 
 import java.util.Map;
@@ -18,10 +19,10 @@ public record RuleConfig(
   String name,
   @JsonProperty(defaultValue = "100") Integer priority,
   String condition,
-  Handler handle
-) {
+  HandlerConfig handlerConfig
+) implements ModelConfig {
 
-  public record Handler(Type type, String handler, Map<String, Object> parameters) {
+  public record HandlerConfig(Type type, String handler, Map<String, Object> parameters) {
     public enum Type {CLASS, SCRIPT, JAR}
   }
 }

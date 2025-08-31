@@ -1,5 +1,7 @@
 package com.zornflow.infrastructure.config.model;
 
+import com.zornflow.domain.common.config.model.ModelConfig;
+
 /**
  * description
  *
@@ -9,5 +11,5 @@ package com.zornflow.infrastructure.config.model;
  */
 public record GatewayConditionConfig(
   String condition,
-  String next) {
+  String next) implements ModelConfig {
 }

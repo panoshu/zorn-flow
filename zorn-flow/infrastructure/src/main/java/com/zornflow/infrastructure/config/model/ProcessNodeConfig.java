@@ -1,5 +1,6 @@
 package com.zornflow.infrastructure.config.model;
 
+import com.zornflow.domain.common.config.model.ModelConfig;
 import lombok.Builder;
 
 import java.util.List;
@@ -20,7 +21,7 @@ public record ProcessNodeConfig(
   NodeType type,
   String ruleChain,
   List<GatewayConditionConfig> conditions,
-  Map<String, Object> properties) {
+  Map<String, Object> properties) implements ModelConfig {
 
   public enum NodeType {BUSINESS, APPROVAL, GATEWAY}
 }

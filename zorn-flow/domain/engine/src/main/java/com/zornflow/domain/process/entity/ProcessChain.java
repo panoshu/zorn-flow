@@ -53,7 +53,9 @@ public class ProcessChain extends AggregateRoot<ProcessChainId> {
    * 添加多个节点
    */
   private void addNodes(List<ProcessNode> nodes) {
-    if (nodes == null || nodes.isEmpty()) return;
+    if (nodes == null || nodes.isEmpty()){
+      throw new IllegalArgumentException("nodes cannot be null or empty");
+    }
 
     for (ProcessNode node : nodes) {
       addNode(node);
