@@ -71,7 +71,7 @@ class ProcessChainRepositoryImplTest {
 
   @Test
   @DisplayName("findById should return domain entity when DTO is found")
-  void findById_shouldReturnDomainEntity() throws IOException {
+  void findById_shouldReturnDomainEntity() {
     when(configSource.load("proc-1")).thenReturn(Optional.of(dto));
     when(mapper.toDomain(dto)).thenReturn(domainEntity);
     Optional<ProcessChain> result = processChainRepository.findById(processChainId);
@@ -80,7 +80,7 @@ class ProcessChainRepositoryImplTest {
 
   @Test
   @DisplayName("findAll should return all domain entities")
-  void findAll_shouldReturnAllDomainEntities() throws IOException {
+  void findAll_shouldReturnAllDomainEntities() {
     when(configSource.loadAll()).thenReturn(Map.of("proc-1", dto));
     when(mapper.toDomain(dto)).thenReturn(domainEntity);
     List<ProcessChain> results = processChainRepository.findAll();
