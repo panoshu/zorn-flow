@@ -18,5 +18,5 @@ public record RuleChainConfig(
   String name,
   String version,
   String description,
-  List<RuleConfig> ruleConfigs) implements ModelConfig {
+  List<RuleConfig> rules) implements ModelConfig {
 }

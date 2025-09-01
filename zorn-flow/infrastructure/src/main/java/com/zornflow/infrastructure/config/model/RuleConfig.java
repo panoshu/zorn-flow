@@ -5,6 +5,7 @@ import com.zornflow.domain.common.config.model.ModelConfig;
 import lombok.Builder;
 
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * description
@@ -19,10 +20,23 @@ public record RuleConfig(
   String name,
   @JsonProperty(defaultValue = "100") Integer priority,
   String condition,
-  HandlerConfig handlerConfig
+  HandlerConfig handle,
+  Optional<String> sharedRuleId
 ) implements ModelConfig {
 
   public record HandlerConfig(Type type, String handler, Map<String, Object> parameters) {
     public enum Type {CLASS, SCRIPT, JAR}
+  }
+
+  public RuleConfig mergeWithDefaults(RuleConfig defaults) {
+    if (defaults == null) return this;
+    return RuleConfig.builder()
+      .id(defaults.id())
+      .name(Optional.ofNullable(this.name).orElse(defaults.name()))
+      .priority(Optional.ofNullable(this.priority).orElse(defaults.priority()))
+      .condition(Optional.ofNullable(this.condition).orElse(defaults.condition()))
+      .handle(Optional.ofNullable(this.handle).orElse(defaults.handle()))
+      .sharedRuleId(Optional.of(defaults.id()))
+      .build();
   }
 }

@@ -16,7 +16,9 @@ public sealed interface ConfigSource<T extends ModelConfig> permits ReadableConf
    *
    * @return 配置源名称
    */
-  String getSourceName();
+  default String getSourceName(){
+    return this.getClass().getSimpleName();
+  }
 
   /**
    * 获取配置源类型
@@ -31,6 +33,6 @@ public sealed interface ConfigSource<T extends ModelConfig> permits ReadableConf
    * 配置源类型枚举
    */
   enum ConfigSourceType {
-    YAML, DATABASE, PROPERTIES, REMOTE, COMPOSITE, CACHE
+    YAML, DATABASE, PROPERTIES, REMOTE, COMPOSITE, CACHED_COMPOSITE
   }
 }

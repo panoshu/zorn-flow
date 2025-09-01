@@ -24,7 +24,6 @@ import java.util.stream.Collectors;
 public class RuleChain extends AggregateRoot<RuleChainId> {
   private final RuleChainName name;
   private final Version version;
-  private final String source;
   private final String description;
   private final List<Rule> rules;
   private final Map<RuleId, Rule> ruleIndex;
@@ -34,7 +33,6 @@ public class RuleChain extends AggregateRoot<RuleChainId> {
     super(Objects.requireNonNull(id, "规则ID不能为空"));
     this.name = name != null ? name : RuleChainName.of(id);
     this.version = Objects.requireNonNull(version, "版本不能为空");
-    this.source = source != null ? source : "";
     this.description = description != null ? description : "";
     this.rules = new ArrayList<>(Optional.ofNullable(rules)
       .filter(r -> !r.isEmpty())

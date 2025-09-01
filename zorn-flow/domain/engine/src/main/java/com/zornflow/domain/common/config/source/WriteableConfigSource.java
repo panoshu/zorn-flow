@@ -2,6 +2,9 @@ package com.zornflow.domain.common.config.source;
 
 import com.zornflow.domain.common.config.model.ModelConfig;
 
+import java.io.IOException;
+import java.util.Optional;
+
 /**
  * description
  *
@@ -10,6 +13,6 @@ import com.zornflow.domain.common.config.model.ModelConfig;
  * @since 2025/8/31 3:48
  */
 public non-sealed interface WriteableConfigSource<T extends ModelConfig> extends ConfigSource<T> {
-  void save(T modelConfig);        // 仅可写源实现
+  Optional<T> save(T modelConfig) throws IOException;        // 仅可写源实现
   void delete(String id);
 }

@@ -1,6 +1,5 @@
 package com.zornflow.infrastructure.config.model;
 
-import com.zornflow.domain.common.config.model.ModelConfig;
 import lombok.Builder;
 
 /**
@@ -18,5 +17,5 @@ public record GlobalRuleConfig(
   Integer priority,
   String condition,
   RuleConfig.HandlerConfig handle
-) implements ModelConfig {
+)   {
 }

@@ -15,5 +15,5 @@ import java.util.Optional;
  */
 public non-sealed interface ReadableConfigSource<T extends ModelConfig> extends ConfigSource<T>{
   Optional<T> load(String id) throws IOException;
-  Map<String, T> loadAll() throws IOException;
+  Map<String, T> loadAll()  throws IOException;
 }

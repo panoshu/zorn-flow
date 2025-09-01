@@ -26,7 +26,6 @@ import java.util.Objects;
 public class ProcessChain extends AggregateRoot<ProcessChainId> {
   private final ProcessChainName name;
   private final Version version;
-  private final String source;
   private final String description;
   private final Map<ProcessNodeId, ProcessNode> nodes;
   private final Map<String, ProcessNode> nodeIdIndex;
@@ -40,7 +39,6 @@ public class ProcessChain extends AggregateRoot<ProcessChainId> {
     super(Objects.requireNonNull(id, "流程ID不能为空"));
     this.name = name != null ? name : ProcessChainName.of(id);
     this.version = Objects.requireNonNull(version, "版本不能为空");
-    this.source = source != null ? source : "";
     this.description = description != null ? description : "";
     this.nodes = new HashMap<>();
     this.nodeIdIndex = new HashMap<>();
