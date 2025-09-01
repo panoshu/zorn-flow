@@ -47,14 +47,17 @@ class RuleChainRepositoryImplTest {
   void setUp() {
     ruleChainId = RuleChainId.of("chain-1");
 
-    // FIX: Provide all required fields for the builders to avoid NPE
+    // FIX: Create the child rule object FIRST
+    Rule rule = Rule.builder()
+      .id(RuleId.of("rule-1"))
+      .handler(Handler.of(HandlerType.CLASS, "SomeHandler"))
+      .build();
+
+    // FIX: Now build the parent entity with the fully constructed child
     domainEntity = RuleChain.builder()
       .id(ruleChainId)
       .version(Version.of("1.0.0"))
-      .rules(List.of(Rule.builder()
-        .id(RuleId.of("rule-1"))
-        .handler(Handler.of(HandlerType.CLASS, "SomeHandler")) // Required field
-        .build()))
+      .rules(List.of(rule))
       .build();
 
     dto = RuleChainConfig.builder()
