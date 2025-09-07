@@ -1,7 +1,6 @@
 package com.zornflow.domain.rule.entity;
 
 import com.domain.contract.aggregate.AggregateRoot;
-import com.zornflow.domain.common.types.Version;
 import com.zornflow.domain.rule.types.RuleChainId;
 import com.zornflow.domain.rule.types.RuleChainName;
 import com.zornflow.domain.rule.types.RuleId;
@@ -24,16 +23,14 @@ import java.util.stream.Collectors;
 @Getter
 public class RuleChain extends AggregateRoot<RuleChainId> {
   private final RuleChainName name;
-  private final Version version;
   private final String description;
   private final List<Rule> rules;
   private final Map<RuleId, Rule> ruleIndex;
 
   @Builder
-  private RuleChain(RuleChainId id, RuleChainName name, Version version, String source, String description, List<Rule> rules) {
+  private RuleChain(RuleChainId id, RuleChainName name, String description, List<Rule> rules) {
     super(Objects.requireNonNull(id, "规则ID不能为空"));
     this.name = name != null ? name : RuleChainName.of(id);
-    this.version = Objects.requireNonNull(version, "版本不能为空");
     this.description = description != null ? description : "";
     this.rules = new ArrayList<>(Optional.ofNullable(rules)
       .filter(r -> !r.isEmpty())
@@ -130,6 +127,11 @@ public class RuleChain extends AggregateRoot<RuleChainId> {
   @Override
   protected void validateInvariants() {
 
+  }
+
+  @Override
+  public Integer getVersion() {
+    return super.getVersion();
   }
 
   @Override

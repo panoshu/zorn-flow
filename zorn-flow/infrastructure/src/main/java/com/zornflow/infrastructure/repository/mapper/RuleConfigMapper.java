@@ -1,6 +1,5 @@
 package com.zornflow.infrastructure.repository.mapper;
 
-import com.zornflow.domain.common.types.Version;
 import com.zornflow.domain.rule.entity.Rule;
 import com.zornflow.domain.rule.entity.RuleChain;
 import com.zornflow.domain.rule.types.*;
@@ -20,9 +19,7 @@ public interface RuleConfigMapper {
 
   @Mapping(target = "id", source = "id", qualifiedByName = "stringToRuleChainId")
   @Mapping(target = "name", source = "name", qualifiedByName = "stringToRuleChainName")
-  @Mapping(target = "version", source = "version", qualifiedByName = "stringToVersion")
   @Mapping(target = "rules", source = "rules")
-  @Mapping(target = "source", ignore = true)
   RuleChain toDomain(RuleChainConfig dto);
 
   @Mapping(target = "id", source = "id", qualifiedByName = "stringToRuleId")
@@ -34,8 +31,8 @@ public interface RuleConfigMapper {
 
   @Mapping(target = "id", source = "id", qualifiedByName = "ruleChainIdToString")
   @Mapping(target = "name", source = "name", qualifiedByName = "ruleChainNameToString")
-  @Mapping(target = "version", source = "version", qualifiedByName = "versionToString")
   @Mapping(target = "rules", source = "rules")
+  @Mapping(target = "status", expression = "java(com.zornflow.infrastructure.config.model.RecordStatus.ACTIVE.getDbValue())")
   @Mapping(target = "createdAt", source = "createdAt")
   @Mapping(target = "updatedAt", source = "updatedAt")
   RuleChainConfig toDto(RuleChain entity);
@@ -46,6 +43,7 @@ public interface RuleConfigMapper {
   @Mapping(target = "condition", source = "condition", qualifiedByName = "conditionToString")
   @Mapping(target = "handle", source = "handler")
   @Mapping(target = "sharedRuleId", ignore = true)
+  @Mapping(target = "status", ignore = true)
   @Mapping(target = "createdAt", source = "createdAt")
   @Mapping(target = "updatedAt", source = "updatedAt")
   RuleConfig toDto(Rule entity);
@@ -88,16 +86,6 @@ public interface RuleConfigMapper {
   @Named("ruleNameToString")
   default String ruleNameToString(RuleName name) {
     return name.value();
-  }
-
-  @Named("stringToVersion")
-  default Version stringToVersion(String version) {
-    return Version.of(version);
-  }
-
-  @Named("versionToString")
-  default String versionToString(Version version) {
-    return version.value();
   }
 
   @Named("integerToPriority")

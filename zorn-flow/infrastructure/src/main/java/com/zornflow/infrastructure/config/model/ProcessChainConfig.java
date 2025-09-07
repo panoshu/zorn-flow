@@ -17,9 +17,10 @@ import java.util.List;
 public record ProcessChainConfig(
   String id,
   String name,
-  String version,
   String description,
   List<ProcessNodeConfig> nodes,
+  String status,
+  Integer version,
   OffsetDateTime createdAt,
   OffsetDateTime updatedAt) implements ModelConfig {
 }

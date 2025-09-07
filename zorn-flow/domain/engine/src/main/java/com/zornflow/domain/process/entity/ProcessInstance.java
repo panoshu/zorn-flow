@@ -8,6 +8,8 @@ import com.zornflow.domain.process.types.ProcessNodeId;
 import lombok.Builder;
 import lombok.Getter;
 
+import java.time.Instant;
+
 /**
  * description
  *
@@ -24,10 +26,12 @@ public class ProcessInstance extends AggregateRoot<ProcessInstanceId> {
   private BusinessContext context;
 
   @Builder
-  protected ProcessInstance(ProcessInstanceId processInstanceId, ProcessChainId processChainId,
+  public ProcessInstance(ProcessInstanceId processInstanceId, ProcessChainId processChainId,
+                            ProcessInstanceStatus status,
                             BusinessContext initialContext, ProcessNodeId startNodeId) {
     super(processInstanceId);
     this.processChainId = processChainId;
+    this.status = status;
     this.context = initialContext;
     this.currentNodeId = startNodeId;
   }
@@ -36,7 +40,7 @@ public class ProcessInstance extends AggregateRoot<ProcessInstanceId> {
     if (definitionId == null || initialContext == null || startNodeId == null) {
       throw new IllegalArgumentException("ProcessChainId, InitialContext, and StartNodeId are required to start a process.");
     }
-    return new ProcessInstance(ProcessInstanceId.generate(), definitionId, initialContext, startNodeId);
+    return new ProcessInstance(ProcessInstanceId.generate(), definitionId, ProcessInstanceStatus.RUNNING, initialContext, startNodeId);
   }
 
   @Override
@@ -73,5 +77,20 @@ public class ProcessInstance extends AggregateRoot<ProcessInstanceId> {
 
   public enum ProcessInstanceStatus {
     RUNNING, COMPLETED, FAILED, SUSPENDED
+  }
+
+  @Override
+  public Integer getVersion() {
+    return super.getVersion();
+  }
+
+  @Override
+  public Instant getCreatedAt() {
+    return super.getCreatedAt();
+  }
+
+  @Override
+  public Instant getUpdatedAt() {
+    return super.getUpdatedAt();
   }
 }

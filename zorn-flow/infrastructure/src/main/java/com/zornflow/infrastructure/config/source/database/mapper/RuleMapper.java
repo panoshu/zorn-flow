@@ -14,10 +14,12 @@ import java.util.List;
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING, uses = JsonbMapperHelper.class)
 public interface RuleMapper {
 
+  @Mapping(target = "status", source = "record.recordStatus")
   @Mapping(target = "rules", source = "rules")
   RuleChainConfig toDto(RuleChainsRecord record, List<RuleConfig> rules);
 
   @Mapping(target = "id", source = "id")
+  @Mapping(target = "recordStatus", expression = "java(java.util.Optional.ofNullable(dto.status()).orElse(com.zornflow.infrastructure.config.model.RecordStatus.ACTIVE.getDbValue()))")
   void updateRecord(RuleChainConfig dto, @MappingTarget RuleChainsRecord record);
 
   @Mapping(target = "id", source = "instance.id")
@@ -26,6 +28,8 @@ public interface RuleMapper {
   @Mapping(target = "priority", expression = "java(java.util.Optional.ofNullable(instance.getPriority()).orElse(template.getPriority()))")
   @Mapping(target = "condition", expression = "java(java.util.Optional.ofNullable(instance.getCondition()).orElse(template.getCondition()))")
   @Mapping(target = "handle", expression = "java(mergeHandlerConfig(instance.getHandlerConfig(), template, helper))")
+  @Mapping(target = "status", source = "template.recordStatus")
+  @Mapping(target = "version", source = "instance.version")
   @Mapping(target = "createdAt", source = "instance.createdAt")
   @Mapping(target = "updatedAt", source = "instance.updatedAt")
   RuleConfig toDto(SharedRulesRecord template, ChainRulesRecord instance, @Context JsonbMapperHelper helper);
@@ -33,6 +37,7 @@ public interface RuleMapper {
   @Mapping(target = "id", source = "id")
   @Mapping(target = "sharedRuleId", expression = "java(java.util.Optional.empty())")
   @Mapping(target = "handle", source = "handlerConfig", qualifiedByName = "jsonbToHandlerConfig")
+  @Mapping(target = "status", ignore = true)
   RuleConfig toDto(ChainRulesRecord instance, @Context JsonbMapperHelper helper);
 
   @Mapping(target = "id", source = "dto.id")

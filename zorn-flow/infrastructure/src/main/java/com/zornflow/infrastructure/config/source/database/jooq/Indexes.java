@@ -6,6 +6,7 @@ package com.zornflow.infrastructure.config.source.database.jooq;
 
 import com.zornflow.infrastructure.config.source.database.jooq.tables.ChainNodes;
 import com.zornflow.infrastructure.config.source.database.jooq.tables.ChainRules;
+import com.zornflow.infrastructure.config.source.database.jooq.tables.ProcessInstances;
 
 import org.jooq.Index;
 import org.jooq.OrderField;
@@ -27,4 +28,6 @@ public class Indexes {
     public static final Index IDX_CHAIN_NODES_SHARED_NODE_ID = Internal.createIndex(DSL.name("idx_chain_nodes_shared_node_id"), ChainNodes.CHAIN_NODES, new OrderField[] { ChainNodes.CHAIN_NODES.SHARED_NODE_ID }, false);
     public static final Index IDX_CHAIN_RULES_RULE_CHAIN_ID = Internal.createIndex(DSL.name("idx_chain_rules_rule_chain_id"), ChainRules.CHAIN_RULES, new OrderField[] { ChainRules.CHAIN_RULES.RULE_CHAIN_ID }, false);
     public static final Index IDX_CHAIN_RULES_SHARED_RULE_ID = Internal.createIndex(DSL.name("idx_chain_rules_shared_rule_id"), ChainRules.CHAIN_RULES, new OrderField[] { ChainRules.CHAIN_RULES.SHARED_RULE_ID }, false);
+    public static final Index IDX_PROCESS_INSTANCES_PROCESS_CHAIN_ID = Internal.createIndex(DSL.name("idx_process_instances_process_chain_id"), ProcessInstances.PROCESS_INSTANCES, new OrderField[] { ProcessInstances.PROCESS_INSTANCES.PROCESS_CHAIN_ID }, false);
+    public static final Index IDX_PROCESS_INSTANCES_STATUS = Internal.createIndex(DSL.name("idx_process_instances_status"), ProcessInstances.PROCESS_INSTANCES, new OrderField[] { ProcessInstances.PROCESS_INSTANCES.STATUS }, false);
 }

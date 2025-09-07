@@ -56,13 +56,12 @@ class RuleChainRepositoryImplTest {
     // FIX: Now build the parent entity with the fully constructed child
     domainEntity = RuleChain.builder()
       .id(ruleChainId)
-      .version(Version.of("1.0.0"))
       .rules(List.of(rule))
       .build();
 
     dto = RuleChainConfig.builder()
       .id("chain-1")
-      .version("1.0.0")
+      .version(0)
       .rules(List.of(RuleConfig.builder().id("rule-1").build()))
       .build();
   }

@@ -11,115 +11,104 @@ import org.jooq.JSONB;
 
 
 /**
- * 可复用的共享规则模板
+ * 流程实例
  */
 @SuppressWarnings({ "all", "unchecked", "rawtypes", "this-escape" })
-public class SharedRules implements Serializable {
+public class ProcessInstances implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     private final String id;
-    private final String name;
-    private final Integer priority;
-    private final String condition;
-    private final JSONB handlerConfig;
-    private final String recordStatus;
+    private final String processChainId;
+    private final String status;
+    private final String currentNodeId;
+    private final JSONB context;
     private final Integer version;
     private final OffsetDateTime createdAt;
     private final OffsetDateTime updatedAt;
 
-    public SharedRules(SharedRules value) {
+    public ProcessInstances(ProcessInstances value) {
         this.id = value.id;
-        this.name = value.name;
-        this.priority = value.priority;
-        this.condition = value.condition;
-        this.handlerConfig = value.handlerConfig;
-        this.recordStatus = value.recordStatus;
+        this.processChainId = value.processChainId;
+        this.status = value.status;
+        this.currentNodeId = value.currentNodeId;
+        this.context = value.context;
         this.version = value.version;
         this.createdAt = value.createdAt;
         this.updatedAt = value.updatedAt;
     }
 
-    public SharedRules(
+    public ProcessInstances(
         String id,
-        String name,
-        Integer priority,
-        String condition,
-        JSONB handlerConfig,
-        String recordStatus,
+        String processChainId,
+        String status,
+        String currentNodeId,
+        JSONB context,
         Integer version,
         OffsetDateTime createdAt,
         OffsetDateTime updatedAt
     ) {
         this.id = id;
-        this.name = name;
-        this.priority = priority;
-        this.condition = condition;
-        this.handlerConfig = handlerConfig;
-        this.recordStatus = recordStatus;
+        this.processChainId = processChainId;
+        this.status = status;
+        this.currentNodeId = currentNodeId;
+        this.context = context;
         this.version = version;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }
 
     /**
-     * Getter for <code>engine.shared_rules.id</code>.
+     * Getter for <code>engine.process_instances.id</code>.
      */
     public String getId() {
         return this.id;
     }
 
     /**
-     * Getter for <code>engine.shared_rules.name</code>.
+     * Getter for <code>engine.process_instances.process_chain_id</code>.
      */
-    public String getName() {
-        return this.name;
+    public String getProcessChainId() {
+        return this.processChainId;
     }
 
     /**
-     * Getter for <code>engine.shared_rules.priority</code>.
+     * Getter for <code>engine.process_instances.status</code>.
      */
-    public Integer getPriority() {
-        return this.priority;
+    public String getStatus() {
+        return this.status;
     }
 
     /**
-     * Getter for <code>engine.shared_rules.condition</code>.
+     * Getter for <code>engine.process_instances.current_node_id</code>.
      */
-    public String getCondition() {
-        return this.condition;
+    public String getCurrentNodeId() {
+        return this.currentNodeId;
     }
 
     /**
-     * Getter for <code>engine.shared_rules.handler_config</code>.
+     * Getter for <code>engine.process_instances.context</code>.
      */
-    public JSONB getHandlerConfig() {
-        return this.handlerConfig;
+    public JSONB getContext() {
+        return this.context;
     }
 
     /**
-     * Getter for <code>engine.shared_rules.record_status</code>.
-     */
-    public String getRecordStatus() {
-        return this.recordStatus;
-    }
-
-    /**
-     * Getter for <code>engine.shared_rules.version</code>.
+     * Getter for <code>engine.process_instances.version</code>.
      */
     public Integer getVersion() {
         return this.version;
     }
 
     /**
-     * Getter for <code>engine.shared_rules.created_at</code>.
+     * Getter for <code>engine.process_instances.created_at</code>.
      */
     public OffsetDateTime getCreatedAt() {
         return this.createdAt;
     }
 
     /**
-     * Getter for <code>engine.shared_rules.updated_at</code>.
+     * Getter for <code>engine.process_instances.updated_at</code>.
      */
     public OffsetDateTime getUpdatedAt() {
         return this.updatedAt;
@@ -133,42 +122,36 @@ public class SharedRules implements Serializable {
             return false;
         if (getClass() != obj.getClass())
             return false;
-        final SharedRules other = (SharedRules) obj;
+        final ProcessInstances other = (ProcessInstances) obj;
         if (this.id == null) {
             if (other.id != null)
                 return false;
         }
         else if (!this.id.equals(other.id))
             return false;
-        if (this.name == null) {
-            if (other.name != null)
+        if (this.processChainId == null) {
+            if (other.processChainId != null)
                 return false;
         }
-        else if (!this.name.equals(other.name))
+        else if (!this.processChainId.equals(other.processChainId))
             return false;
-        if (this.priority == null) {
-            if (other.priority != null)
+        if (this.status == null) {
+            if (other.status != null)
                 return false;
         }
-        else if (!this.priority.equals(other.priority))
+        else if (!this.status.equals(other.status))
             return false;
-        if (this.condition == null) {
-            if (other.condition != null)
+        if (this.currentNodeId == null) {
+            if (other.currentNodeId != null)
                 return false;
         }
-        else if (!this.condition.equals(other.condition))
+        else if (!this.currentNodeId.equals(other.currentNodeId))
             return false;
-        if (this.handlerConfig == null) {
-            if (other.handlerConfig != null)
+        if (this.context == null) {
+            if (other.context != null)
                 return false;
         }
-        else if (!this.handlerConfig.equals(other.handlerConfig))
-            return false;
-        if (this.recordStatus == null) {
-            if (other.recordStatus != null)
-                return false;
-        }
-        else if (!this.recordStatus.equals(other.recordStatus))
+        else if (!this.context.equals(other.context))
             return false;
         if (this.version == null) {
             if (other.version != null)
@@ -196,11 +179,10 @@ public class SharedRules implements Serializable {
         final int prime = 31;
         int result = 1;
         result = prime * result + ((this.id == null) ? 0 : this.id.hashCode());
-        result = prime * result + ((this.name == null) ? 0 : this.name.hashCode());
-        result = prime * result + ((this.priority == null) ? 0 : this.priority.hashCode());
-        result = prime * result + ((this.condition == null) ? 0 : this.condition.hashCode());
-        result = prime * result + ((this.handlerConfig == null) ? 0 : this.handlerConfig.hashCode());
-        result = prime * result + ((this.recordStatus == null) ? 0 : this.recordStatus.hashCode());
+        result = prime * result + ((this.processChainId == null) ? 0 : this.processChainId.hashCode());
+        result = prime * result + ((this.status == null) ? 0 : this.status.hashCode());
+        result = prime * result + ((this.currentNodeId == null) ? 0 : this.currentNodeId.hashCode());
+        result = prime * result + ((this.context == null) ? 0 : this.context.hashCode());
         result = prime * result + ((this.version == null) ? 0 : this.version.hashCode());
         result = prime * result + ((this.createdAt == null) ? 0 : this.createdAt.hashCode());
         result = prime * result + ((this.updatedAt == null) ? 0 : this.updatedAt.hashCode());
@@ -209,14 +191,13 @@ public class SharedRules implements Serializable {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder("SharedRules (");
+        StringBuilder sb = new StringBuilder("ProcessInstances (");
 
         sb.append(id);
-        sb.append(", ").append(name);
-        sb.append(", ").append(priority);
-        sb.append(", ").append(condition);
-        sb.append(", ").append(handlerConfig);
-        sb.append(", ").append(recordStatus);
+        sb.append(", ").append(processChainId);
+        sb.append(", ").append(status);
+        sb.append(", ").append(currentNodeId);
+        sb.append(", ").append(context);
         sb.append(", ").append(version);
         sb.append(", ").append(createdAt);
         sb.append(", ").append(updatedAt);

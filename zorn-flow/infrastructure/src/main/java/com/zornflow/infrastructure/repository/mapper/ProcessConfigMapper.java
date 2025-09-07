@@ -1,6 +1,5 @@
 package com.zornflow.infrastructure.repository.mapper;
 
-import com.zornflow.domain.common.types.Version;
 import com.zornflow.domain.process.entity.ProcessChain;
 import com.zornflow.domain.process.entity.ProcessNode;
 import com.zornflow.domain.process.types.ProcessChainId;
@@ -29,9 +28,7 @@ public interface ProcessConfigMapper {
 
   @Mapping(target = "id", source = "id", qualifiedByName = "stringToProcessChainId")
   @Mapping(target = "name", source = "name", qualifiedByName = "stringToProcessChainName")
-  @Mapping(target = "version", source = "version", qualifiedByName = "stringToVersion")
   @Mapping(target = "nodes", source = "nodes")
-  @Mapping(target = "source", ignore = true)
   ProcessChain toDomain(ProcessChainConfig dto);
 
   @Mapping(target = "id", source = "id", qualifiedByName = "stringToProcessNodeId")
@@ -42,8 +39,8 @@ public interface ProcessConfigMapper {
 
   @Mapping(target = "id", source = "id", qualifiedByName = "processChainIdToString")
   @Mapping(target = "name", source = "name", qualifiedByName = "processChainNameToString")
-  @Mapping(target = "version", source = "version", qualifiedByName = "versionToString")
   @Mapping(target = "nodes", source = "allNodes")
+  @Mapping(target = "status", expression = "java(com.zornflow.infrastructure.config.model.RecordStatus.ACTIVE.getDbValue())")
   @Mapping(target = "createdAt", source = "createdAt")
   @Mapping(target = "updatedAt", source = "updatedAt")
   ProcessChainConfig toDto(ProcessChain entity);
@@ -53,6 +50,7 @@ public interface ProcessConfigMapper {
   @Mapping(target = "next", source = "nextNodeId", qualifiedByName = "processNodeIdToString")
   @Mapping(target = "ruleChain", source = "ruleChainId", qualifiedByName = "ruleChainIdToString")
   @Mapping(target = "sharedNodeId", ignore = true)
+  @Mapping(target = "status", ignore = true)
   @Mapping(target = "createdAt", source = "createdAt")
   @Mapping(target = "updatedAt", source = "updatedAt")
   ProcessNodeConfig toDto(ProcessNode entity);
@@ -95,16 +93,6 @@ public interface ProcessConfigMapper {
   @Named("processNodeNameToString")
   default String processNodeNameToString(ProcessNodeName name) {
     return name.value();
-  }
-
-  @Named("stringToVersion")
-  default Version stringToVersion(String version) {
-    return Version.of(version);
-  }
-
-  @Named("versionToString")
-  default String versionToString(Version version) {
-    return version.value();
   }
 
   @Named("stringToRuleChainId")

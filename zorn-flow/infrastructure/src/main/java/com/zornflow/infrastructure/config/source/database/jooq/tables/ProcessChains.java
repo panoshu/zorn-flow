@@ -7,6 +7,7 @@ package com.zornflow.infrastructure.config.source.database.jooq.tables;
 import com.zornflow.infrastructure.config.source.database.jooq.Engine;
 import com.zornflow.infrastructure.config.source.database.jooq.Keys;
 import com.zornflow.infrastructure.config.source.database.jooq.tables.ChainNodes.ChainNodesPath;
+import com.zornflow.infrastructure.config.source.database.jooq.tables.ProcessInstances.ProcessInstancesPath;
 import com.zornflow.infrastructure.config.source.database.jooq.tables.records.ProcessChainsRecord;
 
 import java.time.OffsetDateTime;
@@ -66,14 +67,19 @@ public class ProcessChains extends TableImpl<ProcessChainsRecord> {
     public final TableField<ProcessChainsRecord, String> NAME = createField(DSL.name("name"), SQLDataType.VARCHAR(255).nullable(false), this, "");
 
     /**
-     * The column <code>engine.process_chains.version</code>.
-     */
-    public final TableField<ProcessChainsRecord, String> VERSION = createField(DSL.name("version"), SQLDataType.VARCHAR(255), this, "");
-
-    /**
      * The column <code>engine.process_chains.description</code>.
      */
     public final TableField<ProcessChainsRecord, String> DESCRIPTION = createField(DSL.name("description"), SQLDataType.CLOB, this, "");
+
+    /**
+     * The column <code>engine.process_chains.record_status</code>.
+     */
+    public final TableField<ProcessChainsRecord, String> RECORD_STATUS = createField(DSL.name("record_status"), SQLDataType.VARCHAR(20).nullable(false).defaultValue(DSL.field(DSL.raw("'ACTIVE'::character varying"), SQLDataType.VARCHAR)), this, "");
+
+    /**
+     * The column <code>engine.process_chains.version</code>.
+     */
+    public final TableField<ProcessChainsRecord, Integer> VERSION = createField(DSL.name("version"), SQLDataType.INTEGER, this, "");
 
     /**
      * The column <code>engine.process_chains.created_at</code>.
@@ -168,6 +174,19 @@ public class ProcessChains extends TableImpl<ProcessChainsRecord> {
             _chainNodes = new ChainNodesPath(this, null, Keys.CHAIN_NODES__CHAIN_NODES_PROCESS_CHAIN_ID_FKEY.getInverseKey());
 
         return _chainNodes;
+    }
+
+    private transient ProcessInstancesPath _processInstances;
+
+    /**
+     * Get the implicit to-many join path to the
+     * <code>engine.process_instances</code> table
+     */
+    public ProcessInstancesPath processInstances() {
+        if (_processInstances == null)
+            _processInstances = new ProcessInstancesPath(this, null, Keys.PROCESS_INSTANCES__PROCESS_INSTANCES_PROCESS_CHAIN_ID_FKEY.getInverseKey());
+
+        return _processInstances;
     }
 
     @Override

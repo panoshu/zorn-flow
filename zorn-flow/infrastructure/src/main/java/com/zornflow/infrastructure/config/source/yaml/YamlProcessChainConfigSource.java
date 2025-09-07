@@ -3,10 +3,12 @@ package com.zornflow.infrastructure.config.source.yaml;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.zornflow.infrastructure.config.model.ProcessChainConfig;
 import com.zornflow.infrastructure.config.model.ProcessNodeConfig;
+import com.zornflow.infrastructure.config.model.RecordStatus;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -58,7 +60,7 @@ public non-sealed class YamlProcessChainConfigSource extends AbstractYamlConfigS
         .orElse(localNode)
       ).toList();
 
-    return new ProcessChainConfig(chain.id(), chain.name(), chain.version(), chain.description(),
-      mergedNodes,null, null);
+    return new ProcessChainConfig(chain.id(), chain.name(), chain.description(),
+      mergedNodes, RecordStatus.ACTIVE.getDbValue(), chain.version(), OffsetDateTime.now(), OffsetDateTime.now());
   }
 }

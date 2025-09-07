@@ -25,6 +25,8 @@ public record ProcessNodeConfig(
   List<GatewayConditionConfig> conditions,
   Map<String, Object> properties,
   Optional<String> sharedNodeId,
+  String status,
+  Integer version,
   OffsetDateTime createdAt,
   OffsetDateTime updatedAt
 ) implements ModelConfig {
@@ -49,6 +51,10 @@ public record ProcessNodeConfig(
       .conditions(Optional.ofNullable(this.conditions).orElse(defaults.conditions()))
       .properties(Optional.ofNullable(this.properties).orElse(defaults.properties()))
       .sharedNodeId(Optional.of(defaults.id()))
+      .status(RecordStatus.ACTIVE.getDbValue())
+      .version(this.version)
+      .createdAt(this.createdAt)
+      .updatedAt(this.updatedAt)
       .build();
   }
 }

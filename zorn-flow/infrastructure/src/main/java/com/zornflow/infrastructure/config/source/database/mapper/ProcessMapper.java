@@ -17,10 +17,12 @@ import java.util.Optional;
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING, uses = JsonbMapperHelper.class)
 public interface ProcessMapper {
 
+  @Mapping(target = "status", source = "record.recordStatus")
   @Mapping(target = "nodes", source = "nodes")
   ProcessChainConfig toDto(ProcessChainsRecord record, List<ProcessNodeConfig> nodes);
 
   @Mapping(target = "id", source = "id")
+  @Mapping(target = "recordStatus", expression = "java(java.util.Optional.ofNullable(dto.status()).orElse(com.zornflow.infrastructure.config.model.RecordStatus.ACTIVE.getDbValue()))")
   void updateRecord(ProcessChainConfig dto, @MappingTarget ProcessChainsRecord record);
 
   @Mapping(target = "id", source = "instance.id")
@@ -31,6 +33,8 @@ public interface ProcessMapper {
   @Mapping(target = "ruleChain", expression = "java(mergeRuleChainId(instance.getRuleChainId(), template))")
   @Mapping(target = "conditions", expression = "java(mergeConditions(instance.getConditions(), template, helper))")
   @Mapping(target = "properties", expression = "java(mergeProperties(instance.getProperties(), template, helper))")
+  @Mapping(target = "status", source = "template.recordStatus")
+  @Mapping(target = "version", source = "instance.version")
   @Mapping(target = "createdAt", source = "instance.createdAt")
   @Mapping(target = "updatedAt", source = "instance.updatedAt")
   ProcessNodeConfig toDto(SharedNodesRecord template, ChainNodesRecord instance, @Context JsonbMapperHelper helper);
@@ -42,6 +46,7 @@ public interface ProcessMapper {
   @Mapping(target = "type", source = "nodeType", qualifiedByName = "stringToNodeType")
   @Mapping(target = "conditions", source = "conditions", qualifiedByName = "jsonbToConditions")
   @Mapping(target = "properties", source = "properties", qualifiedByName = "jsonbToProperties")
+  @Mapping(target = "status", ignore = true)
   ProcessNodeConfig toDto(ChainNodesRecord instance, @Context JsonbMapperHelper helper);
 
   @Mapping(target = "id", source = "dto.id")

@@ -4,7 +4,7 @@
 package com.zornflow.infrastructure.config.source.database.jooq.tables.records;
 
 
-import com.zornflow.infrastructure.config.source.database.jooq.tables.pojos.ProcessChains;
+import com.zornflow.infrastructure.config.source.database.jooq.tables.ProcessChains;
 
 import java.time.OffsetDateTime;
 
@@ -51,25 +51,10 @@ public class ProcessChainsRecord extends UpdatableRecordImpl<ProcessChainsRecord
     }
 
     /**
-     * Setter for <code>engine.process_chains.version</code>.
-     */
-    public ProcessChainsRecord setVersion(String value) {
-        set(2, value);
-        return this;
-    }
-
-    /**
-     * Getter for <code>engine.process_chains.version</code>.
-     */
-    public String getVersion() {
-        return (String) get(2);
-    }
-
-    /**
      * Setter for <code>engine.process_chains.description</code>.
      */
     public ProcessChainsRecord setDescription(String value) {
-        set(3, value);
+        set(2, value);
         return this;
     }
 
@@ -77,14 +62,44 @@ public class ProcessChainsRecord extends UpdatableRecordImpl<ProcessChainsRecord
      * Getter for <code>engine.process_chains.description</code>.
      */
     public String getDescription() {
+        return (String) get(2);
+    }
+
+    /**
+     * Setter for <code>engine.process_chains.record_status</code>.
+     */
+    public ProcessChainsRecord setRecordStatus(String value) {
+        set(3, value);
+        return this;
+    }
+
+    /**
+     * Getter for <code>engine.process_chains.record_status</code>.
+     */
+    public String getRecordStatus() {
         return (String) get(3);
+    }
+
+    /**
+     * Setter for <code>engine.process_chains.version</code>.
+     */
+    public ProcessChainsRecord setVersion(Integer value) {
+        set(4, value);
+        return this;
+    }
+
+    /**
+     * Getter for <code>engine.process_chains.version</code>.
+     */
+    public Integer getVersion() {
+        return (Integer) get(4);
     }
 
     /**
      * Setter for <code>engine.process_chains.created_at</code>.
      */
     public ProcessChainsRecord setCreatedAt(OffsetDateTime value) {
-        set(4, value);
+        set(5, value);
         return this;
     }
 
@@ -92,14 +107,14 @@ public class ProcessChainsRecord extends UpdatableRecordImpl<ProcessChainsRecord
      * Getter for <code>engine.process_chains.created_at</code>.
      */
     public OffsetDateTime getCreatedAt() {
-        return (OffsetDateTime) get(4);
+        return (OffsetDateTime) get(5);
     }
 
     /**
      * Setter for <code>engine.process_chains.updated_at</code>.
      */
     public ProcessChainsRecord setUpdatedAt(OffsetDateTime value) {
-        set(5, value);
+        set(6, value);
         return this;
     }
 
@@ -107,7 +122,7 @@ public class ProcessChainsRecord extends UpdatableRecordImpl<ProcessChainsRecord
      * Getter for <code>engine.process_chains.updated_at</code>.
      */
     public OffsetDateTime getUpdatedAt() {
-        return (OffsetDateTime) get(5);
+        return (OffsetDateTime) get(6);
     }
 
     // -------------------------------------------------------------------------
@@ -127,19 +142,20 @@ public class ProcessChainsRecord extends UpdatableRecordImpl<ProcessChainsRecord
      * Create a detached ProcessChainsRecord
      */
     public ProcessChainsRecord() {
-        super(com.zornflow.infrastructure.config.source.database.jooq.tables.ProcessChains.PROCESS_CHAINS);
+        super(ProcessChains.PROCESS_CHAINS);
     }
 
     /**
      * Create a detached, initialised ProcessChainsRecord
      */
-    public ProcessChainsRecord(String id, String name, String version, String description, OffsetDateTime createdAt, OffsetDateTime updatedAt) {
-        super(com.zornflow.infrastructure.config.source.database.jooq.tables.ProcessChains.PROCESS_CHAINS);
+    public ProcessChainsRecord(String id, String name, String description, String recordStatus, Integer version, OffsetDateTime createdAt, OffsetDateTime updatedAt) {
+        super(ProcessChains.PROCESS_CHAINS);
 
         setId(id);
         setName(name);
-        setVersion(version);
         setDescription(description);
+        setRecordStatus(recordStatus);
+        setVersion(version);
         setCreatedAt(createdAt);
         setUpdatedAt(updatedAt);
         resetTouchedOnNotNull();
@@ -148,14 +164,15 @@ public class ProcessChainsRecord extends UpdatableRecordImpl<ProcessChainsRecord
     /**
      * Create a detached, initialised ProcessChainsRecord
      */
-    public ProcessChainsRecord(ProcessChains value) {
-        super(com.zornflow.infrastructure.config.source.database.jooq.tables.ProcessChains.PROCESS_CHAINS);
+    public ProcessChainsRecord(com.zornflow.infrastructure.config.source.database.jooq.tables.pojos.ProcessChains value) {
+        super(ProcessChains.PROCESS_CHAINS);
 
         if (value != null) {
             setId(value.getId());
             setName(value.getName());
-            setVersion(value.getVersion());
             setDescription(value.getDescription());
+            setRecordStatus(value.getRecordStatus());
+            setVersion(value.getVersion());
             setCreatedAt(value.getCreatedAt());
             setUpdatedAt(value.getUpdatedAt());
             resetTouchedOnNotNull();

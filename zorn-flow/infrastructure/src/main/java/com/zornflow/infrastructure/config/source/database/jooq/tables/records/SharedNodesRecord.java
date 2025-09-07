@@ -4,7 +4,7 @@
 package com.zornflow.infrastructure.config.source.database.jooq.tables.records;
 
 
-import com.zornflow.infrastructure.config.source.database.jooq.tables.pojos.SharedNodes;
+import com.zornflow.infrastructure.config.source.database.jooq.tables.SharedNodes;
 
 import java.time.OffsetDateTime;
 
@@ -112,10 +112,40 @@ public class SharedNodesRecord extends UpdatableRecordImpl<SharedNodesRecord> {
     }
 
     /**
+     * Setter for <code>engine.shared_nodes.record_status</code>.
+     */
+    public SharedNodesRecord setRecordStatus(String value) {
+        set(6, value);
+        return this;
+    }
+
+    /**
+     * Getter for <code>engine.shared_nodes.record_status</code>.
+     */
+    public String getRecordStatus() {
+        return (String) get(6);
+    }
+
+    /**
+     * Setter for <code>engine.shared_nodes.version</code>.
+     */
+    public SharedNodesRecord setVersion(Integer value) {
+        set(7, value);
+        return this;
+    }
+
+    /**
+     * Getter for <code>engine.shared_nodes.version</code>.
+     */
+    public Integer getVersion() {
+        return (Integer) get(7);
+    }
+
+    /**
      * Setter for <code>engine.shared_nodes.created_at</code>.
      */
     public SharedNodesRecord setCreatedAt(OffsetDateTime value) {
-        set(6, value);
+        set(8, value);
         return this;
     }
 
@@ -123,14 +153,14 @@ public class SharedNodesRecord extends UpdatableRecordImpl<SharedNodesRecord> {
      * Getter for <code>engine.shared_nodes.created_at</code>.
      */
     public OffsetDateTime getCreatedAt() {
-        return (OffsetDateTime) get(6);
+        return (OffsetDateTime) get(8);
     }
 
     /**
      * Setter for <code>engine.shared_nodes.updated_at</code>.
      */
     public SharedNodesRecord setUpdatedAt(OffsetDateTime value) {
-        set(7, value);
+        set(9, value);
         return this;
     }
 
@@ -138,7 +168,7 @@ public class SharedNodesRecord extends UpdatableRecordImpl<SharedNodesRecord> {
      * Getter for <code>engine.shared_nodes.updated_at</code>.
      */
     public OffsetDateTime getUpdatedAt() {
-        return (OffsetDateTime) get(7);
+        return (OffsetDateTime) get(9);
     }
 
     // -------------------------------------------------------------------------
@@ -158,14 +188,14 @@ public class SharedNodesRecord extends UpdatableRecordImpl<SharedNodesRecord> {
      * Create a detached SharedNodesRecord
      */
     public SharedNodesRecord() {
-        super(com.zornflow.infrastructure.config.source.database.jooq.tables.SharedNodes.SHARED_NODES);
+        super(SharedNodes.SHARED_NODES);
     }
 
     /**
      * Create a detached, initialised SharedNodesRecord
      */
-    public SharedNodesRecord(String id, String name, String nodeType, String ruleChainId, JSONB conditions, JSONB properties, OffsetDateTime createdAt, OffsetDateTime updatedAt) {
-        super(com.zornflow.infrastructure.config.source.database.jooq.tables.SharedNodes.SHARED_NODES);
+    public SharedNodesRecord(String id, String name, String nodeType, String ruleChainId, JSONB conditions, JSONB properties, String recordStatus, Integer version, OffsetDateTime createdAt, OffsetDateTime updatedAt) {
+        super(SharedNodes.SHARED_NODES);
 
         setId(id);
         setName(name);
@@ -173,6 +203,8 @@ public class SharedNodesRecord extends UpdatableRecordImpl<SharedNodesRecord> {
         setRuleChainId(ruleChainId);
         setConditions(conditions);
         setProperties(properties);
+        setRecordStatus(recordStatus);
+        setVersion(version);
         setCreatedAt(createdAt);
         setUpdatedAt(updatedAt);
         resetTouchedOnNotNull();
@@ -181,8 +213,8 @@ public class SharedNodesRecord extends UpdatableRecordImpl<SharedNodesRecord> {
     /**
      * Create a detached, initialised SharedNodesRecord
      */
-    public SharedNodesRecord(SharedNodes value) {
-        super(com.zornflow.infrastructure.config.source.database.jooq.tables.SharedNodes.SHARED_NODES);
+    public SharedNodesRecord(com.zornflow.infrastructure.config.source.database.jooq.tables.pojos.SharedNodes value) {
+        super(SharedNodes.SHARED_NODES);
 
         if (value != null) {
             setId(value.getId());
@@ -191,6 +223,8 @@ public class SharedNodesRecord extends UpdatableRecordImpl<SharedNodesRecord> {
             setRuleChainId(value.getRuleChainId());
             setConditions(value.getConditions());
             setProperties(value.getProperties());
+            setRecordStatus(value.getRecordStatus());
+            setVersion(value.getVersion());
             setCreatedAt(value.getCreatedAt());
             setUpdatedAt(value.getUpdatedAt());
             resetTouchedOnNotNull();

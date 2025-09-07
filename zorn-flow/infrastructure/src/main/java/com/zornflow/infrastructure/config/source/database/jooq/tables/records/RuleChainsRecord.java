@@ -4,7 +4,7 @@
 package com.zornflow.infrastructure.config.source.database.jooq.tables.records;
 
 
-import com.zornflow.infrastructure.config.source.database.jooq.tables.pojos.RuleChains;
+import com.zornflow.infrastructure.config.source.database.jooq.tables.RuleChains;
 
 import java.time.OffsetDateTime;
 
@@ -51,25 +51,10 @@ public class RuleChainsRecord extends UpdatableRecordImpl<RuleChainsRecord> {
     }
 
     /**
-     * Setter for <code>engine.rule_chains.version</code>.
-     */
-    public RuleChainsRecord setVersion(String value) {
-        set(2, value);
-        return this;
-    }
-
-    /**
-     * Getter for <code>engine.rule_chains.version</code>.
-     */
-    public String getVersion() {
-        return (String) get(2);
-    }
-
-    /**
      * Setter for <code>engine.rule_chains.description</code>.
      */
     public RuleChainsRecord setDescription(String value) {
-        set(3, value);
+        set(2, value);
         return this;
     }
 
@@ -77,14 +62,44 @@ public class RuleChainsRecord extends UpdatableRecordImpl<RuleChainsRecord> {
      * Getter for <code>engine.rule_chains.description</code>.
      */
     public String getDescription() {
+        return (String) get(2);
+    }
+
+    /**
+     * Setter for <code>engine.rule_chains.record_status</code>.
+     */
+    public RuleChainsRecord setRecordStatus(String value) {
+        set(3, value);
+        return this;
+    }
+
+    /**
+     * Getter for <code>engine.rule_chains.record_status</code>.
+     */
+    public String getRecordStatus() {
         return (String) get(3);
+    }
+
+    /**
+     * Setter for <code>engine.rule_chains.version</code>.
+     */
+    public RuleChainsRecord setVersion(Integer value) {
+        set(4, value);
+        return this;
+    }
+
+    /**
+     * Getter for <code>engine.rule_chains.version</code>.
+     */
+    public Integer getVersion() {
+        return (Integer) get(4);
     }
 
     /**
      * Setter for <code>engine.rule_chains.created_at</code>.
      */
     public RuleChainsRecord setCreatedAt(OffsetDateTime value) {
-        set(4, value);
+        set(5, value);
         return this;
     }
 
@@ -92,14 +107,14 @@ public class RuleChainsRecord extends UpdatableRecordImpl<RuleChainsRecord> {
      * Getter for <code>engine.rule_chains.created_at</code>.
      */
     public OffsetDateTime getCreatedAt() {
-        return (OffsetDateTime) get(4);
+        return (OffsetDateTime) get(5);
     }
 
     /**
      * Setter for <code>engine.rule_chains.updated_at</code>.
      */
     public RuleChainsRecord setUpdatedAt(OffsetDateTime value) {
-        set(5, value);
+        set(6, value);
         return this;
     }
 
@@ -107,7 +122,7 @@ public class RuleChainsRecord extends UpdatableRecordImpl<RuleChainsRecord> {
      * Getter for <code>engine.rule_chains.updated_at</code>.
      */
     public OffsetDateTime getUpdatedAt() {
-        return (OffsetDateTime) get(5);
+        return (OffsetDateTime) get(6);
     }
 
     // -------------------------------------------------------------------------
@@ -127,19 +142,20 @@ public class RuleChainsRecord extends UpdatableRecordImpl<RuleChainsRecord> {
      * Create a detached RuleChainsRecord
      */
     public RuleChainsRecord() {
-        super(com.zornflow.infrastructure.config.source.database.jooq.tables.RuleChains.RULE_CHAINS);
+        super(RuleChains.RULE_CHAINS);
     }
 
     /**
      * Create a detached, initialised RuleChainsRecord
      */
-    public RuleChainsRecord(String id, String name, String version, String description, OffsetDateTime createdAt, OffsetDateTime updatedAt) {
-        super(com.zornflow.infrastructure.config.source.database.jooq.tables.RuleChains.RULE_CHAINS);
+    public RuleChainsRecord(String id, String name, String description, String recordStatus, Integer version, OffsetDateTime createdAt, OffsetDateTime updatedAt) {
+        super(RuleChains.RULE_CHAINS);
 
         setId(id);
         setName(name);
-        setVersion(version);
         setDescription(description);
+        setRecordStatus(recordStatus);
+        setVersion(version);
         setCreatedAt(createdAt);
         setUpdatedAt(updatedAt);
         resetTouchedOnNotNull();
@@ -148,14 +164,15 @@ public class RuleChainsRecord extends UpdatableRecordImpl<RuleChainsRecord> {
     /**
      * Create a detached, initialised RuleChainsRecord
      */
-    public RuleChainsRecord(RuleChains value) {
-        super(com.zornflow.infrastructure.config.source.database.jooq.tables.RuleChains.RULE_CHAINS);
+    public RuleChainsRecord(com.zornflow.infrastructure.config.source.database.jooq.tables.pojos.RuleChains value) {
+        super(RuleChains.RULE_CHAINS);
 
         if (value != null) {
             setId(value.getId());
             setName(value.getName());
-            setVersion(value.getVersion());
             setDescription(value.getDescription());
+            setRecordStatus(value.getRecordStatus());
+            setVersion(value.getVersion());
             setCreatedAt(value.getCreatedAt());
             setUpdatedAt(value.getUpdatedAt());
             resetTouchedOnNotNull();

@@ -58,13 +58,12 @@ class ProcessChainRepositoryImplTest {
 
     domainEntity = ProcessChain.builder()
       .id(processChainId)
-      .version(Version.of("1.0.0"))
       .nodes(List.of(node))
       .build();
 
     dto = ProcessChainConfig.builder()
       .id("proc-1")
-      .version("1.0.0")
+      .version(0)
       .nodes(List.of(ProcessNodeConfig.builder().id("node-1").build()))
       .build();
   }

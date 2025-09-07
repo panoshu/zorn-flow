@@ -102,6 +102,11 @@ public class ChainRules extends TableImpl<ChainRulesRecord> {
     public final TableField<ChainRulesRecord, JSONB> HANDLER_CONFIG = createField(DSL.name("handler_config"), SQLDataType.JSONB, this, "");
 
     /**
+     * The column <code>engine.chain_rules.version</code>.
+     */
+    public final TableField<ChainRulesRecord, Integer> VERSION = createField(DSL.name("version"), SQLDataType.INTEGER, this, "");
+
+    /**
      * The column <code>engine.chain_rules.created_at</code>.
      */
     public final TableField<ChainRulesRecord, OffsetDateTime> CREATED_AT = createField(DSL.name("created_at"), SQLDataType.TIMESTAMPWITHTIMEZONE(6).nullable(false).defaultValue(DSL.field(DSL.raw("now()"), SQLDataType.TIMESTAMPWITHTIMEZONE)), this, "");

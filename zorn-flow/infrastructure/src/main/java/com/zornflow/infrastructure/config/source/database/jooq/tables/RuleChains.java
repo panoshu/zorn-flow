@@ -68,14 +68,19 @@ public class RuleChains extends TableImpl<RuleChainsRecord> {
     public final TableField<RuleChainsRecord, String> NAME = createField(DSL.name("name"), SQLDataType.VARCHAR(255).nullable(false), this, "");
 
     /**
-     * The column <code>engine.rule_chains.version</code>.
-     */
-    public final TableField<RuleChainsRecord, String> VERSION = createField(DSL.name("version"), SQLDataType.VARCHAR(255), this, "");
-
-    /**
      * The column <code>engine.rule_chains.description</code>.
      */
     public final TableField<RuleChainsRecord, String> DESCRIPTION = createField(DSL.name("description"), SQLDataType.CLOB, this, "");
+
+    /**
+     * The column <code>engine.rule_chains.record_status</code>.
+     */
+    public final TableField<RuleChainsRecord, String> RECORD_STATUS = createField(DSL.name("record_status"), SQLDataType.VARCHAR(20).nullable(false).defaultValue(DSL.field(DSL.raw("'ACTIVE'::character varying"), SQLDataType.VARCHAR)), this, "");
+
+    /**
+     * The column <code>engine.rule_chains.version</code>.
+     */
+    public final TableField<RuleChainsRecord, Integer> VERSION = createField(DSL.name("version"), SQLDataType.INTEGER, this, "");
 
     /**
      * The column <code>engine.rule_chains.created_at</code>.

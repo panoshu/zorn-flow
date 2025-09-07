@@ -7,6 +7,7 @@ package com.zornflow.infrastructure.config.source.database.jooq;
 import com.zornflow.infrastructure.config.source.database.jooq.tables.ChainNodes;
 import com.zornflow.infrastructure.config.source.database.jooq.tables.ChainRules;
 import com.zornflow.infrastructure.config.source.database.jooq.tables.ProcessChains;
+import com.zornflow.infrastructure.config.source.database.jooq.tables.ProcessInstances;
 import com.zornflow.infrastructure.config.source.database.jooq.tables.RuleChains;
 import com.zornflow.infrastructure.config.source.database.jooq.tables.SharedNodes;
 import com.zornflow.infrastructure.config.source.database.jooq.tables.SharedRules;
@@ -32,6 +33,11 @@ public class Tables {
      * The table <code>engine.process_chains</code>.
      */
     public static final ProcessChains PROCESS_CHAINS = ProcessChains.PROCESS_CHAINS;
+
+    /**
+     * 流程实例
+     */
+    public static final ProcessInstances PROCESS_INSTANCES = ProcessInstances.PROCESS_INSTANCES;
 
     /**
      * The table <code>engine.rule_chains</code>.

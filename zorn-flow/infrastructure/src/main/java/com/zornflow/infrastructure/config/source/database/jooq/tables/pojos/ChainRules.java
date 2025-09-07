@@ -26,6 +26,7 @@ public class ChainRules implements Serializable {
     private final Integer priority;
     private final String condition;
     private final JSONB handlerConfig;
+    private final Integer version;
     private final OffsetDateTime createdAt;
     private final OffsetDateTime updatedAt;
 
@@ -38,6 +39,7 @@ public class ChainRules implements Serializable {
         this.priority = value.priority;
         this.condition = value.condition;
         this.handlerConfig = value.handlerConfig;
+        this.version = value.version;
         this.createdAt = value.createdAt;
         this.updatedAt = value.updatedAt;
     }
@@ -51,6 +53,7 @@ public class ChainRules implements Serializable {
         Integer priority,
         String condition,
         JSONB handlerConfig,
+        Integer version,
         OffsetDateTime createdAt,
         OffsetDateTime updatedAt
     ) {
@@ -62,6 +65,7 @@ public class ChainRules implements Serializable {
         this.priority = priority;
         this.condition = condition;
         this.handlerConfig = handlerConfig;
+        this.version = version;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }
@@ -120,6 +124,13 @@ public class ChainRules implements Serializable {
      */
     public JSONB getHandlerConfig() {
         return this.handlerConfig;
+    }
+
+    /**
+     * Getter for <code>engine.chain_rules.version</code>.
+     */
+    public Integer getVersion() {
+        return this.version;
     }
 
     /**
@@ -193,6 +204,12 @@ public class ChainRules implements Serializable {
         }
         else if (!this.handlerConfig.equals(other.handlerConfig))
             return false;
+        if (this.version == null) {
+            if (other.version != null)
+                return false;
+        }
+        else if (!this.version.equals(other.version))
+            return false;
         if (this.createdAt == null) {
             if (other.createdAt != null)
                 return false;
@@ -220,6 +237,7 @@ public class ChainRules implements Serializable {
         result = prime * result + ((this.priority == null) ? 0 : this.priority.hashCode());
         result = prime * result + ((this.condition == null) ? 0 : this.condition.hashCode());
         result = prime * result + ((this.handlerConfig == null) ? 0 : this.handlerConfig.hashCode());
+        result = prime * result + ((this.version == null) ? 0 : this.version.hashCode());
         result = prime * result + ((this.createdAt == null) ? 0 : this.createdAt.hashCode());
         result = prime * result + ((this.updatedAt == null) ? 0 : this.updatedAt.hashCode());
         return result;
@@ -237,6 +255,7 @@ public class ChainRules implements Serializable {
         sb.append(", ").append(priority);
         sb.append(", ").append(condition);
         sb.append(", ").append(handlerConfig);
+        sb.append(", ").append(version);
         sb.append(", ").append(createdAt);
         sb.append(", ").append(updatedAt);
 

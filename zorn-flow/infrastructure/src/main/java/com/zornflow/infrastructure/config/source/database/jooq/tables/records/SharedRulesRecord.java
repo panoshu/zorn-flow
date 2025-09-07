@@ -4,7 +4,7 @@
 package com.zornflow.infrastructure.config.source.database.jooq.tables.records;
 
 
-import com.zornflow.infrastructure.config.source.database.jooq.tables.pojos.SharedRules;
+import com.zornflow.infrastructure.config.source.database.jooq.tables.SharedRules;
 
 import java.time.OffsetDateTime;
 
@@ -97,10 +97,40 @@ public class SharedRulesRecord extends UpdatableRecordImpl<SharedRulesRecord> {
     }
 
     /**
+     * Setter for <code>engine.shared_rules.record_status</code>.
+     */
+    public SharedRulesRecord setRecordStatus(String value) {
+        set(5, value);
+        return this;
+    }
+
+    /**
+     * Getter for <code>engine.shared_rules.record_status</code>.
+     */
+    public String getRecordStatus() {
+        return (String) get(5);
+    }
+
+    /**
+     * Setter for <code>engine.shared_rules.version</code>.
+     */
+    public SharedRulesRecord setVersion(Integer value) {
+        set(6, value);
+        return this;
+    }
+
+    /**
+     * Getter for <code>engine.shared_rules.version</code>.
+     */
+    public Integer getVersion() {
+        return (Integer) get(6);
+    }
+
+    /**
      * Setter for <code>engine.shared_rules.created_at</code>.
      */
     public SharedRulesRecord setCreatedAt(OffsetDateTime value) {
-        set(5, value);
+        set(7, value);
         return this;
     }
 
@@ -108,14 +138,14 @@ public class SharedRulesRecord extends UpdatableRecordImpl<SharedRulesRecord> {
      * Getter for <code>engine.shared_rules.created_at</code>.
      */
     public OffsetDateTime getCreatedAt() {
-        return (OffsetDateTime) get(5);
+        return (OffsetDateTime) get(7);
     }
 
     /**
      * Setter for <code>engine.shared_rules.updated_at</code>.
      */
     public SharedRulesRecord setUpdatedAt(OffsetDateTime value) {
-        set(6, value);
+        set(8, value);
         return this;
     }
 
@@ -123,7 +153,7 @@ public class SharedRulesRecord extends UpdatableRecordImpl<SharedRulesRecord> {
      * Getter for <code>engine.shared_rules.updated_at</code>.
      */
     public OffsetDateTime getUpdatedAt() {
-        return (OffsetDateTime) get(6);
+        return (OffsetDateTime) get(8);
     }
 
     // -------------------------------------------------------------------------
@@ -143,20 +173,22 @@ public class SharedRulesRecord extends UpdatableRecordImpl<SharedRulesRecord> {
      * Create a detached SharedRulesRecord
      */
     public SharedRulesRecord() {
-        super(com.zornflow.infrastructure.config.source.database.jooq.tables.SharedRules.SHARED_RULES);
+        super(SharedRules.SHARED_RULES);
     }
 
     /**
      * Create a detached, initialised SharedRulesRecord
      */
-    public SharedRulesRecord(String id, String name, Integer priority, String condition, JSONB handlerConfig, OffsetDateTime createdAt, OffsetDateTime updatedAt) {
-        super(com.zornflow.infrastructure.config.source.database.jooq.tables.SharedRules.SHARED_RULES);
+    public SharedRulesRecord(String id, String name, Integer priority, String condition, JSONB handlerConfig, String recordStatus, Integer version, OffsetDateTime createdAt, OffsetDateTime updatedAt) {
+        super(SharedRules.SHARED_RULES);
 
         setId(id);
         setName(name);
         setPriority(priority);
         setCondition(condition);
         setHandlerConfig(handlerConfig);
+        setRecordStatus(recordStatus);
+        setVersion(version);
         setCreatedAt(createdAt);
         setUpdatedAt(updatedAt);
         resetTouchedOnNotNull();
@@ -165,8 +197,8 @@ public class SharedRulesRecord extends UpdatableRecordImpl<SharedRulesRecord> {
     /**
      * Create a detached, initialised SharedRulesRecord
      */
-    public SharedRulesRecord(SharedRules value) {
-        super(com.zornflow.infrastructure.config.source.database.jooq.tables.SharedRules.SHARED_RULES);
+    public SharedRulesRecord(com.zornflow.infrastructure.config.source.database.jooq.tables.pojos.SharedRules value) {
+        super(SharedRules.SHARED_RULES);
 
         if (value != null) {
             setId(value.getId());
@@ -174,6 +206,8 @@ public class SharedRulesRecord extends UpdatableRecordImpl<SharedRulesRecord> {
             setPriority(value.getPriority());
             setCondition(value.getCondition());
             setHandlerConfig(value.getHandlerConfig());
+            setRecordStatus(value.getRecordStatus());
+            setVersion(value.getVersion());
             setCreatedAt(value.getCreatedAt());
             setUpdatedAt(value.getUpdatedAt());
             resetTouchedOnNotNull();

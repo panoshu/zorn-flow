@@ -18,7 +18,7 @@ public abstract class Entity<ID extends Identifier> {
   private final ID id;
   private final Instant createdAt;
   private Instant updatedAt;
-  private Long version;
+  private Integer version;
 
   protected Entity(ID id) {
     if (id == null) {
@@ -27,7 +27,7 @@ public abstract class Entity<ID extends Identifier> {
     this.id = id;
     this.createdAt = Instant.now();
     this.updatedAt = this.createdAt;
-    this.version = 0L;
+    this.version = 0;
   }
 
   // 通常在更新操作时调用，更新updatedAt并增加版本
@@ -54,11 +54,15 @@ public abstract class Entity<ID extends Identifier> {
     return this.id;
   }
 
-  public Instant getCreatedAt() {
+  protected Integer getVersion() {
+    return version;
+  }
+
+  protected Instant getCreatedAt() {
     return this.createdAt;
   }
 
-  public Instant getUpdatedAt() {
+  protected Instant getUpdatedAt() {
     return updatedAt;
   }
 }

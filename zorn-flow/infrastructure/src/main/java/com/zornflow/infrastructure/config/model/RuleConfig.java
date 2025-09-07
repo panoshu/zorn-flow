@@ -23,6 +23,8 @@ public record RuleConfig(
   String condition,
   HandlerConfig handle,
   Optional<String> sharedRuleId,
+  String status,
+  Integer version,
   OffsetDateTime createdAt,
   OffsetDateTime updatedAt
 ) implements ModelConfig {
@@ -40,6 +42,10 @@ public record RuleConfig(
       .condition(Optional.ofNullable(this.condition).orElse(defaults.condition()))
       .handle(Optional.ofNullable(this.handle).orElse(defaults.handle()))
       .sharedRuleId(Optional.of(defaults.id()))
+      .status(RecordStatus.ACTIVE.getDbValue())
+      .version(this.version)
+      .createdAt(this.createdAt)
+      .updatedAt(this.updatedAt)
       .build();
   }
 }

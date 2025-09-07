@@ -17,9 +17,10 @@ import java.util.List;
 public record RuleChainConfig(
   String id,
   String name,
-  String version,
   String description,
   List<RuleConfig> rules,
+  String status,
+  Integer version,
   OffsetDateTime createdAt,
-  OffsetDateTime updatedAt) implements ModelConfig {
-}
+  OffsetDateTime updatedAt
+) implements ModelConfig { }

@@ -48,6 +48,11 @@ public class Rule extends Entity<RuleId> {
   }
 
   @Override
+  public Integer getVersion() {
+    return super.getVersion();
+  }
+
+  @Override
   public Instant getCreatedAt() {
     return super.getCreatedAt();
   }

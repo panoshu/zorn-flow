@@ -90,6 +90,16 @@ public class SharedNodes extends TableImpl<SharedNodesRecord> {
     public final TableField<SharedNodesRecord, JSONB> PROPERTIES = createField(DSL.name("properties"), SQLDataType.JSONB, this, "");
 
     /**
+     * The column <code>engine.shared_nodes.record_status</code>.
+     */
+    public final TableField<SharedNodesRecord, String> RECORD_STATUS = createField(DSL.name("record_status"), SQLDataType.VARCHAR(20).nullable(false).defaultValue(DSL.field(DSL.raw("'ACTIVE'::character varying"), SQLDataType.VARCHAR)), this, "");
+
+    /**
+     * The column <code>engine.shared_nodes.version</code>.
+     */
+    public final TableField<SharedNodesRecord, Integer> VERSION = createField(DSL.name("version"), SQLDataType.INTEGER, this, "");
+
+    /**
      * The column <code>engine.shared_nodes.created_at</code>.
      */
     public final TableField<SharedNodesRecord, OffsetDateTime> CREATED_AT = createField(DSL.name("created_at"), SQLDataType.TIMESTAMPWITHTIMEZONE(6).nullable(false).defaultValue(DSL.field(DSL.raw("now()"), SQLDataType.TIMESTAMPWITHTIMEZONE)), this, "");

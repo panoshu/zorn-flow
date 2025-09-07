@@ -1,6 +1,5 @@
 package com.zornflow.domain.rule.service.impl;
 
-import com.zornflow.domain.common.types.Version;
 import com.zornflow.domain.common.valueobject.BusinessContext;
 import com.zornflow.domain.rule.entity.Rule;
 import com.zornflow.domain.rule.entity.RuleChain;
@@ -85,7 +84,6 @@ class DefaultRuleChainExecutionServiceTest {
     // Arrange: Create a rule chain with rules in a jumbled order
     RuleChain ruleChain = RuleChain.builder()
       .id(RuleChainId.of("test-chain"))
-      .version(Version.defaultVersion())
       .rules(List.of(rule1_priority10, rule2_priority20, rule3_priority5))
       .build();
 
@@ -115,7 +113,6 @@ class DefaultRuleChainExecutionServiceTest {
     // Arrange
     RuleChain ruleChain = RuleChain.builder()
       .id(RuleChainId.of("test-chain"))
-      .version(Version.defaultVersion())
       .rules(List.of(rule1_priority10, rule3_priority5))
       .build();
 
@@ -140,7 +137,6 @@ class DefaultRuleChainExecutionServiceTest {
     // Arrange
     RuleChain ruleChain = RuleChain.builder()
       .id(RuleChainId.of("test-chain"))
-      .version(Version.defaultVersion())
       .rules(List.of(rule1_priority10))
       .build();
 
@@ -150,9 +146,7 @@ class DefaultRuleChainExecutionServiceTest {
 
     // Act & Assert
     // Verify that executing the chain throws an IllegalStateException
-    var exception = assertThrows(IllegalStateException.class, () -> {
-      executionService.execute(ruleChain, initialContext);
-    });
+    var exception = assertThrows(IllegalStateException.class, () -> executionService.execute(ruleChain, initialContext));
 
     assertTrue(exception.getMessage().contains("No handler executor found for type"));
   }
@@ -163,7 +157,6 @@ class DefaultRuleChainExecutionServiceTest {
     // Arrange
     RuleChain ruleChain = RuleChain.builder()
       .id(RuleChainId.of("test-chain"))
-      .version(Version.defaultVersion())
       .rules(List.of(rule1_priority10))
       .build();
 
@@ -181,7 +174,7 @@ class DefaultRuleChainExecutionServiceTest {
   @DisplayName("Should throw IllegalArgumentException for null arguments")
   void execute_shouldThrowExceptionForNulls() {
     assertThrows(IllegalArgumentException.class, () -> executionService.execute(null, initialContext));
-    RuleChain ruleChain = RuleChain.builder().id(RuleChainId.of("chain")).rules(List.of(rule1_priority10)).version(Version.defaultVersion()).build();
+    RuleChain ruleChain = RuleChain.builder().id(RuleChainId.of("chain")).rules(List.of(rule1_priority10)).build();
     assertThrows(IllegalArgumentException.class, () -> executionService.execute(ruleChain, null));
   }
 }

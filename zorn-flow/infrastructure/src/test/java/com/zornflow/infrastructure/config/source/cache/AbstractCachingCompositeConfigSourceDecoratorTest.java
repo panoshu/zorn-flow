@@ -1,6 +1,7 @@
 package com.zornflow.infrastructure.config.source.cache;
 
 import com.zornflow.domain.common.config.source.ReadWriteConfigSource;
+import com.zornflow.infrastructure.config.model.RecordStatus;
 import com.zornflow.infrastructure.config.model.RuleChainConfig;
 import com.zornflow.infrastructure.config.model.RuleConfig;
 import org.junit.jupiter.api.BeforeEach;
@@ -34,7 +35,6 @@ class AbstractCachingCompositeConfigSourceDecoratorTest {
   @Mock
   private ReadWriteConfigSource<RuleChainConfig> delegate;
 
-  private CacheManager cacheManager;
   private Cache cache;
 
   private RuleChainConfig sampleConfig1;
@@ -42,19 +42,19 @@ class AbstractCachingCompositeConfigSourceDecoratorTest {
 
   @BeforeEach
   void setUp() {
-    cacheManager = new ConcurrentMapCacheManager(CACHE_NAME);
+    CacheManager cacheManager = new ConcurrentMapCacheManager(CACHE_NAME);
     cache = cacheManager.getCache(CACHE_NAME);
     assertNotNull(cache);
     cache.clear();
 
     cachingDecorator = new CachingRuleChainCompositeConfigSourceDecorator(delegate, cacheManager);
 
-    sampleConfig1 = new RuleChainConfig("id-1", "Chain 1", "1.0", "Desc 1",
+    sampleConfig1 = new RuleChainConfig("id-1", "Chain 1", "Desc 1",
       Collections.singletonList(RuleConfig.builder().id("rule-1").build()),
-      null, null);
-    sampleConfig2 = new RuleChainConfig("id-2", "Chain 2", "1.0", "Desc 2",
+      RecordStatus.ACTIVE.getDbValue(), 0,null, null);
+    sampleConfig2 = new RuleChainConfig("id-2", "Chain 2", "Desc 2",
       Collections.singletonList(RuleConfig.builder().id("rule-2").build()),
-      null, null);
+      RecordStatus.ACTIVE.getDbValue(), 0, null, null);
   }
 
   @Test
@@ -110,7 +110,8 @@ class AbstractCachingCompositeConfigSourceDecoratorTest {
     when(delegate.save(any(RuleChainConfig.class))).thenAnswer(invocation -> Optional.of(invocation.getArgument(0)));
     cachingDecorator.load("id-1");
     cachingDecorator.loadAll();
-    RuleChainConfig updatedConfig = new RuleChainConfig("id-1", "Updated Chain", "1.1", "New Desc", List.of(), null, null);
+    RuleChainConfig updatedConfig = new RuleChainConfig("id-1", "Updated Chain", "New Desc",
+      List.of(), RecordStatus.ACTIVE.getDbValue(), 0,null, null);
 
     // Act
     cachingDecorator.save(updatedConfig);

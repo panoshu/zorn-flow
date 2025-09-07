@@ -8,6 +8,7 @@ import com.zornflow.infrastructure.config.source.database.jooq.Engine;
 import com.zornflow.infrastructure.config.source.database.jooq.Indexes;
 import com.zornflow.infrastructure.config.source.database.jooq.Keys;
 import com.zornflow.infrastructure.config.source.database.jooq.tables.ProcessChains.ProcessChainsPath;
+import com.zornflow.infrastructure.config.source.database.jooq.tables.ProcessInstances.ProcessInstancesPath;
 import com.zornflow.infrastructure.config.source.database.jooq.tables.RuleChains.RuleChainsPath;
 import com.zornflow.infrastructure.config.source.database.jooq.tables.SharedNodes.SharedNodesPath;
 import com.zornflow.infrastructure.config.source.database.jooq.tables.records.ChainNodesRecord;
@@ -111,6 +112,11 @@ public class ChainNodes extends TableImpl<ChainNodesRecord> {
      * The column <code>engine.chain_nodes.properties</code>.
      */
     public final TableField<ChainNodesRecord, JSONB> PROPERTIES = createField(DSL.name("properties"), SQLDataType.JSONB, this, "");
+
+    /**
+     * The column <code>engine.chain_nodes.version</code>.
+     */
+    public final TableField<ChainNodesRecord, Integer> VERSION = createField(DSL.name("version"), SQLDataType.INTEGER, this, "");
 
     /**
      * The column <code>engine.chain_nodes.created_at</code>.
@@ -244,6 +250,19 @@ public class ChainNodes extends TableImpl<ChainNodesRecord> {
             _sharedNodes = new SharedNodesPath(this, Keys.CHAIN_NODES__CHAIN_NODES_SHARED_NODE_ID_FKEY, null);
 
         return _sharedNodes;
+    }
+
+    private transient ProcessInstancesPath _processInstances;
+
+    /**
+     * Get the implicit to-many join path to the
+     * <code>engine.process_instances</code> table
+     */
+    public ProcessInstancesPath processInstances() {
+        if (_processInstances == null)
+            _processInstances = new ProcessInstancesPath(this, null, Keys.PROCESS_INSTANCES__PROCESS_INSTANCES_CURRENT_NODE_ID_FKEY.getInverseKey());
+
+        return _processInstances;
     }
 
     @Override

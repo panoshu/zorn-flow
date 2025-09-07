@@ -1,5 +1,6 @@
 package com.zornflow.infrastructure.config.source.database;
 
+import com.zornflow.infrastructure.config.model.RecordStatus;
 import com.zornflow.infrastructure.config.model.RuleChainConfig;
 import com.zornflow.infrastructure.config.model.RuleConfig;
 import com.zornflow.infrastructure.config.source.database.jooq.tables.records.ChainRulesRecord;
@@ -49,7 +50,8 @@ public non-sealed class DatabaseRuleChainConfigSource extends AbstractDatabaseCo
   @Override
   protected Optional<RuleChainConfig> loadById(String id) {
     RuleChainsRecord chainRecord = dsl.selectFrom(RULE_CHAINS)
-      .where(RULE_CHAINS.ID.eq(id))
+      .where(RULE_CHAINS.ID.eq(id)
+            .and(RULE_CHAINS.RECORD_STATUS.eq(RecordStatus.ACTIVE.getDbValue())))
       .fetchOne();
 
     if (chainRecord == null) {
@@ -62,7 +64,9 @@ public non-sealed class DatabaseRuleChainConfigSource extends AbstractDatabaseCo
 
   @Override
   public Map<String, RuleChainConfig> loadAll() {
-    List<RuleChainsRecord> chainRecords = dsl.selectFrom(RULE_CHAINS).fetch();
+    List<RuleChainsRecord> chainRecords = dsl.selectFrom(RULE_CHAINS)
+      .where(RULE_CHAINS.RECORD_STATUS.eq(RecordStatus.ACTIVE.getDbValue()))
+      .fetch();
     return chainRecords.stream()
       .map(r -> ruleMapper.toDto(r, findRulesForChain(r.getId())))
       .collect(Collectors.toMap(RuleChainConfig::id, config -> config));
@@ -132,8 +136,11 @@ public non-sealed class DatabaseRuleChainConfigSource extends AbstractDatabaseCo
   @Override
   @Transactional
   public void delete(String id) {
-    dsl.deleteFrom(CHAIN_RULES).where(CHAIN_RULES.RULE_CHAIN_ID.eq(id)).execute();
-    dsl.deleteFrom(RULE_CHAINS).where(RULE_CHAINS.ID.eq(id)).execute();
+    dsl.update(RULE_CHAINS)
+      .set(RULE_CHAINS.RECORD_STATUS, RecordStatus.DELETED.getDbValue())
+      .set(RULE_CHAINS.UPDATED_AT, OffsetDateTime.now())
+      .where(RULE_CHAINS.ID.eq(id))
+      .execute();
   }
 
   private void validateChain(RuleChainConfig config) {

@@ -82,6 +82,16 @@ public class SharedRules extends TableImpl<SharedRulesRecord> {
     public final TableField<SharedRulesRecord, JSONB> HANDLER_CONFIG = createField(DSL.name("handler_config"), SQLDataType.JSONB, this, "");
 
     /**
+     * The column <code>engine.shared_rules.record_status</code>.
+     */
+    public final TableField<SharedRulesRecord, String> RECORD_STATUS = createField(DSL.name("record_status"), SQLDataType.VARCHAR(20).nullable(false).defaultValue(DSL.field(DSL.raw("'ACTIVE'::character varying"), SQLDataType.VARCHAR)), this, "");
+
+    /**
+     * The column <code>engine.shared_rules.version</code>.
+     */
+    public final TableField<SharedRulesRecord, Integer> VERSION = createField(DSL.name("version"), SQLDataType.INTEGER, this, "");
+
+    /**
      * The column <code>engine.shared_rules.created_at</code>.
      */
     public final TableField<SharedRulesRecord, OffsetDateTime> CREATED_AT = createField(DSL.name("created_at"), SQLDataType.TIMESTAMPWITHTIMEZONE(6).nullable(false).defaultValue(DSL.field(DSL.raw("now()"), SQLDataType.TIMESTAMPWITHTIMEZONE)), this, "");

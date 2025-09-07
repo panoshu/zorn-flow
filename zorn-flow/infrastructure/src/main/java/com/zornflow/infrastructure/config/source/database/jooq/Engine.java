@@ -7,6 +7,7 @@ package com.zornflow.infrastructure.config.source.database.jooq;
 import com.zornflow.infrastructure.config.source.database.jooq.tables.ChainNodes;
 import com.zornflow.infrastructure.config.source.database.jooq.tables.ChainRules;
 import com.zornflow.infrastructure.config.source.database.jooq.tables.ProcessChains;
+import com.zornflow.infrastructure.config.source.database.jooq.tables.ProcessInstances;
 import com.zornflow.infrastructure.config.source.database.jooq.tables.RuleChains;
 import com.zornflow.infrastructure.config.source.database.jooq.tables.SharedNodes;
 import com.zornflow.infrastructure.config.source.database.jooq.tables.SharedRules;
@@ -49,6 +50,11 @@ public class Engine extends SchemaImpl {
     public final ProcessChains PROCESS_CHAINS = ProcessChains.PROCESS_CHAINS;
 
     /**
+     * 流程实例
+     */
+    public final ProcessInstances PROCESS_INSTANCES = ProcessInstances.PROCESS_INSTANCES;
+
+    /**
      * The table <code>engine.rule_chains</code>.
      */
     public final RuleChains RULE_CHAINS = RuleChains.RULE_CHAINS;
@@ -82,6 +88,7 @@ public class Engine extends SchemaImpl {
             ChainNodes.CHAIN_NODES,
             ChainRules.CHAIN_RULES,
             ProcessChains.PROCESS_CHAINS,
+            ProcessInstances.PROCESS_INSTANCES,
             RuleChains.RULE_CHAINS,
             SharedNodes.SHARED_NODES,
             SharedRules.SHARED_RULES

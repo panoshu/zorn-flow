@@ -2,6 +2,7 @@ package com.zornflow.infrastructure.config.source.database;
 
 import com.zornflow.infrastructure.config.model.ProcessChainConfig;
 import com.zornflow.infrastructure.config.model.ProcessNodeConfig;
+import com.zornflow.infrastructure.config.model.RecordStatus;
 import com.zornflow.infrastructure.config.source.database.jooq.tables.records.ChainNodesRecord;
 import com.zornflow.infrastructure.config.source.database.jooq.tables.records.ProcessChainsRecord;
 import com.zornflow.infrastructure.config.source.database.jooq.tables.records.SharedNodesRecord;
@@ -45,7 +46,7 @@ public non-sealed class DatabaseProcessChainConfigSource extends AbstractDatabas
   @Override
   protected Optional<ProcessChainConfig> loadById(String id) {
     ProcessChainsRecord chainRecord = dsl.selectFrom(PROCESS_CHAINS)
-      .where(PROCESS_CHAINS.ID.eq(id))
+      .where(PROCESS_CHAINS.ID.eq(id).and(PROCESS_CHAINS.RECORD_STATUS.eq(RecordStatus.ACTIVE.getDbValue())))
       .fetchOne();
 
     if (chainRecord == null) {
@@ -58,7 +59,9 @@ public non-sealed class DatabaseProcessChainConfigSource extends AbstractDatabas
 
   @Override
   public Map<String, ProcessChainConfig> loadAll() {
-    List<ProcessChainsRecord> chainRecords = dsl.selectFrom(PROCESS_CHAINS).fetch();
+    List<ProcessChainsRecord> chainRecords = dsl.selectFrom(PROCESS_CHAINS)
+      .where(PROCESS_CHAINS.RECORD_STATUS.eq(RecordStatus.ACTIVE.getDbValue()))
+      .fetch();
     return chainRecords.stream()
       .map(r -> processMapper.toDto(r, findNodesForChain(r.getId())))
       .collect(Collectors.toMap(ProcessChainConfig::id, config -> config));
@@ -127,8 +130,11 @@ public non-sealed class DatabaseProcessChainConfigSource extends AbstractDatabas
   @Override
   @Transactional
   public void delete(String id) {
-    dsl.deleteFrom(CHAIN_NODES).where(CHAIN_NODES.PROCESS_CHAIN_ID.eq(id)).execute();
-    dsl.deleteFrom(PROCESS_CHAINS).where(PROCESS_CHAINS.ID.eq(id)).execute();
+    dsl.update(PROCESS_CHAINS)
+      .set(PROCESS_CHAINS.RECORD_STATUS, RecordStatus.DELETED.getDbValue())
+      .set(PROCESS_CHAINS.UPDATED_AT, OffsetDateTime.now())
+      .where(PROCESS_CHAINS.ID.eq(id))
+      .execute();
   }
 
   private void validateChain(ProcessChainConfig config) {

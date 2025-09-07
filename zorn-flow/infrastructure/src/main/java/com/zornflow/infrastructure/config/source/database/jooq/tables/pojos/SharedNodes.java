@@ -24,6 +24,8 @@ public class SharedNodes implements Serializable {
     private final String ruleChainId;
     private final JSONB conditions;
     private final JSONB properties;
+    private final String recordStatus;
+    private final Integer version;
     private final OffsetDateTime createdAt;
     private final OffsetDateTime updatedAt;
 
@@ -34,6 +36,8 @@ public class SharedNodes implements Serializable {
         this.ruleChainId = value.ruleChainId;
         this.conditions = value.conditions;
         this.properties = value.properties;
+        this.recordStatus = value.recordStatus;
+        this.version = value.version;
         this.createdAt = value.createdAt;
         this.updatedAt = value.updatedAt;
     }
@@ -45,6 +49,8 @@ public class SharedNodes implements Serializable {
         String ruleChainId,
         JSONB conditions,
         JSONB properties,
+        String recordStatus,
+        Integer version,
         OffsetDateTime createdAt,
         OffsetDateTime updatedAt
     ) {
@@ -54,6 +60,8 @@ public class SharedNodes implements Serializable {
         this.ruleChainId = ruleChainId;
         this.conditions = conditions;
         this.properties = properties;
+        this.recordStatus = recordStatus;
+        this.version = version;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }
@@ -98,6 +106,20 @@ public class SharedNodes implements Serializable {
      */
     public JSONB getProperties() {
         return this.properties;
+    }
+
+    /**
+     * Getter for <code>engine.shared_nodes.record_status</code>.
+     */
+    public String getRecordStatus() {
+        return this.recordStatus;
+    }
+
+    /**
+     * Getter for <code>engine.shared_nodes.version</code>.
+     */
+    public Integer getVersion() {
+        return this.version;
     }
 
     /**
@@ -159,6 +181,18 @@ public class SharedNodes implements Serializable {
         }
         else if (!this.properties.equals(other.properties))
             return false;
+        if (this.recordStatus == null) {
+            if (other.recordStatus != null)
+                return false;
+        }
+        else if (!this.recordStatus.equals(other.recordStatus))
+            return false;
+        if (this.version == null) {
+            if (other.version != null)
+                return false;
+        }
+        else if (!this.version.equals(other.version))
+            return false;
         if (this.createdAt == null) {
             if (other.createdAt != null)
                 return false;
@@ -184,6 +218,8 @@ public class SharedNodes implements Serializable {
         result = prime * result + ((this.ruleChainId == null) ? 0 : this.ruleChainId.hashCode());
         result = prime * result + ((this.conditions == null) ? 0 : this.conditions.hashCode());
         result = prime * result + ((this.properties == null) ? 0 : this.properties.hashCode());
+        result = prime * result + ((this.recordStatus == null) ? 0 : this.recordStatus.hashCode());
+        result = prime * result + ((this.version == null) ? 0 : this.version.hashCode());
         result = prime * result + ((this.createdAt == null) ? 0 : this.createdAt.hashCode());
         result = prime * result + ((this.updatedAt == null) ? 0 : this.updatedAt.hashCode());
         return result;
@@ -199,6 +235,8 @@ public class SharedNodes implements Serializable {
         sb.append(", ").append(ruleChainId);
         sb.append(", ").append(conditions);
         sb.append(", ").append(properties);
+        sb.append(", ").append(recordStatus);
+        sb.append(", ").append(version);
         sb.append(", ").append(createdAt);
         sb.append(", ").append(updatedAt);
 

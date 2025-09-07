@@ -92,6 +92,11 @@ public class ProcessNode extends Entity<ProcessNodeId> {
   }
 
   @Override
+  public Integer getVersion() {
+    return super.getVersion();
+  }
+
+  @Override
   public Instant getCreatedAt() {
     return super.getCreatedAt();
   }

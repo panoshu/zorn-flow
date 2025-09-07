@@ -18,16 +18,18 @@ public class ProcessChains implements Serializable {
 
     private final String id;
     private final String name;
-    private final String version;
     private final String description;
+    private final String recordStatus;
+    private final Integer version;
     private final OffsetDateTime createdAt;
     private final OffsetDateTime updatedAt;
 
     public ProcessChains(ProcessChains value) {
         this.id = value.id;
         this.name = value.name;
-        this.version = value.version;
         this.description = value.description;
+        this.recordStatus = value.recordStatus;
+        this.version = value.version;
         this.createdAt = value.createdAt;
         this.updatedAt = value.updatedAt;
     }
@@ -35,15 +37,17 @@ public class ProcessChains implements Serializable {
     public ProcessChains(
         String id,
         String name,
-        String version,
         String description,
+        String recordStatus,
+        Integer version,
         OffsetDateTime createdAt,
         OffsetDateTime updatedAt
     ) {
         this.id = id;
         this.name = name;
-        this.version = version;
         this.description = description;
+        this.recordStatus = recordStatus;
+        this.version = version;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }
@@ -63,17 +67,24 @@ public class ProcessChains implements Serializable {
     }
 
     /**
-     * Getter for <code>engine.process_chains.version</code>.
-     */
-    public String getVersion() {
-        return this.version;
-    }
-
-    /**
      * Getter for <code>engine.process_chains.description</code>.
      */
     public String getDescription() {
         return this.description;
+    }
+
+    /**
+     * Getter for <code>engine.process_chains.record_status</code>.
+     */
+    public String getRecordStatus() {
+        return this.recordStatus;
+    }
+
+    /**
+     * Getter for <code>engine.process_chains.version</code>.
+     */
+    public Integer getVersion() {
+        return this.version;
     }
 
     /**
@@ -111,17 +122,23 @@ public class ProcessChains implements Serializable {
         }
         else if (!this.name.equals(other.name))
             return false;
-        if (this.version == null) {
-            if (other.version != null)
-                return false;
-        }
-        else if (!this.version.equals(other.version))
-            return false;
         if (this.description == null) {
             if (other.description != null)
                 return false;
         }
         else if (!this.description.equals(other.description))
+            return false;
+        if (this.recordStatus == null) {
+            if (other.recordStatus != null)
+                return false;
+        }
+        else if (!this.recordStatus.equals(other.recordStatus))
+            return false;
+        if (this.version == null) {
+            if (other.version != null)
+                return false;
+        }
+        else if (!this.version.equals(other.version))
             return false;
         if (this.createdAt == null) {
             if (other.createdAt != null)
@@ -144,8 +161,9 @@ public class ProcessChains implements Serializable {
         int result = 1;
         result = prime * result + ((this.id == null) ? 0 : this.id.hashCode());
         result = prime * result + ((this.name == null) ? 0 : this.name.hashCode());
-        result = prime * result + ((this.version == null) ? 0 : this.version.hashCode());
         result = prime * result + ((this.description == null) ? 0 : this.description.hashCode());
+        result = prime * result + ((this.recordStatus == null) ? 0 : this.recordStatus.hashCode());
+        result = prime * result + ((this.version == null) ? 0 : this.version.hashCode());
         result = prime * result + ((this.createdAt == null) ? 0 : this.createdAt.hashCode());
         result = prime * result + ((this.updatedAt == null) ? 0 : this.updatedAt.hashCode());
         return result;
@@ -157,8 +175,9 @@ public class ProcessChains implements Serializable {
 
         sb.append(id);
         sb.append(", ").append(name);
-        sb.append(", ").append(version);
         sb.append(", ").append(description);
+        sb.append(", ").append(recordStatus);
+        sb.append(", ").append(version);
         sb.append(", ").append(createdAt);
         sb.append(", ").append(updatedAt);
 

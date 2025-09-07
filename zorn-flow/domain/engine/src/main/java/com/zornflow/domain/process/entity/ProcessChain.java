@@ -1,7 +1,6 @@
 package com.zornflow.domain.process.entity;
 
 import com.domain.contract.aggregate.AggregateRoot;
-import com.zornflow.domain.common.types.Version;
 import com.zornflow.domain.process.types.ProcessChainId;
 import com.zornflow.domain.process.types.ProcessChainName;
 import com.zornflow.domain.process.types.ProcessNodeId;
@@ -26,7 +25,6 @@ import java.util.Objects;
 @Getter
 public class ProcessChain extends AggregateRoot<ProcessChainId> {
   private final ProcessChainName name;
-  private final Version version;
   private final String description;
   private final Map<ProcessNodeId, ProcessNode> nodes;
   private final Map<String, ProcessNode> nodeIdIndex;
@@ -36,10 +34,9 @@ public class ProcessChain extends AggregateRoot<ProcessChainId> {
    * 私有构造函数
    */
   @Builder
-  private ProcessChain(ProcessChainId id, ProcessChainName name, Version version, String source, String description, List<ProcessNode> nodes) {
+  private ProcessChain(ProcessChainId id, ProcessChainName name, String description, List<ProcessNode> nodes) {
     super(Objects.requireNonNull(id, "流程ID不能为空"));
     this.name = name != null ? name : ProcessChainName.of(id);
-    this.version = Objects.requireNonNull(version, "版本不能为空");
     this.description = description != null ? description : "";
     this.nodes = new HashMap<>();
     this.nodeIdIndex = new HashMap<>();
@@ -150,6 +147,11 @@ public class ProcessChain extends AggregateRoot<ProcessChainId> {
   @Override
   protected void validateInvariants() {
 
+  }
+
+  @Override
+  public Integer getVersion() {
+    return super.getVersion();
   }
 
   @Override

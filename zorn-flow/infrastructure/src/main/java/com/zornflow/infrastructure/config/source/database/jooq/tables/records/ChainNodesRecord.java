@@ -4,7 +4,7 @@
 package com.zornflow.infrastructure.config.source.database.jooq.tables.records;
 
 
-import com.zornflow.infrastructure.config.source.database.jooq.tables.pojos.ChainNodes;
+import com.zornflow.infrastructure.config.source.database.jooq.tables.ChainNodes;
 
 import java.time.OffsetDateTime;
 
@@ -172,10 +172,25 @@ public class ChainNodesRecord extends UpdatableRecordImpl<ChainNodesRecord> {
     }
 
     /**
+     * Setter for <code>engine.chain_nodes.version</code>.
+     */
+    public ChainNodesRecord setVersion(Integer value) {
+        set(10, value);
+        return this;
+    }
+
+    /**
+     * Getter for <code>engine.chain_nodes.version</code>.
+     */
+    public Integer getVersion() {
+        return (Integer) get(10);
+    }
+
+    /**
      * Setter for <code>engine.chain_nodes.created_at</code>.
      */
     public ChainNodesRecord setCreatedAt(OffsetDateTime value) {
-        set(10, value);
+        set(11, value);
         return this;
     }
 
@@ -183,14 +198,14 @@ public class ChainNodesRecord extends UpdatableRecordImpl<ChainNodesRecord> {
      * Getter for <code>engine.chain_nodes.created_at</code>.
      */
     public OffsetDateTime getCreatedAt() {
-        return (OffsetDateTime) get(10);
+        return (OffsetDateTime) get(11);
     }
 
     /**
      * Setter for <code>engine.chain_nodes.updated_at</code>.
      */
     public ChainNodesRecord setUpdatedAt(OffsetDateTime value) {
-        set(11, value);
+        set(12, value);
         return this;
     }
 
@@ -198,7 +213,7 @@ public class ChainNodesRecord extends UpdatableRecordImpl<ChainNodesRecord> {
      * Getter for <code>engine.chain_nodes.updated_at</code>.
      */
     public OffsetDateTime getUpdatedAt() {
-        return (OffsetDateTime) get(11);
+        return (OffsetDateTime) get(12);
     }
 
     // -------------------------------------------------------------------------
@@ -218,14 +233,14 @@ public class ChainNodesRecord extends UpdatableRecordImpl<ChainNodesRecord> {
      * Create a detached ChainNodesRecord
      */
     public ChainNodesRecord() {
-        super(com.zornflow.infrastructure.config.source.database.jooq.tables.ChainNodes.CHAIN_NODES);
+        super(ChainNodes.CHAIN_NODES);
     }
 
     /**
      * Create a detached, initialised ChainNodesRecord
      */
-    public ChainNodesRecord(String id, String processChainId, String sharedNodeId, Integer sequence, String name, String nextNodeId, String nodeType, String ruleChainId, JSONB conditions, JSONB properties, OffsetDateTime createdAt, OffsetDateTime updatedAt) {
-        super(com.zornflow.infrastructure.config.source.database.jooq.tables.ChainNodes.CHAIN_NODES);
+    public ChainNodesRecord(String id, String processChainId, String sharedNodeId, Integer sequence, String name, String nextNodeId, String nodeType, String ruleChainId, JSONB conditions, JSONB properties, Integer version, OffsetDateTime createdAt, OffsetDateTime updatedAt) {
+        super(ChainNodes.CHAIN_NODES);
 
         setId(id);
         setProcessChainId(processChainId);
@@ -237,6 +252,7 @@ public class ChainNodesRecord extends UpdatableRecordImpl<ChainNodesRecord> {
         setRuleChainId(ruleChainId);
         setConditions(conditions);
         setProperties(properties);
+        setVersion(version);
         setCreatedAt(createdAt);
         setUpdatedAt(updatedAt);
         resetTouchedOnNotNull();
@@ -245,8 +261,8 @@ public class ChainNodesRecord extends UpdatableRecordImpl<ChainNodesRecord> {
     /**
      * Create a detached, initialised ChainNodesRecord
      */
-    public ChainNodesRecord(ChainNodes value) {
-        super(com.zornflow.infrastructure.config.source.database.jooq.tables.ChainNodes.CHAIN_NODES);
+    public ChainNodesRecord(com.zornflow.infrastructure.config.source.database.jooq.tables.pojos.ChainNodes value) {
+        super(ChainNodes.CHAIN_NODES);
 
         if (value != null) {
             setId(value.getId());
@@ -259,6 +275,7 @@ public class ChainNodesRecord extends UpdatableRecordImpl<ChainNodesRecord> {
             setRuleChainId(value.getRuleChainId());
             setConditions(value.getConditions());
             setProperties(value.getProperties());
+            setVersion(value.getVersion());
             setCreatedAt(value.getCreatedAt());
             setUpdatedAt(value.getUpdatedAt());
             resetTouchedOnNotNull();

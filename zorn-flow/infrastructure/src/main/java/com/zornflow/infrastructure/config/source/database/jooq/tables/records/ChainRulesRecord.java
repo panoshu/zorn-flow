@@ -4,7 +4,7 @@
 package com.zornflow.infrastructure.config.source.database.jooq.tables.records;
 
 
-import com.zornflow.infrastructure.config.source.database.jooq.tables.pojos.ChainRules;
+import com.zornflow.infrastructure.config.source.database.jooq.tables.ChainRules;
 
 import java.time.OffsetDateTime;
 
@@ -142,10 +142,25 @@ public class ChainRulesRecord extends UpdatableRecordImpl<ChainRulesRecord> {
     }
 
     /**
+     * Setter for <code>engine.chain_rules.version</code>.
+     */
+    public ChainRulesRecord setVersion(Integer value) {
+        set(8, value);
+        return this;
+    }
+
+    /**
+     * Getter for <code>engine.chain_rules.version</code>.
+     */
+    public Integer getVersion() {
+        return (Integer) get(8);
+    }
+
+    /**
      * Setter for <code>engine.chain_rules.created_at</code>.
      */
     public ChainRulesRecord setCreatedAt(OffsetDateTime value) {
-        set(8, value);
+        set(9, value);
         return this;
     }
 
@@ -153,14 +168,14 @@ public class ChainRulesRecord extends UpdatableRecordImpl<ChainRulesRecord> {
      * Getter for <code>engine.chain_rules.created_at</code>.
      */
     public OffsetDateTime getCreatedAt() {
-        return (OffsetDateTime) get(8);
+        return (OffsetDateTime) get(9);
     }
 
     /**
      * Setter for <code>engine.chain_rules.updated_at</code>.
      */
     public ChainRulesRecord setUpdatedAt(OffsetDateTime value) {
-        set(9, value);
+        set(10, value);
         return this;
     }
 
@@ -168,7 +183,7 @@ public class ChainRulesRecord extends UpdatableRecordImpl<ChainRulesRecord> {
      * Getter for <code>engine.chain_rules.updated_at</code>.
      */
     public OffsetDateTime getUpdatedAt() {
-        return (OffsetDateTime) get(9);
+        return (OffsetDateTime) get(10);
     }
 
     // -------------------------------------------------------------------------
@@ -188,14 +203,14 @@ public class ChainRulesRecord extends UpdatableRecordImpl<ChainRulesRecord> {
      * Create a detached ChainRulesRecord
      */
     public ChainRulesRecord() {
-        super(com.zornflow.infrastructure.config.source.database.jooq.tables.ChainRules.CHAIN_RULES);
+        super(ChainRules.CHAIN_RULES);
     }
 
     /**
      * Create a detached, initialised ChainRulesRecord
      */
-    public ChainRulesRecord(String id, String ruleChainId, String sharedRuleId, Integer sequence, String name, Integer priority, String condition, JSONB handlerConfig, OffsetDateTime createdAt, OffsetDateTime updatedAt) {
-        super(com.zornflow.infrastructure.config.source.database.jooq.tables.ChainRules.CHAIN_RULES);
+    public ChainRulesRecord(String id, String ruleChainId, String sharedRuleId, Integer sequence, String name, Integer priority, String condition, JSONB handlerConfig, Integer version, OffsetDateTime createdAt, OffsetDateTime updatedAt) {
+        super(ChainRules.CHAIN_RULES);
 
         setId(id);
         setRuleChainId(ruleChainId);
@@ -205,6 +220,7 @@ public class ChainRulesRecord extends UpdatableRecordImpl<ChainRulesRecord> {
         setPriority(priority);
         setCondition(condition);
         setHandlerConfig(handlerConfig);
+        setVersion(version);
         setCreatedAt(createdAt);
         setUpdatedAt(updatedAt);
         resetTouchedOnNotNull();
@@ -213,8 +229,8 @@ public class ChainRulesRecord extends UpdatableRecordImpl<ChainRulesRecord> {
     /**
      * Create a detached, initialised ChainRulesRecord
      */
-    public ChainRulesRecord(ChainRules value) {
-        super(com.zornflow.infrastructure.config.source.database.jooq.tables.ChainRules.CHAIN_RULES);
+    public ChainRulesRecord(com.zornflow.infrastructure.config.source.database.jooq.tables.pojos.ChainRules value) {
+        super(ChainRules.CHAIN_RULES);
 
         if (value != null) {
             setId(value.getId());
@@ -225,6 +241,7 @@ public class ChainRulesRecord extends UpdatableRecordImpl<ChainRulesRecord> {
             setPriority(value.getPriority());
             setCondition(value.getCondition());
             setHandlerConfig(value.getHandlerConfig());
+            setVersion(value.getVersion());
             setCreatedAt(value.getCreatedAt());
             setUpdatedAt(value.getUpdatedAt());
             resetTouchedOnNotNull();
