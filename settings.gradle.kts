@@ -1,4 +1,4 @@
-rootProject.name = "ZornFlow"
+rootProject.name = "zorn-flow"
 
 include("zorn-flow:api")
 include("zorn-flow:domain:contract")
