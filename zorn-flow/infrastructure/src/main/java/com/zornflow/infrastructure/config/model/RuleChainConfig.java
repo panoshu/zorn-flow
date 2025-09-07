@@ -3,6 +3,7 @@ package com.zornflow.infrastructure.config.model;
 import com.zornflow.domain.common.config.model.ModelConfig;
 import lombok.Builder;
 
+import java.time.OffsetDateTime;
 import java.util.List;
 
 /**
@@ -18,5 +19,7 @@ public record RuleChainConfig(
   String name,
   String version,
   String description,
-  List<RuleConfig> rules) implements ModelConfig {
+  List<RuleConfig> rules,
+  OffsetDateTime createdAt,
+  OffsetDateTime updatedAt) implements ModelConfig {
 }

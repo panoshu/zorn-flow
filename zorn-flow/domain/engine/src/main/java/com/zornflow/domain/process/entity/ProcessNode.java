@@ -9,6 +9,7 @@ import com.zornflow.domain.rule.types.RuleChainId;
 import lombok.Builder;
 import lombok.Getter;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -88,5 +89,15 @@ public class ProcessNode extends Entity<ProcessNodeId> {
   @Override
   protected void validateInvariants() {
 
+  }
+
+  @Override
+  public Instant getCreatedAt() {
+    return super.getCreatedAt();
+  }
+
+  @Override
+  public Instant getUpdatedAt() {
+    return super.getUpdatedAt();
   }
 }

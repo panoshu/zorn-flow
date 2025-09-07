@@ -1,0 +1,10 @@
+// utf8-probe.init.gradle
+gradle.projectsLoaded {
+  gradle.rootProject.tasks.register("utf8Probe") {
+    doLast {
+      println "ENC: file.encoding=${System.getProperty('file.encoding')}, native.encoding=${System.getProperty('native.encoding')}, " +
+        "stdout=${System.getProperty('sun.stdout.encoding')}, locale=${java.util.Locale.getDefault()}"
+      println "PROBE: 中文/日本語/한글/emoji ✓"
+    }
+  }
+}

@@ -96,19 +96,21 @@ public non-sealed class DatabaseRuleChainConfigSource extends AbstractDatabaseCo
     String chainId = modelConfig.id();
     OffsetDateTime now = OffsetDateTime.now();
 
-    RuleChainsRecord chainRecord = dsl.newRecord(RULE_CHAINS);
+    // 1. Map DTO to a new or existing record
+    RuleChainsRecord chainRecord = dsl.fetchOne(RULE_CHAINS, RULE_CHAINS.ID.eq(chainId));
+    if (chainRecord == null) {
+      chainRecord = dsl.newRecord(RULE_CHAINS);
+      // Set creation time only for new records
+      chainRecord.setCreatedAt(now);
+    }
     ruleMapper.updateRecord(modelConfig, chainRecord);
+    // Always set update time
+    chainRecord.setUpdatedAt(now);
 
-    dsl.insertInto(RULE_CHAINS)
-      .set(chainRecord)
-      .set(RULE_CHAINS.CREATED_AT, now)
-      .set(RULE_CHAINS.UPDATED_AT, now)
-      .onConflict(RULE_CHAINS.ID)
-      .doUpdate()
-      .set(chainRecord)
-      .set(RULE_CHAINS.UPDATED_AT, now)
-      .execute();
+    // 2. Use JOOQ's store() method for a clean insert or update
+    chainRecord.store();
 
+    // 3. Handle child records (rules)
     dsl.deleteFrom(CHAIN_RULES).where(CHAIN_RULES.RULE_CHAIN_ID.eq(chainId)).execute();
 
     if (modelConfig.rules() != null && !modelConfig.rules().isEmpty()) {
@@ -116,7 +118,7 @@ public non-sealed class DatabaseRuleChainConfigSource extends AbstractDatabaseCo
       List<ChainRulesRecord> ruleRecords = modelConfig.rules().stream()
         .map(dto -> {
           ChainRulesRecord record = ruleMapper.toRecord(dto, chainId, sequence.getAndIncrement(), jsonbMapperHelper);
-          record.setCreatedAt(now);
+          record.setCreatedAt(now); // Also set timestamps for child records
           record.setUpdatedAt(now);
           return record;
         })

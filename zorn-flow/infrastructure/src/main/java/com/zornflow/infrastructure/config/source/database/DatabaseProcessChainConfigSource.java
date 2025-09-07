@@ -92,19 +92,21 @@ public non-sealed class DatabaseProcessChainConfigSource extends AbstractDatabas
     String chainId = modelConfig.id();
     OffsetDateTime now = OffsetDateTime.now();
 
-    ProcessChainsRecord chainRecord = dsl.newRecord(PROCESS_CHAINS);
+    // 1. Map DTO to a new or existing record
+    ProcessChainsRecord chainRecord = dsl.fetchOne(PROCESS_CHAINS, PROCESS_CHAINS.ID.eq(chainId));
+    if (chainRecord == null) {
+      chainRecord = dsl.newRecord(PROCESS_CHAINS);
+      // Set creation time only for new records
+      chainRecord.setCreatedAt(now);
+    }
     processMapper.updateRecord(modelConfig, chainRecord);
+    // Always set update time
+    chainRecord.setUpdatedAt(now);
 
-    dsl.insertInto(PROCESS_CHAINS)
-      .set(chainRecord)
-      .set(PROCESS_CHAINS.CREATED_AT, now)
-      .set(PROCESS_CHAINS.UPDATED_AT, now)
-      .onConflict(PROCESS_CHAINS.ID)
-      .doUpdate()
-      .set(chainRecord)
-      .set(PROCESS_CHAINS.UPDATED_AT, now)
-      .execute();
+    // 2. Use JOOQ's store() method for a clean insert or update
+    chainRecord.store();
 
+    // 3. Handle child records (nodes)
     dsl.deleteFrom(CHAIN_NODES).where(CHAIN_NODES.PROCESS_CHAIN_ID.eq(chainId)).execute();
 
     if (modelConfig.nodes() != null && !modelConfig.nodes().isEmpty()) {
@@ -112,7 +114,7 @@ public non-sealed class DatabaseProcessChainConfigSource extends AbstractDatabas
       List<ChainNodesRecord> nodeRecords = modelConfig.nodes().stream()
         .map(dto -> {
           ChainNodesRecord record = processMapper.toRecord(dto, chainId, sequence.getAndIncrement(), jsonbMapperHelper);
-          record.setCreatedAt(now);
+          record.setCreatedAt(now); // Also set timestamps for child records
           record.setUpdatedAt(now);
           return record;
         })

@@ -59,6 +59,7 @@ public non-sealed class YamlRuleChainConfigSource extends AbstractYamlConfigSour
         .orElse(localRule)
       ).toList();
 
-    return new RuleChainConfig(chain.id(), chain.name(), chain.version(), chain.description(), mergedRules);
+    return new RuleChainConfig(chain.id(), chain.name(), chain.version(), chain.description(),
+      mergedRules, null, null);
   }
 }

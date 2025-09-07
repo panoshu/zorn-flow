@@ -12,7 +12,10 @@ import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;
 import org.mapstruct.Named;
 
-@Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
+@Mapper(
+  componentModel = MappingConstants.ComponentModel.SPRING,
+  uses = {CommonTypeMapper.class}
+)
 public interface RuleConfigMapper {
 
   @Mapping(target = "id", source = "id", qualifiedByName = "stringToRuleChainId")
@@ -33,6 +36,8 @@ public interface RuleConfigMapper {
   @Mapping(target = "name", source = "name", qualifiedByName = "ruleChainNameToString")
   @Mapping(target = "version", source = "version", qualifiedByName = "versionToString")
   @Mapping(target = "rules", source = "rules")
+  @Mapping(target = "createdAt", source = "createdAt")
+  @Mapping(target = "updatedAt", source = "updatedAt")
   RuleChainConfig toDto(RuleChain entity);
 
   @Mapping(target = "id", source = "id", qualifiedByName = "ruleIdToString")
@@ -41,6 +46,8 @@ public interface RuleConfigMapper {
   @Mapping(target = "condition", source = "condition", qualifiedByName = "conditionToString")
   @Mapping(target = "handle", source = "handler")
   @Mapping(target = "sharedRuleId", ignore = true)
+  @Mapping(target = "createdAt", source = "createdAt")
+  @Mapping(target = "updatedAt", source = "updatedAt")
   RuleConfig toDto(Rule entity);
 
   @Named("stringToRuleChainId")

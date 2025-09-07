@@ -7,7 +7,7 @@ package com.zornflow.infrastructure.config.model;
  * @version 1.0
  * @since 2025/8/28 13:22
  */
-public record GatewayConditionConfig1(
+public record GatewayConditionConfig(
   String condition,
   String next) {
 }

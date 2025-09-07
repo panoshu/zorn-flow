@@ -21,8 +21,6 @@ public interface ProcessMapper {
   ProcessChainConfig toDto(ProcessChainsRecord record, List<ProcessNodeConfig> nodes);
 
   @Mapping(target = "id", source = "id")
-  @Mapping(target = "createdAt", ignore = true)
-  @Mapping(target = "updatedAt", ignore = true)
   void updateRecord(ProcessChainConfig dto, @MappingTarget ProcessChainsRecord record);
 
   @Mapping(target = "id", source = "instance.id")
@@ -33,6 +31,8 @@ public interface ProcessMapper {
   @Mapping(target = "ruleChain", expression = "java(mergeRuleChainId(instance.getRuleChainId(), template))")
   @Mapping(target = "conditions", expression = "java(mergeConditions(instance.getConditions(), template, helper))")
   @Mapping(target = "properties", expression = "java(mergeProperties(instance.getProperties(), template, helper))")
+  @Mapping(target = "createdAt", source = "instance.createdAt")
+  // @Mapping(target = "updatedAt", source = "instance.updatedAt")
   ProcessNodeConfig toDto(SharedNodesRecord template, ChainNodesRecord instance, @Context JsonbMapperHelper helper);
 
   @Mapping(target = "id", source = "id")
@@ -54,8 +54,6 @@ public interface ProcessMapper {
   @Mapping(target = "nodeType", expression = "java(dto.type() != null ? dto.type().name() : null)")
   @Mapping(target = "conditions", expression = "java(helper.toJsonb(dto.conditions()))")
   @Mapping(target = "properties", expression = "java(helper.toJsonb(dto.properties()))")
-  @Mapping(target = "createdAt", ignore = true)
-  @Mapping(target = "updatedAt", ignore = true)
   ChainNodesRecord toRecord(ProcessNodeConfig dto, String chainId, int sequence, @Context JsonbMapperHelper helper);
 
   @Named("stringToNodeType")

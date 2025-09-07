@@ -8,6 +8,7 @@ import com.zornflow.domain.rule.types.RuleId;
 import lombok.Builder;
 import lombok.Getter;
 
+import java.time.Instant;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -129,5 +130,15 @@ public class RuleChain extends AggregateRoot<RuleChainId> {
   @Override
   protected void validateInvariants() {
 
+  }
+
+  @Override
+  public Instant getCreatedAt() {
+    return super.getCreatedAt();
+  }
+
+  @Override
+  public Instant getUpdatedAt() {
+    return super.getUpdatedAt();
   }
 }

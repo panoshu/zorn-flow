@@ -58,6 +58,7 @@ public non-sealed class YamlProcessChainConfigSource extends AbstractYamlConfigS
         .orElse(localNode)
       ).toList();
 
-    return new ProcessChainConfig(chain.id(), chain.name(), chain.version(), chain.description(), mergedNodes);
+    return new ProcessChainConfig(chain.id(), chain.name(), chain.version(), chain.description(),
+      mergedNodes,null, null);
   }
 }

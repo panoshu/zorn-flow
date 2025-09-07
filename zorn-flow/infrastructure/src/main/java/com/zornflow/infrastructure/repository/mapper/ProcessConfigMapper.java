@@ -21,7 +21,10 @@ import org.mapstruct.Named;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
+@Mapper(
+  componentModel = MappingConstants.ComponentModel.SPRING,
+  uses = {CommonTypeMapper.class}
+)
 public interface ProcessConfigMapper {
 
   @Mapping(target = "id", source = "id", qualifiedByName = "stringToProcessChainId")
@@ -41,6 +44,8 @@ public interface ProcessConfigMapper {
   @Mapping(target = "name", source = "name", qualifiedByName = "processChainNameToString")
   @Mapping(target = "version", source = "version", qualifiedByName = "versionToString")
   @Mapping(target = "nodes", source = "allNodes")
+  @Mapping(target = "createdAt", source = "createdAt")
+  @Mapping(target = "updatedAt", source = "updatedAt")
   ProcessChainConfig toDto(ProcessChain entity);
 
   @Mapping(target = "id", source = "id", qualifiedByName = "processNodeIdToString")
@@ -48,6 +53,8 @@ public interface ProcessConfigMapper {
   @Mapping(target = "next", source = "nextNodeId", qualifiedByName = "processNodeIdToString")
   @Mapping(target = "ruleChain", source = "ruleChainId", qualifiedByName = "ruleChainIdToString")
   @Mapping(target = "sharedNodeId", ignore = true)
+  @Mapping(target = "createdAt", source = "createdAt")
+  @Mapping(target = "updatedAt", source = "updatedAt")
   ProcessNodeConfig toDto(ProcessNode entity);
 
   @Named("stringToProcessChainId")

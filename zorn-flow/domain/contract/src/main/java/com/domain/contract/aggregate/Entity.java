@@ -53,4 +53,12 @@ public abstract class Entity<ID extends Identifier> {
   public ID getId() {
     return this.id;
   }
+
+  public Instant getCreatedAt() {
+    return this.createdAt;
+  }
+
+  public Instant getUpdatedAt() {
+    return updatedAt;
+  }
 }

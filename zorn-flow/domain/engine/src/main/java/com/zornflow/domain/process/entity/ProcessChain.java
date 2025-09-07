@@ -8,6 +8,7 @@ import com.zornflow.domain.process.types.ProcessNodeId;
 import lombok.Builder;
 import lombok.Getter;
 
+import java.time.Instant;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -149,5 +150,15 @@ public class ProcessChain extends AggregateRoot<ProcessChainId> {
   @Override
   protected void validateInvariants() {
 
+  }
+
+  @Override
+  public Instant getCreatedAt() {
+    return super.getCreatedAt();
+  }
+
+  @Override
+  public Instant getUpdatedAt() {
+    return super.getUpdatedAt();
   }
 }

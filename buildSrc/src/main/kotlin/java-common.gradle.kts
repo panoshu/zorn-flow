@@ -29,7 +29,11 @@ tasks.withType<JavaCompile>().configureEach {
   options.encoding = "UTF-8"
 }
 
-tasks.withType<Test> {
+tasks.withType<Test>().configureEach {
   useJUnitPlatform()
-  jvmArgs("-XX:+EnableDynamicAgentLoading")
+  jvmArgs("-XX:+EnableDynamicAgentLoading", "-Dfile.encoding=UTF-8")
+}
+
+tasks.withType<JavaExec>().configureEach {
+  jvmArgs("-Dfile.encoding=UTF-8")
 }

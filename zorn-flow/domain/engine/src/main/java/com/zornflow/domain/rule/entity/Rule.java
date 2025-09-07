@@ -9,6 +9,7 @@ import com.zornflow.domain.rule.valueobject.Handler;
 import lombok.Builder;
 import lombok.Getter;
 
+import java.time.Instant;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -44,5 +45,15 @@ public class Rule extends Entity<RuleId> {
   @Override
   protected void validateInvariants() {
 
+  }
+
+  @Override
+  public Instant getCreatedAt() {
+    return super.getCreatedAt();
+  }
+
+  @Override
+  public Instant getUpdatedAt() {
+    return super.getUpdatedAt();
   }
 }

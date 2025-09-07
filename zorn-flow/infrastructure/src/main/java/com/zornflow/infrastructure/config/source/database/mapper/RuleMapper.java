@@ -18,8 +18,6 @@ public interface RuleMapper {
   RuleChainConfig toDto(RuleChainsRecord record, List<RuleConfig> rules);
 
   @Mapping(target = "id", source = "id")
-  @Mapping(target = "createdAt", ignore = true)
-  @Mapping(target = "updatedAt", ignore = true)
   void updateRecord(RuleChainConfig dto, @MappingTarget RuleChainsRecord record);
 
   @Mapping(target = "id", source = "instance.id")
@@ -28,6 +26,8 @@ public interface RuleMapper {
   @Mapping(target = "priority", expression = "java(java.util.Optional.ofNullable(instance.getPriority()).orElse(template.getPriority()))")
   @Mapping(target = "condition", expression = "java(java.util.Optional.ofNullable(instance.getCondition()).orElse(template.getCondition()))")
   @Mapping(target = "handle", expression = "java(mergeHandlerConfig(instance.getHandlerConfig(), template, helper))")
+  @Mapping(target = "createdAt", source = "instance.createdAt")
+  @Mapping(target = "updatedAt", source = "instance.updatedAt")
   RuleConfig toDto(SharedRulesRecord template, ChainRulesRecord instance, @Context JsonbMapperHelper helper);
 
   @Mapping(target = "id", source = "id")
@@ -43,8 +43,6 @@ public interface RuleMapper {
   @Mapping(target = "priority", source = "dto.priority")
   @Mapping(target = "condition", source = "dto.condition")
   @Mapping(target = "handlerConfig", expression = "java(helper.toJsonb(dto.handle()))")
-  @Mapping(target = "createdAt", ignore = true)
-  @Mapping(target = "updatedAt", ignore = true)
   ChainRulesRecord toRecord(RuleConfig dto, String chainId, int sequence, @Context JsonbMapperHelper helper);
 
   @Named("jsonbToHandlerConfig")

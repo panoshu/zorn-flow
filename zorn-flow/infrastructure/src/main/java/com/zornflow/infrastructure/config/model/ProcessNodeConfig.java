@@ -3,6 +3,7 @@ package com.zornflow.infrastructure.config.model;
 import com.zornflow.domain.common.config.model.ModelConfig;
 import lombok.Builder;
 
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -23,7 +24,9 @@ public record ProcessNodeConfig(
   String ruleChain,
   List<GatewayConditionConfig> conditions,
   Map<String, Object> properties,
-  Optional<String> sharedNodeId
+  Optional<String> sharedNodeId,
+  OffsetDateTime createdAt,
+  OffsetDateTime updatedAt
 ) implements ModelConfig {
 
   public enum NodeType {

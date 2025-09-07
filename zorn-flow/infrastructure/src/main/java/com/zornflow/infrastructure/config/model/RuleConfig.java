@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.zornflow.domain.common.config.model.ModelConfig;
 import lombok.Builder;
 
+import java.time.OffsetDateTime;
 import java.util.Map;
 import java.util.Optional;
 
@@ -21,7 +22,9 @@ public record RuleConfig(
   @JsonProperty(defaultValue = "100") Integer priority,
   String condition,
   HandlerConfig handle,
-  Optional<String> sharedRuleId
+  Optional<String> sharedRuleId,
+  OffsetDateTime createdAt,
+  OffsetDateTime updatedAt
 ) implements ModelConfig {
 
   public record HandlerConfig(Type type, String handler, Map<String, Object> parameters) {
