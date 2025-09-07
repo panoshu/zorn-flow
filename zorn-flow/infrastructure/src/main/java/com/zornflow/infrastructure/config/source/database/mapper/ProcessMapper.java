@@ -32,7 +32,7 @@ public interface ProcessMapper {
   @Mapping(target = "conditions", expression = "java(mergeConditions(instance.getConditions(), template, helper))")
   @Mapping(target = "properties", expression = "java(mergeProperties(instance.getProperties(), template, helper))")
   @Mapping(target = "createdAt", source = "instance.createdAt")
-  // @Mapping(target = "updatedAt", source = "instance.updatedAt")
+  @Mapping(target = "updatedAt", source = "instance.updatedAt")
   ProcessNodeConfig toDto(SharedNodesRecord template, ChainNodesRecord instance, @Context JsonbMapperHelper helper);
 
   @Mapping(target = "id", source = "id")
