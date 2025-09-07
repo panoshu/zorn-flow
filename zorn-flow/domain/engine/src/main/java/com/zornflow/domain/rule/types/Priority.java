@@ -43,14 +43,16 @@ public record Priority(int value) implements DomainPrimitive, Comparable<Priorit
    */
   @Override
   public int compareTo(Priority other) {
-    return Integer.compare(other.value, this.value);
+    // 如果 this.value (例如 5) < other.value (例如 10)，返回负数，
+    // 这会让 this (5) 在排序时排在 other (10) 的前面，符合预期。
+    return Integer.compare(this.value, other.value);
   }
 
   public boolean isHigherThan(Priority other) {
-    return this.compareTo(other) < 0;
+    return this.compareTo(other) > 0;
   }
 
   public boolean isLowerThan(Priority other) {
-    return this.compareTo(other) > 0;
+    return this.compareTo(other) < 0;
   }
 }

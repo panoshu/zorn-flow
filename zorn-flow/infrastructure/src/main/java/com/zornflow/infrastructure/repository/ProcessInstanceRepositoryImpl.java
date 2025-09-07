@@ -3,8 +3,8 @@ package com.zornflow.infrastructure.repository;
 import com.zornflow.domain.process.entity.ProcessInstance;
 import com.zornflow.domain.process.repository.ProcessInstanceRepository;
 import com.zornflow.domain.process.types.ProcessInstanceId;
-import com.zornflow.infrastructure.config.source.database.jooq.tables.records.ProcessInstancesRecord;
-import com.zornflow.infrastructure.repository.mapper.ProcessInstanceMapper;
+import com.zornflow.infrastructure.persistence.jooq.tables.records.ProcessInstancesRecord;
+import com.zornflow.infrastructure.mapper.ProcessInstanceMapper;
 import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
 import org.springframework.stereotype.Repository;
@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static com.zornflow.infrastructure.config.source.database.jooq.Tables.PROCESS_INSTANCES;
+import static com.zornflow.infrastructure.persistence.jooq.Tables.PROCESS_INSTANCES;
 
 /**
  * description

@@ -8,10 +8,11 @@ import lombok.Builder;
 import lombok.Getter;
 
 import java.time.Instant;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * 流程聚合根
@@ -27,8 +28,7 @@ public class ProcessChain extends AggregateRoot<ProcessChainId> {
   private final ProcessChainName name;
   private final String description;
   private final Map<ProcessNodeId, ProcessNode> nodes;
-  private final Map<String, ProcessNode> nodeIdIndex;
-  private ProcessNodeId startNodeId;
+  private final ProcessNodeId startNodeId;
 
   /**
    * 私有构造函数
@@ -38,67 +38,46 @@ public class ProcessChain extends AggregateRoot<ProcessChainId> {
     super(Objects.requireNonNull(id, "流程ID不能为空"));
     this.name = name != null ? name : ProcessChainName.of(id);
     this.description = description != null ? description : "";
-    this.nodes = new HashMap<>();
-    this.nodeIdIndex = new HashMap<>();
-    addNodes(nodes);
-    determineStartNode();
+    this.nodes = buildNodesMap(nodes);
+    this.startNodeId = getStartNodeId(nodes);
     validateInvariants();
   }
 
   /**
-   * 添加多个节点
+   * [新增] 从输入的节点列表构建一个有序的、可快速查找的 Map。
+   * 这个方法封装了数据结构转换的实现细节。
+   * @param nodeList 必须是有序的、非空的节点列表
+   * @return 一个保留了插入顺序的 LinkedHashMap
    */
-  private void addNodes(List<ProcessNode> nodes) {
-    if (nodes == null || nodes.isEmpty()){
-      throw new IllegalArgumentException("nodes cannot be null or empty");
+  private Map<ProcessNodeId, ProcessNode> buildNodesMap(List<ProcessNode> nodeList) {
+    if (nodeList == null || nodeList.isEmpty()) {
+      throw new IllegalArgumentException("流程的节点列表不能为空！");
     }
 
-    for (ProcessNode node : nodes) {
-      addNode(node);
-    }
-  }
-
-  /**
-   * 添加单个节点
-   */
-  public void addNode(ProcessNode node) {
-    Objects.requireNonNull(node, "流程节点不能为空");
-    ProcessNodeId nodeId = node.getId();
-    String nodeIdStr = nodeId.value();
-
-    if (nodes.containsKey(nodeId)) {
-      throw new IllegalArgumentException("流程节点ID已存在: " + nodeIdStr);
-    }
-    if (nodeIdIndex.containsKey(nodeIdStr)) {
-      throw new IllegalArgumentException("流程节点ID字符串已存在: " + nodeIdStr);
-    }
-
-    nodes.put(nodeId, node);
-    nodeIdIndex.put(nodeIdStr, node);
-  }
-
-  /**
-   * 确定流程的起始节点
-   * 简单实现：取第一个添加的节点作为起始节点
-   */
-  private void determineStartNode() {
-    if (!nodes.isEmpty() && startNodeId == null) {
-      startNodeId = nodes.keySet().iterator().next();
-    }
+    return nodeList.stream()
+      .collect(Collectors.toMap(
+        ProcessNode::getId,
+        node -> node,
+        (existing, replacement) -> {
+          throw new IllegalArgumentException("发现重复的节点ID: " + existing.getId().value());
+        },
+        LinkedHashMap::new
+      ));
   }
 
   /**
    * 设置起始节点
    *
-   * @param startNodeId 起始节点ID
+   * @param nodeList 初始化节点列表
    * @throws IllegalArgumentException 如果节点ID不存在
    */
-  public void setStartNodeId(ProcessNodeId startNodeId) {
-    Objects.requireNonNull(startNodeId, "起始节点ID不能为空");
-    if (!nodes.containsKey(startNodeId)) {
-      throw new IllegalArgumentException("起始节点ID不存在: " + startNodeId.value());
+  private ProcessNodeId getStartNodeId(List<ProcessNode> nodeList) {
+    ProcessNodeId nodeId = nodeList.getFirst().getId();
+    Objects.requireNonNull(nodeId, "起始节点ID不能为空");
+    if (!this.nodes.containsKey(nodeId)) {
+      throw new IllegalArgumentException("起始节点ID不存在: " + nodeId.value());
     }
-    this.startNodeId = startNodeId;
+    return nodeId;
   }
 
   /**
@@ -124,11 +103,7 @@ public class ProcessChain extends AggregateRoot<ProcessChainId> {
    * @throws IllegalArgumentException 如果节点不存在
    */
   public ProcessNode getNodeByStringId(String nodeIdStr) {
-    ProcessNode node = nodeIdIndex.get(nodeIdStr);
-    if (node == null) {
-      throw new IllegalArgumentException("节点ID不存在: " + nodeIdStr);
-    }
-    return node;
+    return this.getNodeById(ProcessNodeId.of(nodeIdStr));
   }
 
   /**

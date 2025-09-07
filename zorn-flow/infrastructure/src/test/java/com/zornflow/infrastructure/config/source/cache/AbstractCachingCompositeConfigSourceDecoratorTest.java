@@ -58,12 +58,12 @@ class AbstractCachingCompositeConfigSourceDecoratorTest {
   }
 
   @Test
-  @DisplayName("load(id): Should fetch from delegate on cache miss and populate cache")
+  @DisplayName("loan(id): Should fetch from delegate on cache miss and populate cache")
   void load_shouldFetchFromDelegateOnCacheMiss() throws IOException {
     // Arrange
     when(delegate.load("id-1")).thenReturn(Optional.of(sampleConfig1));
 
-    // Act: First load, should be a cache miss
+    // Act: First loan, should be a cache miss
     Optional<RuleChainConfig> result1 = cachingDecorator.load("id-1");
 
     // Assert
@@ -72,7 +72,7 @@ class AbstractCachingCompositeConfigSourceDecoratorTest {
     assertEquals("Chain 1", result1.get().name());
     assertNotNull(cache.get(ITEM_KEY_PREFIX + "id-1"));
 
-    // Act: Second load, should be a cache hit
+    // Act: Second loan, should be a cache hit
     Optional<RuleChainConfig> result2 = cachingDecorator.load("id-1");
 
     // Assert

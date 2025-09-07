@@ -5,7 +5,7 @@ import com.zornflow.domain.process.repository.ProcessChainRepository;
 import com.zornflow.domain.process.types.ProcessChainId;
 import com.zornflow.infrastructure.config.model.ProcessChainConfig;
 import com.zornflow.infrastructure.config.source.cache.CachingProcessChainCompositeConfigSourceDecorator;
-import com.zornflow.infrastructure.repository.mapper.ProcessConfigMapper;
+import com.zornflow.infrastructure.mapper.ProcessDomainMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.stereotype.Repository;
@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
 public class ProcessChainRepositoryImpl implements ProcessChainRepository {
 
   private final CachingProcessChainCompositeConfigSourceDecorator configSource;
-  private final ProcessConfigMapper mapper;
+  private final ProcessDomainMapper mapper;
 
   @Override
   @SneakyThrows

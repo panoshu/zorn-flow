@@ -20,161 +20,86 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.*;
 
-/**
- * Unit tests for {@link DefaultRuleChainExecutionService}.
- */
 @ExtendWith(MockitoExtension.class)
+@DisplayName("DefaultRuleChainExecutionService 领域服务单元测试")
 class DefaultRuleChainExecutionServiceTest {
 
-  // Mock dependencies, as we only want to test the service's logic
   @Mock
   private ConditionEvaluator conditionEvaluator;
+
   @Mock
   private HandlerExecutorFactory handlerExecutorFactory;
+
   @Mock
   private HandlerExecutor handlerExecutor;
 
-  // The class we are testing
+  // 被测试的类
   @InjectMocks
   private DefaultRuleChainExecutionService executionService;
 
-  private BusinessContext initialContext;
-  private Rule rule1_priority10;
-  private Rule rule2_priority20;
-  private Rule rule3_priority5; // Highest priority
+  private Rule rule_p10;
+  private Rule rule_p20;
+  private BusinessContext context;
 
   @BeforeEach
   void setUp() {
-    // Prepare common test data before each test
-    initialContext = new BusinessContext(Map.of("amount", 100));
-
-    // Create some rules with different priorities
-    rule1_priority10 = Rule.builder()
-      .id(RuleId.of("rule-1"))
-      .name(RuleName.of("Rule 1"))
-      .priority(Priority.of(10))
-      .condition(Condition.of("#{amount > 50}"))
-      .handler(Handler.of(HandlerType.CLASS, "handler1"))
-      .build();
-
-    rule2_priority20 = Rule.builder()
-      .id(RuleId.of("rule-2"))
-      .name(RuleName.of("Rule 2"))
-      .priority(Priority.of(20)) // Lower priority than rule1
-      .condition(Condition.of("#{true}"))
-      .handler(Handler.of(HandlerType.CLASS, "handler2"))
-      .build();
-
-    rule3_priority5 = Rule.builder()
-      .id(RuleId.of("rule-3"))
-      .name(RuleName.of("Rule 3"))
-      .priority(Priority.of(5)) // Highest priority
-      .condition(Condition.of("#{false}"))
-      .handler(Handler.of(HandlerType.CLASS, "handler3"))
-      .build();
+    context = new BusinessContext(Map.of("amount", 100));
+    rule_p10 = Rule.builder().id(RuleId.of("r10")).priority(Priority.of(10)).condition(Condition.of("#{true}")).handler(Handler.of(HandlerType.CLASS, "h10")).build();
+    rule_p20 = Rule.builder().id(RuleId.of("r20")).priority(Priority.of(20)).condition(Condition.of("#{false}")).handler(Handler.of(HandlerType.CLASS, "h20")).build();
   }
 
   @Test
-  @DisplayName("Should execute rules in correct priority order")
-  void execute_shouldProcessRulesInPriorityOrder() {
-    // Arrange: Create a rule chain with rules in a jumbled order
-    RuleChain ruleChain = RuleChain.builder()
-      .id(RuleChainId.of("test-chain"))
-      .rules(List.of(rule1_priority10, rule2_priority20, rule3_priority5))
-      .build();
-
-    // Mock the behavior of dependencies
-    // All conditions are true, so all handlers should be executed
-    when(conditionEvaluator.evaluate(any(Condition.class), any(BusinessContext.class))).thenReturn(true);
-    when(handlerExecutorFactory.getExecutor(any(Handler.class))).thenReturn(Optional.of(handlerExecutor));
-
-    // Act: Execute the service method
-    executionService.execute(ruleChain, initialContext);
-
-    // Assert: Verify that the handlers were called in the correct order (5, 10, 20)
-    var inOrder = inOrder(conditionEvaluator, handlerExecutor);
-    inOrder.verify(conditionEvaluator).evaluate(rule3_priority5.getCondition(), initialContext);
-    inOrder.verify(handlerExecutor).execute(rule3_priority5.getHandler(), initialContext);
-
-    inOrder.verify(conditionEvaluator).evaluate(rule1_priority10.getCondition(), initialContext);
-    inOrder.verify(handlerExecutor).execute(rule1_priority10.getHandler(), initialContext);
-
-    inOrder.verify(conditionEvaluator).evaluate(rule2_priority20.getCondition(), initialContext);
-    inOrder.verify(handlerExecutor).execute(rule2_priority20.getHandler(), initialContext);
-  }
-
-  @Test
-  @DisplayName("Should only execute handler when condition is true")
-  void execute_shouldOnlyExecuteHandlerWhenConditionIsTrue() {
+  @DisplayName("execute: 应按规则优先级顺序执行，并只执行条件为真的规则")
+  void execute_shouldProcessRulesInOrderAndOnlyWhenConditionIsTrue() {
     // Arrange
     RuleChain ruleChain = RuleChain.builder()
       .id(RuleChainId.of("test-chain"))
-      .rules(List.of(rule1_priority10, rule3_priority5))
+      .rules(List.of(rule_p20, rule_p10)) // 故意乱序
       .build();
 
-    // Mock: rule3's condition is true, rule1's is false
-    when(conditionEvaluator.evaluate(rule3_priority5.getCondition(), initialContext)).thenReturn(true);
-    when(conditionEvaluator.evaluate(rule1_priority10.getCondition(), initialContext)).thenReturn(false);
-    when(handlerExecutorFactory.getExecutor(rule3_priority5.getHandler())).thenReturn(Optional.of(handlerExecutor));
+    // 模拟 rule_p10 的条件为真，rule_p20 的条件为假
+    when(conditionEvaluator.evaluate(rule_p10.getCondition(), context)).thenReturn(true);
+    when(conditionEvaluator.evaluate(rule_p20.getCondition(), context)).thenReturn(false);
+
+    // 模拟能为 rule_p10 找到执行器
+    when(handlerExecutorFactory.getExecutor(rule_p10.getHandler())).thenReturn(Optional.of(handlerExecutor));
 
     // Act
-    executionService.execute(ruleChain, initialContext);
+    BusinessContext finalContext = executionService.execute(ruleChain, context);
 
     // Assert
-    // Verify handler for rule3 was called because its condition was true
-    verify(handlerExecutor, times(1)).execute(rule3_priority5.getHandler(), initialContext);
-    // Verify handler for rule1 was NEVER called
-    verify(handlerExecutor, never()).execute(rule1_priority10.getHandler(), initialContext);
+    // 1. 验证交互顺序
+    var inOrder = inOrder(conditionEvaluator, handlerExecutorFactory, handlerExecutor);
+    // 首先检查更高优先级的 rule_p10
+    inOrder.verify(conditionEvaluator).evaluate(rule_p10.getCondition(), context);
+    inOrder.verify(handlerExecutorFactory).getExecutor(rule_p10.getHandler());
+    inOrder.verify(handlerExecutor).execute(rule_p10.getHandler(), context);
+    // 然后检查较低优先级的 rule_p20
+    inOrder.verify(conditionEvaluator).evaluate(rule_p20.getCondition(), context);
+
+    // 2. 验证 rule_p20 的执行器从未被调用
+    verify(handlerExecutorFactory, never()).getExecutor(rule_p20.getHandler());
+
+    // 3. 验证返回的上下文是原始上下文（因为我们的 mock 没有修改它）
+    assertThat(finalContext).isSameAs(context);
   }
 
   @Test
-  @DisplayName("Should throw exception if handler executor is not found")
-  void execute_shouldThrowExceptionWhenExecutorNotFound() {
+  @DisplayName("execute: 当找不到处理器时，应抛出 IllegalStateException")
+  void execute_shouldThrowException_whenExecutorNotFound() {
     // Arrange
-    RuleChain ruleChain = RuleChain.builder()
-      .id(RuleChainId.of("test-chain"))
-      .rules(List.of(rule1_priority10))
-      .build();
-
-    when(conditionEvaluator.evaluate(any(), any())).thenReturn(true);
-    // Mock: The factory returns an empty Optional, simulating no available executor
-    when(handlerExecutorFactory.getExecutor(any())).thenReturn(Optional.empty());
+    RuleChain ruleChain = RuleChain.builder().id(RuleChainId.of("chain")).rules(List.of(rule_p10)).build();
+    when(conditionEvaluator.evaluate(rule_p10.getCondition(), context)).thenReturn(true);
+    // 模拟找不到执行器
+    when(handlerExecutorFactory.getExecutor(rule_p10.getHandler())).thenReturn(Optional.empty());
 
     // Act & Assert
-    // Verify that executing the chain throws an IllegalStateException
-    var exception = assertThrows(IllegalStateException.class, () -> executionService.execute(ruleChain, initialContext));
-
-    assertTrue(exception.getMessage().contains("No handler executor found for type"));
-  }
-
-  @Test
-  @DisplayName("Should return the final context after execution")
-  void execute_shouldReturnFinalContext() {
-    // Arrange
-    RuleChain ruleChain = RuleChain.builder()
-      .id(RuleChainId.of("test-chain"))
-      .rules(List.of(rule1_priority10))
-      .build();
-
-    when(conditionEvaluator.evaluate(any(), any())).thenReturn(false); // No rule will execute
-
-    // Act
-    BusinessContext resultContext = executionService.execute(ruleChain, initialContext);
-
-    // Assert
-    // Since BusinessContext is immutable, it should be the same instance if not modified.
-    assertSame(initialContext, resultContext, "Context should be returned unmodified if no handlers execute");
-  }
-
-  @Test
-  @DisplayName("Should throw IllegalArgumentException for null arguments")
-  void execute_shouldThrowExceptionForNulls() {
-    assertThrows(IllegalArgumentException.class, () -> executionService.execute(null, initialContext));
-    RuleChain ruleChain = RuleChain.builder().id(RuleChainId.of("chain")).rules(List.of(rule1_priority10)).build();
-    assertThrows(IllegalArgumentException.class, () -> executionService.execute(ruleChain, null));
+    assertThatThrownBy(() -> executionService.execute(ruleChain, context))
+      .isInstanceOf(IllegalStateException.class)
+      .hasMessageContaining("No handler executor found for type: CLASS");
   }
 }

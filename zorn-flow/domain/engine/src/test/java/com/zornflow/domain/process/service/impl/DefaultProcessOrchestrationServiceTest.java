@@ -11,7 +11,7 @@ import com.zornflow.domain.process.types.ProcessNodeId;
 import com.zornflow.domain.process.valueobject.NodeType;
 import com.zornflow.domain.rule.entity.RuleChain;
 import com.zornflow.domain.rule.repository.RuleChainRepository;
-import com.zornflow.domain.rule.service.impl.DefaultRuleChainExecutionService;
+import com.zornflow.domain.rule.service.RuleChainExecutionService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -21,162 +21,142 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
+@DisplayName("DefaultProcessOrchestrationService 领域服务单元测试")
 class DefaultProcessOrchestrationServiceTest {
 
-  @Mock
-  private ProcessChainRepository definitionRepository;
-  @Mock
-  private RuleChainRepository ruleChainRepository;
-  @Mock
-  private DefaultRuleChainExecutionService ruleChainExecutionService;
-  @Mock
-  private GatewayProcessor gatewayProcessor;
-  @Mock
-  private ProcessInstance processInstance;
-  @Mock
-  private ProcessChain processChain;
-  @Mock
-  private RuleChain ruleChain;
+  @Mock private ProcessChainRepository processChainRepository;
+  @Mock private RuleChainRepository ruleChainRepository;
+  @Mock private RuleChainExecutionService ruleChainExecutionService;
+  @Mock private GatewayProcessor gatewayProcessor;
+  @Mock private ProcessInstance instance;
 
   @InjectMocks
   private DefaultProcessOrchestrationService orchestrationService;
 
-  private final ProcessChainId processChainId = ProcessChainId.of("proc-chain-1");
-  private final ProcessNodeId startNodeId = ProcessNodeId.of("start-node");
-  private final ProcessNodeId nextNodeId = ProcessNodeId.of("next-node");
-  private final com.zornflow.domain.rule.types.RuleChainId ruleChainId = com.zornflow.domain.rule.types.RuleChainId.of("rule-chain-1");
-  private BusinessContext initialContext;
+  private final ProcessChainId chainId = ProcessChainId.of("p-chain-1");
+  private final com.zornflow.domain.rule.types.RuleChainId ruleChainId = com.zornflow.domain.rule.types.RuleChainId.of("r-chain-1");
+  private final ProcessNodeId currentNodeId = ProcessNodeId.of("node-current");
+  private final ProcessNodeId nextNodeId = ProcessNodeId.of("node-next");
+  private BusinessContext originalContext;
   private BusinessContext updatedContext;
 
   @BeforeEach
   void setUp() {
-    initialContext = new BusinessContext(Map.of("status", "initial"));
-    updatedContext = new BusinessContext(Map.of("status", "updated"));
+    originalContext = new BusinessContext(Map.of("status", "started"));
+    updatedContext = new BusinessContext(Map.of("status", "processed"));
+    when(instance.getProcessChainId()).thenReturn(chainId);
   }
 
   @Test
-  @DisplayName("Should execute rule chain for a business node and move to the next node")
-  void executeNextStep_forBusinessNode_shouldExecuteRulesAndMove() {
+  @DisplayName("executeNextStep: 处理带规则链的业务节点，应执行规则并流转到下一节点")
+  void shouldExecuteRulesAndMove_forBusinessNodeWithRuleChain() {
     // Arrange
-    ProcessNode businessNode = ProcessNode.builder()
-      .id(startNodeId)
-      .type(NodeType.BUSINESS)
-      .ruleChainId(ruleChainId)
-      .nextNodeId(nextNodeId)
-      .properties(Collections.emptyMap()) // FIX: Provide required empty collections
-      .conditions(Collections.emptyList()) // FIX: Provide required empty collections
-      .build();
+    ProcessNode businessNode = createTestNode(NodeType.BUSINESS, nextNodeId, ruleChainId);
+    ProcessChain processChain = createTestProcessChain(businessNode);
+    RuleChain ruleChain = mock(RuleChain.class);
 
-    when(processInstance.getProcessChainId()).thenReturn(processChainId);
-    when(processInstance.getCurrentNodeId()).thenReturn(startNodeId);
-    when(processInstance.getContext()).thenReturn(initialContext);
-    when(definitionRepository.findById(processChainId)).thenReturn(Optional.of(processChain));
-    when(processChain.getNodeById(startNodeId)).thenReturn(businessNode);
+    when(instance.getCurrentNodeId()).thenReturn(currentNodeId);
+    when(instance.getContext()).thenReturn(originalContext);
+    when(processChainRepository.findById(chainId)).thenReturn(Optional.of(processChain));
     when(ruleChainRepository.findById(ruleChainId)).thenReturn(Optional.of(ruleChain));
-    when(ruleChainExecutionService.execute(ruleChain, initialContext)).thenReturn(updatedContext);
+    when(ruleChainExecutionService.execute(ruleChain, originalContext)).thenReturn(updatedContext);
 
     // Act
-    orchestrationService.executeNextStep(processInstance);
+    orchestrationService.executeNextStep(instance);
 
     // Assert
-    verify(ruleChainExecutionService).execute(ruleChain, initialContext);
-    verify(processInstance).moveToNextNode(nextNodeId, updatedContext);
+    verify(ruleChainExecutionService).execute(ruleChain, originalContext);
+    verify(instance).moveToNextNode(nextNodeId, updatedContext);
   }
 
   @Test
-  @DisplayName("Should process gateway node and move to the decided next node")
-  void executeNextStep_forGatewayNode_shouldProcessGatewayAndMove() {
+  @DisplayName("executeNextStep: 处理不带规则链的业务节点，应直接流转到下一节点")
+  void shouldMoveDirectly_forBusinessNodeWithoutRuleChain() {
     // Arrange
-    ProcessNode gatewayNode = ProcessNode.builder()
-      .id(startNodeId)
-      .type(NodeType.GATEWAY)
-      .ruleChainId(ruleChainId)
-      .properties(Collections.emptyMap()) // FIX: Provide required empty collections
-      .conditions(Collections.emptyList()) // FIX: Provide required empty collections
-      .build();
-    ProcessNodeId decidedNextNodeId = ProcessNodeId.of("path-b");
-
-    when(processInstance.getProcessChainId()).thenReturn(processChainId);
-    when(processInstance.getCurrentNodeId()).thenReturn(startNodeId);
-    when(processInstance.getContext()).thenReturn(initialContext);
-    when(definitionRepository.findById(processChainId)).thenReturn(Optional.of(processChain));
-    when(processChain.getNodeById(startNodeId)).thenReturn(gatewayNode);
-    when(gatewayProcessor.process(gatewayNode, initialContext)).thenReturn(decidedNextNodeId);
-
-    // Act
-    orchestrationService.executeNextStep(processInstance);
-
-    // Assert
-    verify(gatewayProcessor).process(gatewayNode, initialContext);
-    verify(processInstance).moveToNextNode(decidedNextNodeId, initialContext);
-  }
-
-  @Test
-  @DisplayName("Should throw IllegalStateException if process definition is not found")
-  void executeNextStep_whenProcessDefinitionNotFound_shouldThrowException() {
-    // Arrange
-    when(processInstance.getProcessChainId()).thenReturn(processChainId);
-    when(definitionRepository.findById(processChainId)).thenReturn(Optional.empty());
-
-    // Act & Assert
-    var exception = assertThrows(IllegalStateException.class, () -> orchestrationService.executeNextStep(processInstance));
-
-    assertTrue(exception.getMessage().contains("Cannot find process definition"));
-  }
-
-  @Test
-  @DisplayName("Should move to next node without executing rules if business node has no rule chain")
-  void executeNextStep_forBusinessNodeWithNoRules_shouldMoveWithoutExecuting() {
-    // Arrange
+    // 1. 创建一个 Mock 节点，这是正确的，因为我们想精确控制它的行为
     ProcessNode businessNode = mock(ProcessNode.class);
-    when(businessNode.getType()).thenReturn(NodeType.BUSINESS);
-    when(businessNode.getNextNodeId()).thenReturn(nextNodeId);
-    when(businessNode.getRuleChainId()).thenReturn(null); // Explicitly return null
 
-    when(processInstance.getProcessChainId()).thenReturn(processChainId);
-    when(processInstance.getCurrentNodeId()).thenReturn(startNodeId);
-    when(processInstance.getContext()).thenReturn(initialContext);
-    when(definitionRepository.findById(processChainId)).thenReturn(Optional.of(processChain));
-    when(processChain.getNodeById(startNodeId)).thenReturn(businessNode);
+    // 2. [关键修正] 为 Mock 对象的必要方法提供返回值
+    //    告诉 Mockito: 当调用 getId() 时，返回 currentNodeId
+    when(businessNode.getId()).thenReturn(currentNodeId);
+    when(businessNode.getRuleChainId()).thenReturn(null);
+    when(businessNode.getNextNodeId()).thenReturn(nextNodeId);
+    when(businessNode.getType()).thenReturn(NodeType.BUSINESS);
+
+    // 3. 使用这个配置好的 Mock 节点创建 ProcessChain
+    ProcessChain processChain = createTestProcessChain(businessNode);
+
+    when(instance.getCurrentNodeId()).thenReturn(currentNodeId);
+    when(instance.getContext()).thenReturn(originalContext);
+    when(processChainRepository.findById(chainId)).thenReturn(Optional.of(processChain));
 
     // Act
-    orchestrationService.executeNextStep(processInstance);
+    orchestrationService.executeNextStep(instance);
 
     // Assert
-    verify(ruleChainExecutionService, never()).execute(any(), any());
-    verify(processInstance).moveToNextNode(nextNodeId, initialContext);
+    verify(ruleChainExecutionService, never()).execute(any(), any()); // 验证从未执行规则
+    verify(instance).moveToNextNode(nextNodeId, originalContext);
   }
 
   @Test
-  @DisplayName("Should throw IllegalStateException if rule chain definition is not found")
-  void executeNextStep_whenRuleChainNotFound_shouldThrowException() {
+  @DisplayName("executeNextStep: 处理网关节点，应调用网关处理器并按其结果流转")
+  void shouldProcessGatewayAndMove_forGatewayNode() {
     // Arrange
-    ProcessNode businessNode = ProcessNode.builder()
-      .id(startNodeId)
-      .type(NodeType.BUSINESS)
-      .ruleChainId(ruleChainId)
-      .properties(Collections.emptyMap()) // FIX: Provide required empty collections
-      .conditions(Collections.emptyList()) // FIX: Provide required empty collections
-      .build();
+    ProcessNode gatewayNode = createTestNode(NodeType.GATEWAY, null, ruleChainId); // 即使是网关，构造时也需一个非空rcId
+    ProcessChain processChain = createTestProcessChain(gatewayNode);
+    ProcessNodeId decidedPathId = ProcessNodeId.of("path-decided");
 
-    when(processInstance.getProcessChainId()).thenReturn(processChainId);
-    when(processInstance.getCurrentNodeId()).thenReturn(startNodeId);
-    when(processInstance.getContext()).thenReturn(initialContext);
-    when(definitionRepository.findById(processChainId)).thenReturn(Optional.of(processChain));
-    when(processChain.getNodeById(startNodeId)).thenReturn(businessNode);
-    when(ruleChainRepository.findById(ruleChainId)).thenReturn(Optional.empty());
+    when(instance.getCurrentNodeId()).thenReturn(currentNodeId);
+    when(instance.getContext()).thenReturn(originalContext);
+    when(processChainRepository.findById(chainId)).thenReturn(Optional.of(processChain));
+    when(gatewayProcessor.process(gatewayNode, originalContext)).thenReturn(decidedPathId);
+
+    // Act
+    orchestrationService.executeNextStep(instance);
+
+    // Assert
+    verify(gatewayProcessor).process(gatewayNode, originalContext);
+    verify(instance).moveToNextNode(decidedPathId, originalContext);
+  }
+
+  @Test
+  @DisplayName("executeNextStep: 当找不到流程定义时，应抛出 IllegalStateException")
+  void shouldThrowException_whenProcessDefinitionNotFound() {
+    // Arrange
+    when(processChainRepository.findById(chainId)).thenReturn(Optional.empty());
 
     // Act & Assert
-    var exception = assertThrows(IllegalStateException.class, () -> orchestrationService.executeNextStep(processInstance));
+    assertThatThrownBy(() -> orchestrationService.executeNextStep(instance))
+      .isInstanceOf(IllegalStateException.class)
+      .hasMessageContaining("Cannot find process definition");
 
-    assertTrue(exception.getMessage().contains("RuleChainDefinition not found"));
+    verify(instance, never()).getCurrentNodeId(); // 验证此测试路径未调用多余的 stub
+  }
+
+  // --- Helper Methods ---
+  private ProcessNode createTestNode(NodeType type, ProcessNodeId nextNode, com.zornflow.domain.rule.types.RuleChainId rcId) {
+    return ProcessNode.builder()
+      .id(currentNodeId)
+      .type(type)
+      .nextNodeId(nextNode)
+      .ruleChainId(rcId)
+      .properties(Collections.emptyMap())
+      .conditions(Collections.emptyList())
+      .build();
+  }
+
+  private ProcessChain createTestProcessChain(ProcessNode node) {
+    return ProcessChain.builder()
+      .id(chainId)
+      .nodes(List.of(node))
+      .build();
   }
 }

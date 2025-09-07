@@ -56,7 +56,7 @@ jooq {
         fluentSetters = true
       }
       target {
-        packageName = "com.zornflow.infrastructure.config.source.database.jooq"
+        packageName = "com.zornflow.infrastructure.persistence.jooq"
         directory = "src/main/java"
       }
     }

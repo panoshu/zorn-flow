@@ -27,6 +27,9 @@ spring:
 
 # ZornFlow配置管理（简化后的配置）
 zornflow:
+  sync:
+    yaml-to-db:
+      enabled: true
   config:
     # 组合配置源设置
     composite:

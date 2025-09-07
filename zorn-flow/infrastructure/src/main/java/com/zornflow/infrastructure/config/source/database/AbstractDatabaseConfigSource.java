@@ -28,7 +28,7 @@ permits DatabaseRuleChainConfigSource, DatabaseProcessChainConfigSource{
     return this.loadById(id);
   }
 
-  // 将 load(String) 委托给一个更具体的名字，避免重写警告
+  // 将 loan(String) 委托给一个更具体的名字，避免重写警告
   protected abstract Optional<T> loadById(String id);
 
   @Override

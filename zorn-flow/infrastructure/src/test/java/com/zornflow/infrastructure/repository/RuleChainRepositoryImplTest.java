@@ -1,6 +1,5 @@
 package com.zornflow.infrastructure.repository;
 
-import com.zornflow.domain.common.types.Version;
 import com.zornflow.domain.rule.entity.Rule;
 import com.zornflow.domain.rule.entity.RuleChain;
 import com.zornflow.domain.rule.types.HandlerType;
@@ -10,7 +9,8 @@ import com.zornflow.domain.rule.valueobject.Handler;
 import com.zornflow.infrastructure.config.model.RuleChainConfig;
 import com.zornflow.infrastructure.config.model.RuleConfig;
 import com.zornflow.infrastructure.config.source.cache.CachingRuleChainCompositeConfigSourceDecorator;
-import com.zornflow.infrastructure.repository.mapper.RuleConfigMapper;
+import com.zornflow.infrastructure.mapper.RuleDomainMapper;
+import com.zornflow.infrastructure.repository.RuleChainRepositoryImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -34,7 +34,7 @@ class RuleChainRepositoryImplTest {
   @Mock
   private CachingRuleChainCompositeConfigSourceDecorator configSource;
   @Mock
-  private RuleConfigMapper mapper;
+  private RuleDomainMapper mapper;
 
   @InjectMocks
   private RuleChainRepositoryImpl ruleChainRepository;

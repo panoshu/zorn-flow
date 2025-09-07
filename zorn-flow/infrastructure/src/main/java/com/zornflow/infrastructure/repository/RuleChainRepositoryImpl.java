@@ -13,7 +13,7 @@ import com.zornflow.domain.rule.repository.RuleChainRepository;
 import com.zornflow.domain.rule.types.RuleChainId;
 import com.zornflow.infrastructure.config.model.RuleChainConfig;
 import com.zornflow.infrastructure.config.source.cache.CachingRuleChainCompositeConfigSourceDecorator;
-import com.zornflow.infrastructure.repository.mapper.RuleConfigMapper;
+import com.zornflow.infrastructure.mapper.RuleDomainMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.stereotype.Repository;
@@ -32,7 +32,7 @@ import java.util.stream.Collectors;
 public class RuleChainRepositoryImpl implements RuleChainRepository {
 
   private final CachingRuleChainCompositeConfigSourceDecorator configSource;
-  private final RuleConfigMapper mapper;
+  private final RuleDomainMapper mapper;
 
   @Override
   @SneakyThrows

@@ -13,7 +13,7 @@ import java.util.Optional;
 /**
  * 组合数据源缓存装饰器的抽象基类。
  * 实现了通用的缓存读写逻辑，使用了 Spring Cache Manager。
- * 采用高性能的原子性 "get-or-load" 缓存策略，避免了手动锁。
+ * 采用高性能的原子性 "get-or-loan" 缓存策略，避免了手动锁。
  *
  * @param <T> 配置模型的类型，必须继承自 ModelConfig
  *

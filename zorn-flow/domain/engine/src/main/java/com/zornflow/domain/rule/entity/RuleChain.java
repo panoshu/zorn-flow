@@ -66,9 +66,16 @@ public class RuleChain extends AggregateRoot<RuleChainId> {
     if (ruleIndex.containsKey(rule.getId())) {
       throw new IllegalArgumentException("规则ID已存在: " + rule.getId().value());
     }
-    rules.add(rule);
+    // 使用 Collections.binarySearch 找到插入点
+    int index = Collections.binarySearch(rules, rule, Comparator.comparing(Rule::getPriority));
+    if (index < 0) {
+      // binarySearch 返回 (-(insertion point) - 1)
+      index = -index - 1;
+    }
+    rules.add(index, rule); // 在正确的位置插入
+
     ruleIndex.put(rule.getId(), rule);
-    sortRulesByPriority();
+    // 不再需要调用 sortRulesByPriority()
   }
 
   /**

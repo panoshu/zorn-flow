@@ -3,11 +3,11 @@ package com.zornflow.infrastructure.config.source.database;
 import com.zornflow.infrastructure.config.model.ProcessChainConfig;
 import com.zornflow.infrastructure.config.model.ProcessNodeConfig;
 import com.zornflow.infrastructure.config.model.RecordStatus;
-import com.zornflow.infrastructure.config.source.database.jooq.tables.records.ChainNodesRecord;
-import com.zornflow.infrastructure.config.source.database.jooq.tables.records.ProcessChainsRecord;
-import com.zornflow.infrastructure.config.source.database.jooq.tables.records.SharedNodesRecord;
-import com.zornflow.infrastructure.config.source.database.mapper.JsonbMapperHelper;
-import com.zornflow.infrastructure.config.source.database.mapper.ProcessMapper;
+import com.zornflow.infrastructure.persistence.jooq.tables.records.ChainNodesRecord;
+import com.zornflow.infrastructure.persistence.jooq.tables.records.ProcessChainsRecord;
+import com.zornflow.infrastructure.persistence.jooq.tables.records.SharedNodesRecord;
+import com.zornflow.infrastructure.persistence.mapper.JsonbMapperHelper;
+import com.zornflow.infrastructure.persistence.mapper.ProcessPersistenceMapper;
 import org.jooq.DSLContext;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,7 +17,7 @@ import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
-import static com.zornflow.infrastructure.config.source.database.jooq.Tables.*;
+import static com.zornflow.infrastructure.persistence.jooq.Tables.*;
 
 /**
  * description
@@ -30,16 +30,16 @@ import static com.zornflow.infrastructure.config.source.database.jooq.Tables.*;
 @Component
 public non-sealed class DatabaseProcessChainConfigSource extends AbstractDatabaseConfigSource<ProcessChainConfig> {
 
-  private final ProcessMapper processMapper;
+  private final ProcessPersistenceMapper processPersistenceMapper;
   private final JsonbMapperHelper jsonbMapperHelper;
 
   public DatabaseProcessChainConfigSource(
     DSLContext dsl,
-    ProcessMapper processMapper,
+    ProcessPersistenceMapper processPersistenceMapper,
     JsonbMapperHelper jsonbMapperHelper
   ) {
     super(dsl);
-    this.processMapper = processMapper;
+    this.processPersistenceMapper = processPersistenceMapper;
     this.jsonbMapperHelper = jsonbMapperHelper;
   }
 
@@ -54,7 +54,7 @@ public non-sealed class DatabaseProcessChainConfigSource extends AbstractDatabas
     }
 
     List<ProcessNodeConfig> nodes = findNodesForChain(id);
-    return Optional.of(processMapper.toDto(chainRecord, nodes));
+    return Optional.of(processPersistenceMapper.toDto(chainRecord, nodes));
   }
 
   @Override
@@ -63,7 +63,7 @@ public non-sealed class DatabaseProcessChainConfigSource extends AbstractDatabas
       .where(PROCESS_CHAINS.RECORD_STATUS.eq(RecordStatus.ACTIVE.getDbValue()))
       .fetch();
     return chainRecords.stream()
-      .map(r -> processMapper.toDto(r, findNodesForChain(r.getId())))
+      .map(r -> processPersistenceMapper.toDto(r, findNodesForChain(r.getId())))
       .collect(Collectors.toMap(ProcessChainConfig::id, config -> config));
   }
 
@@ -79,9 +79,9 @@ public non-sealed class DatabaseProcessChainConfigSource extends AbstractDatabas
         ChainNodesRecord instance = record.into(CHAIN_NODES);
         SharedNodesRecord template = record.into(SHARED_NODES);
         if (template.getId() != null) {
-          return processMapper.toDto(template, instance, jsonbMapperHelper);
+          return processPersistenceMapper.toDto(template, instance, jsonbMapperHelper);
         } else {
-          return processMapper.toDto(instance, jsonbMapperHelper);
+          return processPersistenceMapper.toDto(instance, jsonbMapperHelper);
         }
       })
       .collect(Collectors.toList());
@@ -102,7 +102,7 @@ public non-sealed class DatabaseProcessChainConfigSource extends AbstractDatabas
       // Set creation time only for new records
       chainRecord.setCreatedAt(now);
     }
-    processMapper.updateRecord(modelConfig, chainRecord);
+    processPersistenceMapper.updateRecord(modelConfig, chainRecord);
     // Always set update time
     chainRecord.setUpdatedAt(now);
 
@@ -116,7 +116,7 @@ public non-sealed class DatabaseProcessChainConfigSource extends AbstractDatabas
       AtomicInteger sequence = new AtomicInteger(0);
       List<ChainNodesRecord> nodeRecords = modelConfig.nodes().stream()
         .map(dto -> {
-          ChainNodesRecord record = processMapper.toRecord(dto, chainId, sequence.getAndIncrement(), jsonbMapperHelper);
+          ChainNodesRecord record = processPersistenceMapper.toRecord(dto, chainId, sequence.getAndIncrement(), jsonbMapperHelper);
           record.setCreatedAt(now); // Also set timestamps for child records
           record.setUpdatedAt(now);
           return record;

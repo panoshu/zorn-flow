@@ -10,8 +10,8 @@ import com.zornflow.domain.process.service.ProcessOrchestrationService;
 import com.zornflow.domain.process.valueobject.NodeType;
 import com.zornflow.domain.rule.entity.RuleChain;
 import com.zornflow.domain.rule.repository.RuleChainRepository;
-import com.zornflow.domain.rule.service.impl.DefaultRuleChainExecutionService;
-import lombok.AllArgsConstructor;
+import com.zornflow.domain.rule.service.RuleChainExecutionService;
+import lombok.RequiredArgsConstructor;
 
 import java.util.Objects;
 
@@ -22,11 +22,11 @@ import java.util.Objects;
  * @version 1.0
  * @since 2025/8/25 23:13
  **/
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class DefaultProcessOrchestrationService implements ProcessOrchestrationService {
   private final ProcessChainRepository definitionRepository;
   private final RuleChainRepository ruleChainRepository;
-  private final DefaultRuleChainExecutionService ruleChainExecutionService;
+  private final RuleChainExecutionService ruleChainExecutionService;
   private final GatewayProcessor gatewayProcessor;
 
   /**
@@ -58,16 +58,12 @@ public class DefaultProcessOrchestrationService implements ProcessOrchestrationS
   private void handleBusinessNode(ProcessInstance instance, ProcessNode node) {
     BusinessContext finalContext = instance.getContext();
 
-    // 如果节点关联了规则链，则执行它
     if (node.getRuleChainId() != null) {
-      // 在我们的设计中，RuleChainDefinition是ProcessDefinition的一部分，
-      // 实际实现中需要一种方式从definition中获取它。为简化，假设可以直接获取。
       RuleChain ruleChain = ruleChainRepository.findById(node.getRuleChainId())
         .orElseThrow(() -> new IllegalStateException("RuleChainDefinition not found: " + node.getRuleChainId()));
       finalContext = ruleChainExecutionService.execute(ruleChain, instance.getContext());
     }
 
-    // 更新实例状态，移动到下一个节点
     instance.moveToNextNode(node.getNextNodeId(), finalContext);
   }
 

@@ -3,11 +3,11 @@ package com.zornflow.infrastructure.config.source.database;
 import com.zornflow.infrastructure.config.model.RecordStatus;
 import com.zornflow.infrastructure.config.model.RuleChainConfig;
 import com.zornflow.infrastructure.config.model.RuleConfig;
-import com.zornflow.infrastructure.config.source.database.jooq.tables.records.ChainRulesRecord;
-import com.zornflow.infrastructure.config.source.database.jooq.tables.records.RuleChainsRecord;
-import com.zornflow.infrastructure.config.source.database.jooq.tables.records.SharedRulesRecord;
-import com.zornflow.infrastructure.config.source.database.mapper.JsonbMapperHelper;
-import com.zornflow.infrastructure.config.source.database.mapper.RuleMapper;
+import com.zornflow.infrastructure.persistence.jooq.tables.records.ChainRulesRecord;
+import com.zornflow.infrastructure.persistence.jooq.tables.records.RuleChainsRecord;
+import com.zornflow.infrastructure.persistence.jooq.tables.records.SharedRulesRecord;
+import com.zornflow.infrastructure.persistence.mapper.JsonbMapperHelper;
+import com.zornflow.infrastructure.persistence.mapper.RulePersistenceMapper;
 import org.jooq.DSLContext;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,8 +20,7 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
-import static com.zornflow.infrastructure.config.source.database.jooq.Tables.*;
-
+import static com.zornflow.infrastructure.persistence.jooq.Tables.*;
 
 /**
  * description
@@ -34,16 +33,16 @@ import static com.zornflow.infrastructure.config.source.database.jooq.Tables.*;
 @Component
 public non-sealed class DatabaseRuleChainConfigSource extends AbstractDatabaseConfigSource<RuleChainConfig> {
 
-  private final RuleMapper ruleMapper;
+  private final RulePersistenceMapper rulePersistenceMapper;
   private final JsonbMapperHelper jsonbMapperHelper;
 
   public DatabaseRuleChainConfigSource(
     DSLContext dsl,
-    RuleMapper ruleMapper,
+    RulePersistenceMapper rulePersistenceMapper,
     JsonbMapperHelper jsonbMapperHelper
   ) {
     super(dsl);
-    this.ruleMapper = ruleMapper;
+    this.rulePersistenceMapper = rulePersistenceMapper;
     this.jsonbMapperHelper = jsonbMapperHelper;
   }
 
@@ -59,7 +58,7 @@ public non-sealed class DatabaseRuleChainConfigSource extends AbstractDatabaseCo
     }
 
     List<RuleConfig> rules = findRulesForChain(id);
-    return Optional.of(ruleMapper.toDto(chainRecord, rules));
+    return Optional.of(rulePersistenceMapper.toDto(chainRecord, rules));
   }
 
   @Override
@@ -68,7 +67,7 @@ public non-sealed class DatabaseRuleChainConfigSource extends AbstractDatabaseCo
       .where(RULE_CHAINS.RECORD_STATUS.eq(RecordStatus.ACTIVE.getDbValue()))
       .fetch();
     return chainRecords.stream()
-      .map(r -> ruleMapper.toDto(r, findRulesForChain(r.getId())))
+      .map(r -> rulePersistenceMapper.toDto(r, findRulesForChain(r.getId())))
       .collect(Collectors.toMap(RuleChainConfig::id, config -> config));
   }
 
@@ -84,9 +83,9 @@ public non-sealed class DatabaseRuleChainConfigSource extends AbstractDatabaseCo
         ChainRulesRecord instance = record.into(CHAIN_RULES);
         SharedRulesRecord template = record.into(SHARED_RULES);
         if (template.getId() != null) {
-          return ruleMapper.toDto(template, instance, jsonbMapperHelper);
+          return rulePersistenceMapper.toDto(template, instance, jsonbMapperHelper);
         } else {
-          return ruleMapper.toDto(instance, jsonbMapperHelper);
+          return rulePersistenceMapper.toDto(instance, jsonbMapperHelper);
         }
       })
       .collect(Collectors.toList());
@@ -107,7 +106,7 @@ public non-sealed class DatabaseRuleChainConfigSource extends AbstractDatabaseCo
       // Set creation time only for new records
       chainRecord.setCreatedAt(now);
     }
-    ruleMapper.updateRecord(modelConfig, chainRecord);
+    rulePersistenceMapper.updateRecord(modelConfig, chainRecord);
     // Always set update time
     chainRecord.setUpdatedAt(now);
 
@@ -121,7 +120,7 @@ public non-sealed class DatabaseRuleChainConfigSource extends AbstractDatabaseCo
       AtomicInteger sequence = new AtomicInteger(0);
       List<ChainRulesRecord> ruleRecords = modelConfig.rules().stream()
         .map(dto -> {
-          ChainRulesRecord record = ruleMapper.toRecord(dto, chainId, sequence.getAndIncrement(), jsonbMapperHelper);
+          ChainRulesRecord record = rulePersistenceMapper.toRecord(dto, chainId, sequence.getAndIncrement(), jsonbMapperHelper);
           record.setCreatedAt(now); // Also set timestamps for child records
           record.setUpdatedAt(now);
           return record;

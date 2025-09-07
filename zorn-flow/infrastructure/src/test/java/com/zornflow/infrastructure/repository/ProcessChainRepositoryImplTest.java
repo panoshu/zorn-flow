@@ -1,6 +1,5 @@
 package com.zornflow.infrastructure.repository;
 
-import com.zornflow.domain.common.types.Version;
 import com.zornflow.domain.process.entity.ProcessChain;
 import com.zornflow.domain.process.entity.ProcessNode;
 import com.zornflow.domain.process.types.ProcessChainId;
@@ -10,7 +9,8 @@ import com.zornflow.domain.rule.types.RuleChainId;
 import com.zornflow.infrastructure.config.model.ProcessChainConfig;
 import com.zornflow.infrastructure.config.model.ProcessNodeConfig;
 import com.zornflow.infrastructure.config.source.cache.CachingProcessChainCompositeConfigSourceDecorator;
-import com.zornflow.infrastructure.repository.mapper.ProcessConfigMapper;
+import com.zornflow.infrastructure.mapper.ProcessDomainMapper;
+import com.zornflow.infrastructure.repository.ProcessChainRepositoryImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -34,7 +34,7 @@ class ProcessChainRepositoryImplTest {
   @Mock
   private CachingProcessChainCompositeConfigSourceDecorator configSource;
   @Mock
-  private ProcessConfigMapper mapper;
+  private ProcessDomainMapper mapper;
 
   @InjectMocks
   private ProcessChainRepositoryImpl processChainRepository;
