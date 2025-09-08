@@ -1,0 +1,16 @@
+biz-rule1:
+  id: biz-rule1
+  name: "共享规则1"
+  priority: 100
+  condition: "true"
+  handle:
+    type: CLASS
+    handler: com.example.Rule1Handler
+
+biz-rule2:
+  id: biz-rule2
+  priority: 200
+  condition: "false"
+  handle:
+    type: JAR
+    handler: ./plugin/biz-rule.jar/com.example.rule2

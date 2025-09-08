@@ -1,0 +1,47 @@
+loan-process: # 流程链ID
+  id: loan-process
+  name: "贷款审批流程"  # 流程链名称, 如果没有默认等于流程链ID
+  version: "1.0"
+  description: "个人贷款审批完整流程"   # 流程链描述, 如果没有默认等于流程链名称
+  nodes:
+    - id: "process-node1"
+      next: "process-node2"
+      ruleChain: "loan-risk-rules"   # 覆盖process-node1节点的默认值
+      properties: # 覆盖process-node1节点的默认值
+        count: 500
+        start-index: 30
+
+    - id: "process-node2"
+      next: "process-check"
+      type: "BUSINESS"
+      ruleChain: "common-biz-rules-2"
+
+    - id: "process-check"
+      next: "process-gateway"
+      type: "BUSINESS"
+      ruleChain: "common-biz-rules-check"
+
+    - id: "process-gateway"
+      next: ""
+      type: "GATEWAY"
+      ruleChain: "process-gateway-rules"
+      conditions:
+        - condition: "#{claimAmount <= 10000}"
+          next: "node3"
+        - condition: "#{claimAmount > 10000 && claimAmount <= 50000}"
+          next: "node4"
+
+    - id: "node3"
+      next: ""
+      type: "BUSINESS"
+      ruleChain: "submit-chain"
+
+    - id: "node4"
+      next: "node5"
+      type: "APPROVAL"
+      ruleChain: "approval-chain"
+
+    - id: "node5"
+      next: ""
+      type: "BUSINESS"
+      ruleChain: "submit-chain"

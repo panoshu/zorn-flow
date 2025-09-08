@@ -4,13 +4,13 @@ spring:
 
   # 使用Spring Boot标准数据源配置
   datasource:
-    url: jdbc:postgresql://localhost:5432/zornflow
-    username: zornflow_user
-    password: zornflow_password
+    url: jdbc:postgresql://127.0.0.1:15432/zornflow
+    username: engine_user
+    password: engine_user
     driver-class-name: org.postgresql.Driver
     hikari:
       maximum-pool-size: 20
-      minimum-idle: 5
+      minimum-idle: 1
       connection-timeout: 30000
       idle-timeout: 600000
       max-lifetime: 1800000

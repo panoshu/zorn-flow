@@ -3,6 +3,7 @@ package com.zornflow;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.cache.annotation.EnableCaching;
 
 /**
  * description
@@ -12,6 +13,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
  * @since 2025/8/26 22:23
  **/
 
+@EnableCaching
 @SpringBootApplication
 @EnableConfigurationProperties
 public class ZornflowApplication {

@@ -1,0 +1,16 @@
+test-rule-chain:
+  id: test-rule-chain
+  name: "测试规则链"
+  version: "1.0"
+  description: "单元测试专用"
+  rules:
+    - id: biz-rule1
+      priority: 10   # 覆盖原始 priority=100
+    - id: biz-rule2
+    - id: test-rule
+      name: "test-rule name"
+      priority: 170
+      condition: "true"
+      handle:
+        type: CLASS
+        handler: com.example.TestRule1Handler

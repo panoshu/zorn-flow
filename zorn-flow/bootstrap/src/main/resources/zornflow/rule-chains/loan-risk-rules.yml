@@ -1,0 +1,31 @@
+loan-risk-rules:
+  id: loan-risk-rules
+  name: "贷款风控规则链"  # 规则链名称, 如果没有默认等于规则链ID
+  version: "1.0"
+  description: "贷款风控规则链"   # 规则链描述, 如果没有默认等于规则链名称
+  rules:
+    - id: biz-rule1
+      priority: 10  # 覆盖biz-rule1中的值
+
+    - id: "policy-validity-check"
+      name: "保单有效性检查"
+      priority: 110
+      condition: "#{policyInfo != null && policyInfo.status == 'ACTIVE'}"
+      handle:
+        type: "CLASS"  # java实现类
+        handler: "com.example.validator"  # 类ID，调用com.example.validator的的对应方法处理
+
+    - id: "time-check"
+      name: "事故时间检查"
+      priority: 20
+      condition: "#{accidentInfo.accidentTime != null}"
+      handle:
+        type: "SCRIPT"
+        handler: "time-validator"
+        parameters:
+          script: |
+            def accidentTime = new Date(context.get('accidentInfo').accidentTime);
+            def policyStartTime = new Date(context.get('policyInfo').startTime);
+            def policyEndTime = new Date(context.get('policyInfo').endTime);
+            return accidentTime >= policyStartTime && accidentTime <= policyEndTime;
+          language: "groovy"
