@@ -1,7 +1,7 @@
 package com.domain.contract.aggregate;
 
 
-import com.domain.contract.valueobject.Identifier;
+import com.domain.contract.valueobject.EntityId;
 
 import java.time.Instant;
 import java.util.Objects;
@@ -14,7 +14,7 @@ import java.util.Objects;
  * @since 2025/6/1 14:15
  **/
 
-public abstract class Entity<ID extends Identifier> {
+public abstract class Entity<ID extends EntityId> {
   private final ID id;
   private final Instant createdAt;
   private Instant updatedAt;

@@ -1,6 +1,6 @@
 package com.zornflow.domain.common.types;
 
-import com.domain.contract.valueobject.Identifier;
+import com.domain.contract.valueobject.EntityId;
 import com.github.f4b6a3.ulid.Ulid;
 import com.github.f4b6a3.ulid.UlidCreator;
 import lombok.NonNull;
@@ -14,9 +14,9 @@ import java.time.Instant;
  * @version 1.0
  * @since 2025/7/25 12:39
  */
-public record UlidIdentifier(String value) implements Identifier {
+public record UlidEntityId(String value) implements EntityId {
 
-  public UlidIdentifier {
+  public UlidEntityId {
     if (value == null || value.isBlank()) {
       throw new IllegalArgumentException("ULID identifier value cannot be null or empty.");
     }
@@ -26,12 +26,12 @@ public record UlidIdentifier(String value) implements Identifier {
     }
   }
 
-  public static UlidIdentifier generate() {
-    return new UlidIdentifier(UlidCreator.getUlid().toString());
+  public static UlidEntityId generate() {
+    return new UlidEntityId(UlidCreator.getUlid().toString());
   }
 
-  public static UlidIdentifier of(@NonNull String value) {
-    return new UlidIdentifier(value);
+  public static UlidEntityId of(@NonNull String value) {
+    return new UlidEntityId(value);
   }
 
   public Instant getInstant() {

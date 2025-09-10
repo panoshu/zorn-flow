@@ -1,7 +1,7 @@
 package com.domain.contract.repository;
 
 import com.domain.contract.aggregate.AggregateRoot;
-import com.domain.contract.valueobject.Identifier;
+import com.domain.contract.valueobject.EntityId;
 
 /**
  * description
@@ -10,6 +10,6 @@ import com.domain.contract.valueobject.Identifier;
  * @version 1.0
  * @since 2025/7/24 16:32
  */
-public sealed interface Repository<A extends AggregateRoot<ID>, ID extends Identifier>
+public sealed interface Repository<A extends AggregateRoot<ID>, ID extends EntityId>
   permits BaseRepository {
 }

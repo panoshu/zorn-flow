@@ -1,7 +1,7 @@
 package com.zornflow.domain.process.types;
 
 import com.domain.contract.valueobject.DomainPrimitive;
-import com.domain.contract.valueobject.Identifier;
+import com.domain.contract.valueobject.EntityId;
 import com.github.f4b6a3.ulid.Ulid;
 import com.github.f4b6a3.ulid.UlidCreator;
 import lombok.NonNull;
@@ -16,7 +16,7 @@ import java.time.Instant;
  * @since 2025/8/25 22:30
  **/
 
-public record ProcessInstanceId(String value) implements DomainPrimitive, Identifier {
+public record ProcessInstanceId(String value) implements DomainPrimitive, EntityId {
   public ProcessInstanceId {
     if (value == null || value.isBlank()) {
       throw new IllegalArgumentException("ULID identifier value cannot be null or empty.");

@@ -1,7 +1,7 @@
 package com.domain.contract.repository;
 
 import com.domain.contract.aggregate.AggregateRoot;
-import com.domain.contract.valueobject.Identifier;
+import com.domain.contract.valueobject.EntityId;
 
 import java.util.Collection;
 import java.util.Optional;
@@ -14,7 +14,7 @@ import java.util.Optional;
  * @since 2025/7/24 16:30
  */
 
-public non-sealed interface BaseRepository<A extends AggregateRoot<ID>, ID extends Identifier> extends Repository<A, ID> {
+public non-sealed interface BaseRepository<A extends AggregateRoot<ID>, ID extends EntityId> extends Repository<A, ID> {
 
   Optional<A> findById(ID id);
 

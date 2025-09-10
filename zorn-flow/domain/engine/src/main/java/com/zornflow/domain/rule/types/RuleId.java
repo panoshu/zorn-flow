@@ -1,7 +1,7 @@
 package com.zornflow.domain.rule.types;
 
 import com.domain.contract.valueobject.DomainPrimitive;
-import com.domain.contract.valueobject.Identifier;
+import com.domain.contract.valueobject.EntityId;
 
 /**
  * 规则ID 领域原语
@@ -10,7 +10,7 @@ import com.domain.contract.valueobject.Identifier;
  * @version 1.0
  * @since 2025/7/25 12:36
  */
-public record RuleId(String value) implements DomainPrimitive, Identifier {
+public record RuleId(String value) implements DomainPrimitive, EntityId {
 
   public RuleId {
     if (value == null || value.isBlank()) {

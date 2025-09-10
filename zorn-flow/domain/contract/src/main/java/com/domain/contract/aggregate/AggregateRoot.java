@@ -1,7 +1,7 @@
 package com.domain.contract.aggregate;
 
 import com.domain.contract.event.DomainEvent;
-import com.domain.contract.valueobject.Identifier;
+import com.domain.contract.valueobject.EntityId;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -15,7 +15,7 @@ import java.util.Objects;
  * @version 1.0
  * @since 2025/7/24 12:34
  */
-public abstract class AggregateRoot<ID extends Identifier> extends Entity<ID> {
+public abstract class AggregateRoot<ID extends EntityId> extends Entity<ID> {
 
   private final transient List<DomainEvent<ID>> domainEvents = new ArrayList<>();
 

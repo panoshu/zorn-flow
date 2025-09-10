@@ -1,7 +1,7 @@
 package com.domain.contract.event;
 
 
-import com.domain.contract.valueobject.Identifier;
+import com.domain.contract.valueobject.EntityId;
 
 import java.time.Instant;
 
@@ -23,7 +23,7 @@ import java.time.Instant;
  * @version 1.0
  * @since 2025/7/24 11:42
  */
-public non-sealed interface BaseDomainEvent<ID extends Identifier> extends DomainEvent<ID> {
+public non-sealed interface BaseDomainEvent<ID extends EntityId> extends DomainEvent<ID> {
   Instant occurredOn = Instant.now();
 
   ID eventId();

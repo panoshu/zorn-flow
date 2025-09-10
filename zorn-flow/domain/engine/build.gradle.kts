@@ -4,5 +4,4 @@ plugins {
 
 dependencies {
   api(project(":zorn-flow:domain:contract"))
-  implementation(libs.ulid.creator)
 }

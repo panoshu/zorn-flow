@@ -1,7 +1,7 @@
 package com.zornflow.domain.process.types;
 
 import com.domain.contract.valueobject.DomainPrimitive;
-import com.domain.contract.valueobject.Identifier;
+import com.domain.contract.valueobject.EntityId;
 
 /**
  * description
@@ -11,7 +11,7 @@ import com.domain.contract.valueobject.Identifier;
  * @since 2025/8/25 22:12
  **/
 
-public record ProcessChainName(String value) implements DomainPrimitive, Identifier {
+public record ProcessChainName(String value) implements DomainPrimitive, EntityId {
   public ProcessChainName {
     if (value == null || value.isBlank()) {
       throw new IllegalArgumentException("流程链ID不能为空");

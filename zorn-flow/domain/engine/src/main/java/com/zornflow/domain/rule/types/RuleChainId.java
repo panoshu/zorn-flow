@@ -1,7 +1,7 @@
 package com.zornflow.domain.rule.types;
 
 import com.domain.contract.valueobject.DomainPrimitive;
-import com.domain.contract.valueobject.Identifier;
+import com.domain.contract.valueobject.EntityId;
 
 /**
  * 规则链 ID 领域原语
@@ -11,7 +11,7 @@ import com.domain.contract.valueobject.Identifier;
  * @since 2025/7/31 13:24
  */
 
-public record RuleChainId(String value) implements DomainPrimitive, Identifier {
+public record RuleChainId(String value) implements DomainPrimitive, EntityId {
   public RuleChainId {
     if (value == null || value.isBlank()) {
       throw new IllegalArgumentException("规则链ID不能为空");

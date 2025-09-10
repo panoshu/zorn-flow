@@ -1,5 +1,7 @@
 package com.domain.contract.valueobject;
 
+import java.io.Serializable;
+
 /**
  * description
  *
@@ -8,5 +10,6 @@ package com.domain.contract.valueobject;
  * @since 2025/8/25 21:34
  **/
 
-public interface Identifier extends DomainPrimitive {
+public interface EntityId extends DomainPrimitive, Serializable{
+  String value();
 }

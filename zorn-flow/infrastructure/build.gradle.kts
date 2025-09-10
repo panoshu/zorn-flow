@@ -28,10 +28,14 @@ dependencies {
   runtimeOnly("org.postgresql:postgresql")
   jooqCodegen("org.postgresql:postgresql:42.7.7")
 
+  implementation("org.reflections:reflections:0.10.2")
+
+  implementation(libs.ulid.creator)
   implementation(libs.jooq)
   implementation(libs.jooq.meta)
   implementation(libs.mapstruct)
   annotationProcessor(libs.mapstruct.processor)
+
 }
 
 jooq {
