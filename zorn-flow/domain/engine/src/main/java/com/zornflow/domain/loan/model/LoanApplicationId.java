@@ -1,7 +1,7 @@
 package com.zornflow.domain.loan.model;
 
 import com.domain.contract.valueobject.EntityId;
-import com.github.f4b6a3.ulid.UlidCreator;
+import com.zornflow.domain.common.types.identifier.DomainIds;
 
 /**
  * description
@@ -14,10 +14,9 @@ import com.github.f4b6a3.ulid.UlidCreator;
 // 业务ID，可以使用ULID或UUID
 public record LoanApplicationId(String value) implements EntityId {
   public static LoanApplicationId generate() {
-    return new LoanApplicationId(UlidCreator.getUlid().toString());
+    return DomainIds.next(LoanApplicationId.class, LoanApplicationId::new);
   }
-
-  public static LoanApplicationId of(String value) {
-    return new LoanApplicationId(value);
+  public static LoanApplicationId of(String raw) {
+    return DomainIds.of(raw, LoanApplicationId.class, LoanApplicationId::new);
   }
 }

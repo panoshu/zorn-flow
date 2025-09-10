@@ -2,6 +2,7 @@ package com.zornflow.domain.rule.types;
 
 import com.domain.contract.valueobject.DomainPrimitive;
 import com.domain.contract.valueobject.EntityId;
+import com.zornflow.domain.common.types.identifier.DomainIds;
 
 /**
  * 规则ID 领域原语
@@ -10,7 +11,7 @@ import com.domain.contract.valueobject.EntityId;
  * @version 1.0
  * @since 2025/7/25 12:36
  */
-public record RuleId(String value) implements DomainPrimitive, EntityId {
+public record RuleId(String value) implements EntityId {
 
   public RuleId {
     if (value == null || value.isBlank()) {
@@ -21,8 +22,11 @@ public record RuleId(String value) implements DomainPrimitive, EntityId {
     }
   }
 
-  public static RuleId of(String value) {
-    return new RuleId(value);
+  public static RuleId generate() {
+    return DomainIds.next(RuleId.class, RuleId::new);
+  }
+  public static RuleId of(String raw) {
+    return DomainIds.of(raw, RuleId.class, RuleId::new);
   }
 
 }

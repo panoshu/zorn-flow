@@ -1,10 +1,3 @@
-import org.gradle.api.internal.tasks.testing.report.HtmlTestReport.generator
-import org.gradle.declarative.dsl.schema.FqName.Empty.packageName
-import org.gradle.internal.impldep.org.apache.ivy.util.Message.deprecated
-import org.jooq.meta.Databases.database
-import org.jooq.tools.jdbc.JDBCUtils.driver
-import org.springframework.boot.buildpack.platform.docker.configuration.DockerRegistryAuthentication.configuration
-
 plugins {
   id("spring-boot-module")
   id("org.jooq.jooq-codegen-gradle") version "3.20.6"

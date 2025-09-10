@@ -2,6 +2,7 @@ package com.zornflow.domain.rule.types;
 
 import com.domain.contract.valueobject.DomainPrimitive;
 import com.domain.contract.valueobject.EntityId;
+import com.zornflow.domain.common.types.identifier.DomainIds;
 
 /**
  * 规则链 ID 领域原语
@@ -11,7 +12,7 @@ import com.domain.contract.valueobject.EntityId;
  * @since 2025/7/31 13:24
  */
 
-public record RuleChainId(String value) implements DomainPrimitive, EntityId {
+public record RuleChainId(String value) implements EntityId {
   public RuleChainId {
     if (value == null || value.isBlank()) {
       throw new IllegalArgumentException("规则链ID不能为空");
@@ -21,14 +22,11 @@ public record RuleChainId(String value) implements DomainPrimitive, EntityId {
     }
   }
 
-  /**
-   * 从字符串创建规则链ID
-   *
-   * @param value 字符串值
-   * @return 规则链ID实例
-   */
-  public static RuleChainId of(String value) {
-    return new RuleChainId(value);
+  public static RuleChainId generate() {
+    return DomainIds.next(RuleChainId.class, RuleChainId::new);
+  }
+  public static RuleChainId of(String raw) {
+    return DomainIds.of(raw, RuleChainId.class, RuleChainId::new);
   }
 
 }

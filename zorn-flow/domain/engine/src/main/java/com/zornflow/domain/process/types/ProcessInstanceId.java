@@ -2,11 +2,8 @@ package com.zornflow.domain.process.types;
 
 import com.domain.contract.valueobject.DomainPrimitive;
 import com.domain.contract.valueobject.EntityId;
-import com.github.f4b6a3.ulid.Ulid;
-import com.github.f4b6a3.ulid.UlidCreator;
+import com.zornflow.domain.common.types.identifier.DomainIds;
 import lombok.NonNull;
-
-import java.time.Instant;
 
 /**
  * description
@@ -16,26 +13,18 @@ import java.time.Instant;
  * @since 2025/8/25 22:30
  **/
 
-public record ProcessInstanceId(String value) implements DomainPrimitive, EntityId {
+public record ProcessInstanceId(String value) implements EntityId {
   public ProcessInstanceId {
     if (value == null || value.isBlank()) {
       throw new IllegalArgumentException("ULID identifier value cannot be null or empty.");
     }
-
-    if (!Ulid.isValid(value)) {
-      throw new IllegalArgumentException("Invalid ULID: " + value);
-    }
   }
 
   public static ProcessInstanceId generate() {
-    return new ProcessInstanceId(UlidCreator.getUlid().toString());
+    return DomainIds.next(ProcessInstanceId.class, ProcessInstanceId::new);
   }
 
-  public static ProcessInstanceId of(@NonNull String value) {
-    return new ProcessInstanceId(value);
-  }
-
-  public Instant getInstant() {
-    return Ulid.getInstant(value);
+  public static ProcessInstanceId of(@NonNull String raw) {
+    return DomainIds.of(raw, ProcessInstanceId.class, ProcessInstanceId::new);
   }
 }

@@ -2,6 +2,7 @@ package com.zornflow.domain.process.types;
 
 import com.domain.contract.valueobject.DomainPrimitive;
 import com.domain.contract.valueobject.EntityId;
+import com.zornflow.domain.common.types.identifier.DomainIds;
 
 /**
  * 流程节点 ID 领域原语
@@ -10,7 +11,7 @@ import com.domain.contract.valueobject.EntityId;
  * @version 1.0
  * @since 2025/7/31 16:13
  */
-public record ProcessNodeId(String value) implements DomainPrimitive, EntityId {
+public record ProcessNodeId(String value) implements EntityId {
   public ProcessNodeId {
     if (value == null || value.isBlank()) {
       throw new IllegalArgumentException("流程ID不能为空");
@@ -20,14 +21,11 @@ public record ProcessNodeId(String value) implements DomainPrimitive, EntityId {
     }
   }
 
-  /**
-   * 从字符串创建流程ID
-   *
-   * @param value 字符串值
-   * @return 流程ID实例
-   */
-  public static ProcessNodeId of(String value) {
-    return new ProcessNodeId(value);
+  public static ProcessNodeId generate() {
+    return DomainIds.next(ProcessNodeId.class, ProcessNodeId::new);
+  }
+  public static ProcessNodeId of(String raw) {
+    return DomainIds.of(raw, ProcessNodeId.class, ProcessNodeId::new);
   }
 
 }
