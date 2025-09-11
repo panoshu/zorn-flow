@@ -54,7 +54,7 @@ public class IdAlgorithmBinder implements SmartInitializingSingleton {
   }
 
   private Set<Class<? extends EntityId>> scanIdTypes() {
-    return new Reflections(new ConfigurationBuilder().forPackages("domain"))
+    return new Reflections(new ConfigurationBuilder().forPackages("com.zornflow.domain"))
       .getSubTypesOf(EntityId.class);
   }
 
