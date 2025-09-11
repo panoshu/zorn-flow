@@ -20,6 +20,9 @@ public record SubmitLoanApplicationRequest(
   @NotNull @Valid PolicyInfo policyInfo,
   @NotNull @Valid AccidentInfo accidentInfo
 ) {
-  public record PolicyInfo(@NotBlank String policyId, @NotBlank String status) {}
-  public record AccidentInfo(@NotNull Instant accidentTime) {}
+  public record PolicyInfo(@NotBlank String policyId, @NotBlank String status) {
+  }
+
+  public record AccidentInfo(@NotNull Instant accidentTime) {
+  }
 }

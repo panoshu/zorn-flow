@@ -17,4 +17,5 @@ public record LoanApplicationResponse(
   String currentStep, // 当前所处的流程节点ID
   Instant createdAt,
   Instant updatedAt
-) {}
+) {
+}

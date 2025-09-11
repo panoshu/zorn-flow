@@ -5,13 +5,11 @@ package com.zornflow.infrastructure.persistence.jooq.routines;
 
 
 import com.zornflow.infrastructure.persistence.jooq.Engine;
-
 import org.jooq.Parameter;
 import org.jooq.impl.AbstractRoutine;
 import org.jooq.impl.DSL;
 import org.jooq.impl.DefaultDataType;
 import org.jooq.impl.Internal;
-
 
 
 /**
@@ -22,28 +20,27 @@ import org.jooq.impl.Internal;
  * <deprecationOnUnknownTypes/>} in your code generator configuration.
  */
 @Deprecated
-@SuppressWarnings({ "all", "unchecked", "rawtypes", "this-escape" })
+@SuppressWarnings({"all", "unchecked", "rawtypes", "this-escape"})
 public class GenMonotonicUlid extends AbstractRoutine<Object> {
 
-    private static final long serialVersionUID = 1L;
+  /**
+   * @deprecated Unknown data type. If this is a qualified, user-defined type,
+   * it may have been excluded from code generation. If this is a built-in
+   * type, you can define an explicit {@link org.jooq.Binding} to specify how
+   * this type should be handled. Deprecation can be turned off using
+   * {@literal <deprecationOnUnknownTypes/>} in your code generator
+   * configuration.
+   */
+  @Deprecated
+  public static final Parameter<Object> RETURN_VALUE = Internal.createParameter("RETURN_VALUE", DefaultDataType.getDefaultDataType("\"engine\".\"ulid\""), false, false);
+  private static final long serialVersionUID = 1L;
 
-    /**
-     * @deprecated Unknown data type. If this is a qualified, user-defined type,
-     * it may have been excluded from code generation. If this is a built-in
-     * type, you can define an explicit {@link org.jooq.Binding} to specify how
-     * this type should be handled. Deprecation can be turned off using
-     * {@literal <deprecationOnUnknownTypes/>} in your code generator
-     * configuration.
-     */
-    @Deprecated
-    public static final Parameter<Object> RETURN_VALUE = Internal.createParameter("RETURN_VALUE", DefaultDataType.getDefaultDataType("\"engine\".\"ulid\""), false, false);
+  /**
+   * Create a new routine call instance
+   */
+  public GenMonotonicUlid() {
+    super("gen_monotonic_ulid", Engine.ENGINE, DSL.comment(""), DefaultDataType.getDefaultDataType("\"engine\".\"ulid\""));
 
-    /**
-     * Create a new routine call instance
-     */
-    public GenMonotonicUlid() {
-        super("gen_monotonic_ulid", Engine.ENGINE, DSL.comment(""), DefaultDataType.getDefaultDataType("\"engine\".\"ulid\""));
-
-        setReturnParameter(RETURN_VALUE);
-    }
+    setReturnParameter(RETURN_VALUE);
+  }
 }

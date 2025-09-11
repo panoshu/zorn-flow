@@ -16,7 +16,6 @@ import java.util.Optional;
  * 采用高性能的原子性 "get-or-loan" 缓存策略，避免了手动锁。
  *
  * @param <T> 配置模型的类型，必须继承自 ModelConfig
- *
  * @author <a href="mailto: me@panoshu.top">panoshu</a>
  * @version 1.0
  * @since 2025/9/1 16:07
@@ -133,7 +132,7 @@ public abstract class AbstractCachingCompositeConfigSourceDecorator<T extends Mo
   }
 
   @Override
-  public void delete(String id){
+  public void delete(String id) {
     String cacheKey = generateItemCacheKey(id); // 使用带前缀的键
     log.debug("正在删除 ID '{}'，将从缓存中移除键 '{}'。", id, cacheKey);
 
@@ -163,6 +162,7 @@ public abstract class AbstractCachingCompositeConfigSourceDecorator<T extends Mo
 
   /**
    * 生成带前缀的单项缓存键。
+   *
    * @param id 配置的原始ID
    * @return 唯一的缓存键，例如 "rules::some-rule-id"
    */

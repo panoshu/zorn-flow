@@ -4,224 +4,215 @@
 package com.zornflow.infrastructure.persistence.jooq.tables.pojos;
 
 
+import org.jooq.JSONB;
+
 import java.io.Serializable;
 import java.time.OffsetDateTime;
-
-import org.jooq.JSONB;
 
 
 /**
  * 可复用的共享规则模板
  */
-@SuppressWarnings({ "all", "unchecked", "rawtypes", "this-escape" })
+@SuppressWarnings({"all", "unchecked", "rawtypes", "this-escape"})
 public class SharedRules implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    private final String id;
-    private final String name;
-    private final Integer priority;
-    private final String condition;
-    private final JSONB handlerConfig;
-    private final String recordStatus;
-    private final Integer version;
-    private final OffsetDateTime createdAt;
-    private final OffsetDateTime updatedAt;
+  private final String id;
+  private final String name;
+  private final Integer priority;
+  private final String condition;
+  private final JSONB handlerConfig;
+  private final String recordStatus;
+  private final Integer version;
+  private final OffsetDateTime createdAt;
+  private final OffsetDateTime updatedAt;
 
-    public SharedRules(SharedRules value) {
-        this.id = value.id;
-        this.name = value.name;
-        this.priority = value.priority;
-        this.condition = value.condition;
-        this.handlerConfig = value.handlerConfig;
-        this.recordStatus = value.recordStatus;
-        this.version = value.version;
-        this.createdAt = value.createdAt;
-        this.updatedAt = value.updatedAt;
-    }
+  public SharedRules(SharedRules value) {
+    this.id = value.id;
+    this.name = value.name;
+    this.priority = value.priority;
+    this.condition = value.condition;
+    this.handlerConfig = value.handlerConfig;
+    this.recordStatus = value.recordStatus;
+    this.version = value.version;
+    this.createdAt = value.createdAt;
+    this.updatedAt = value.updatedAt;
+  }
 
-    public SharedRules(
-        String id,
-        String name,
-        Integer priority,
-        String condition,
-        JSONB handlerConfig,
-        String recordStatus,
-        Integer version,
-        OffsetDateTime createdAt,
-        OffsetDateTime updatedAt
-    ) {
-        this.id = id;
-        this.name = name;
-        this.priority = priority;
-        this.condition = condition;
-        this.handlerConfig = handlerConfig;
-        this.recordStatus = recordStatus;
-        this.version = version;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
-    }
+  public SharedRules(
+    String id,
+    String name,
+    Integer priority,
+    String condition,
+    JSONB handlerConfig,
+    String recordStatus,
+    Integer version,
+    OffsetDateTime createdAt,
+    OffsetDateTime updatedAt
+  ) {
+    this.id = id;
+    this.name = name;
+    this.priority = priority;
+    this.condition = condition;
+    this.handlerConfig = handlerConfig;
+    this.recordStatus = recordStatus;
+    this.version = version;
+    this.createdAt = createdAt;
+    this.updatedAt = updatedAt;
+  }
 
-    /**
-     * Getter for <code>engine.shared_rules.id</code>.
-     */
-    public String getId() {
-        return this.id;
-    }
+  /**
+   * Getter for <code>engine.shared_rules.id</code>.
+   */
+  public String getId() {
+    return this.id;
+  }
 
-    /**
-     * Getter for <code>engine.shared_rules.name</code>.
-     */
-    public String getName() {
-        return this.name;
-    }
+  /**
+   * Getter for <code>engine.shared_rules.name</code>.
+   */
+  public String getName() {
+    return this.name;
+  }
 
-    /**
-     * Getter for <code>engine.shared_rules.priority</code>.
-     */
-    public Integer getPriority() {
-        return this.priority;
-    }
+  /**
+   * Getter for <code>engine.shared_rules.priority</code>.
+   */
+  public Integer getPriority() {
+    return this.priority;
+  }
 
-    /**
-     * Getter for <code>engine.shared_rules.condition</code>.
-     */
-    public String getCondition() {
-        return this.condition;
-    }
+  /**
+   * Getter for <code>engine.shared_rules.condition</code>.
+   */
+  public String getCondition() {
+    return this.condition;
+  }
 
-    /**
-     * Getter for <code>engine.shared_rules.handler_config</code>.
-     */
-    public JSONB getHandlerConfig() {
-        return this.handlerConfig;
-    }
+  /**
+   * Getter for <code>engine.shared_rules.handler_config</code>.
+   */
+  public JSONB getHandlerConfig() {
+    return this.handlerConfig;
+  }
 
-    /**
-     * Getter for <code>engine.shared_rules.record_status</code>.
-     */
-    public String getRecordStatus() {
-        return this.recordStatus;
-    }
+  /**
+   * Getter for <code>engine.shared_rules.record_status</code>.
+   */
+  public String getRecordStatus() {
+    return this.recordStatus;
+  }
 
-    /**
-     * Getter for <code>engine.shared_rules.version</code>.
-     */
-    public Integer getVersion() {
-        return this.version;
-    }
+  /**
+   * Getter for <code>engine.shared_rules.version</code>.
+   */
+  public Integer getVersion() {
+    return this.version;
+  }
 
-    /**
-     * Getter for <code>engine.shared_rules.created_at</code>.
-     */
-    public OffsetDateTime getCreatedAt() {
-        return this.createdAt;
-    }
+  /**
+   * Getter for <code>engine.shared_rules.created_at</code>.
+   */
+  public OffsetDateTime getCreatedAt() {
+    return this.createdAt;
+  }
 
-    /**
-     * Getter for <code>engine.shared_rules.updated_at</code>.
-     */
-    public OffsetDateTime getUpdatedAt() {
-        return this.updatedAt;
-    }
+  /**
+   * Getter for <code>engine.shared_rules.updated_at</code>.
+   */
+  public OffsetDateTime getUpdatedAt() {
+    return this.updatedAt;
+  }
 
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
-        final SharedRules other = (SharedRules) obj;
-        if (this.id == null) {
-            if (other.id != null)
-                return false;
-        }
-        else if (!this.id.equals(other.id))
-            return false;
-        if (this.name == null) {
-            if (other.name != null)
-                return false;
-        }
-        else if (!this.name.equals(other.name))
-            return false;
-        if (this.priority == null) {
-            if (other.priority != null)
-                return false;
-        }
-        else if (!this.priority.equals(other.priority))
-            return false;
-        if (this.condition == null) {
-            if (other.condition != null)
-                return false;
-        }
-        else if (!this.condition.equals(other.condition))
-            return false;
-        if (this.handlerConfig == null) {
-            if (other.handlerConfig != null)
-                return false;
-        }
-        else if (!this.handlerConfig.equals(other.handlerConfig))
-            return false;
-        if (this.recordStatus == null) {
-            if (other.recordStatus != null)
-                return false;
-        }
-        else if (!this.recordStatus.equals(other.recordStatus))
-            return false;
-        if (this.version == null) {
-            if (other.version != null)
-                return false;
-        }
-        else if (!this.version.equals(other.version))
-            return false;
-        if (this.createdAt == null) {
-            if (other.createdAt != null)
-                return false;
-        }
-        else if (!this.createdAt.equals(other.createdAt))
-            return false;
-        if (this.updatedAt == null) {
-            if (other.updatedAt != null)
-                return false;
-        }
-        else if (!this.updatedAt.equals(other.updatedAt))
-            return false;
-        return true;
-    }
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj)
+      return true;
+    if (obj == null)
+      return false;
+    if (getClass() != obj.getClass())
+      return false;
+    final SharedRules other = (SharedRules) obj;
+    if (this.id == null) {
+      if (other.id != null)
+        return false;
+    } else if (!this.id.equals(other.id))
+      return false;
+    if (this.name == null) {
+      if (other.name != null)
+        return false;
+    } else if (!this.name.equals(other.name))
+      return false;
+    if (this.priority == null) {
+      if (other.priority != null)
+        return false;
+    } else if (!this.priority.equals(other.priority))
+      return false;
+    if (this.condition == null) {
+      if (other.condition != null)
+        return false;
+    } else if (!this.condition.equals(other.condition))
+      return false;
+    if (this.handlerConfig == null) {
+      if (other.handlerConfig != null)
+        return false;
+    } else if (!this.handlerConfig.equals(other.handlerConfig))
+      return false;
+    if (this.recordStatus == null) {
+      if (other.recordStatus != null)
+        return false;
+    } else if (!this.recordStatus.equals(other.recordStatus))
+      return false;
+    if (this.version == null) {
+      if (other.version != null)
+        return false;
+    } else if (!this.version.equals(other.version))
+      return false;
+    if (this.createdAt == null) {
+      if (other.createdAt != null)
+        return false;
+    } else if (!this.createdAt.equals(other.createdAt))
+      return false;
+    if (this.updatedAt == null) {
+      if (other.updatedAt != null)
+        return false;
+    } else if (!this.updatedAt.equals(other.updatedAt))
+      return false;
+    return true;
+  }
 
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((this.id == null) ? 0 : this.id.hashCode());
-        result = prime * result + ((this.name == null) ? 0 : this.name.hashCode());
-        result = prime * result + ((this.priority == null) ? 0 : this.priority.hashCode());
-        result = prime * result + ((this.condition == null) ? 0 : this.condition.hashCode());
-        result = prime * result + ((this.handlerConfig == null) ? 0 : this.handlerConfig.hashCode());
-        result = prime * result + ((this.recordStatus == null) ? 0 : this.recordStatus.hashCode());
-        result = prime * result + ((this.version == null) ? 0 : this.version.hashCode());
-        result = prime * result + ((this.createdAt == null) ? 0 : this.createdAt.hashCode());
-        result = prime * result + ((this.updatedAt == null) ? 0 : this.updatedAt.hashCode());
-        return result;
-    }
+  @Override
+  public int hashCode() {
+    final int prime = 31;
+    int result = 1;
+    result = prime * result + ((this.id == null) ? 0 : this.id.hashCode());
+    result = prime * result + ((this.name == null) ? 0 : this.name.hashCode());
+    result = prime * result + ((this.priority == null) ? 0 : this.priority.hashCode());
+    result = prime * result + ((this.condition == null) ? 0 : this.condition.hashCode());
+    result = prime * result + ((this.handlerConfig == null) ? 0 : this.handlerConfig.hashCode());
+    result = prime * result + ((this.recordStatus == null) ? 0 : this.recordStatus.hashCode());
+    result = prime * result + ((this.version == null) ? 0 : this.version.hashCode());
+    result = prime * result + ((this.createdAt == null) ? 0 : this.createdAt.hashCode());
+    result = prime * result + ((this.updatedAt == null) ? 0 : this.updatedAt.hashCode());
+    return result;
+  }
 
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder("SharedRules (");
+  @Override
+  public String toString() {
+    StringBuilder sb = new StringBuilder("SharedRules (");
 
-        sb.append(id);
-        sb.append(", ").append(name);
-        sb.append(", ").append(priority);
-        sb.append(", ").append(condition);
-        sb.append(", ").append(handlerConfig);
-        sb.append(", ").append(recordStatus);
-        sb.append(", ").append(version);
-        sb.append(", ").append(createdAt);
-        sb.append(", ").append(updatedAt);
+    sb.append(id);
+    sb.append(", ").append(name);
+    sb.append(", ").append(priority);
+    sb.append(", ").append(condition);
+    sb.append(", ").append(handlerConfig);
+    sb.append(", ").append(recordStatus);
+    sb.append(", ").append(version);
+    sb.append(", ").append(createdAt);
+    sb.append(", ").append(updatedAt);
 
-        sb.append(")");
-        return sb.toString();
-    }
+    sb.append(")");
+    return sb.toString();
+  }
 }

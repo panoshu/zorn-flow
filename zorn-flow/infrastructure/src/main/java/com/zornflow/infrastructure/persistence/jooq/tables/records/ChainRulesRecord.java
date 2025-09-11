@@ -5,246 +5,245 @@ package com.zornflow.infrastructure.persistence.jooq.tables.records;
 
 
 import com.zornflow.infrastructure.persistence.jooq.tables.ChainRules;
-
-import java.time.OffsetDateTime;
-
 import org.jooq.JSONB;
 import org.jooq.Record1;
 import org.jooq.impl.UpdatableRecordImpl;
+
+import java.time.OffsetDateTime;
 
 
 /**
  * 规则在链中的具体实例，存储顺序、与共享模板的链接以及属性覆盖
  */
-@SuppressWarnings({ "all", "unchecked", "rawtypes", "this-escape" })
+@SuppressWarnings({"all", "unchecked", "rawtypes", "this-escape"})
 public class ChainRulesRecord extends UpdatableRecordImpl<ChainRulesRecord> {
 
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    /**
-     * Setter for <code>engine.chain_rules.id</code>.
-     */
-    public ChainRulesRecord setId(String value) {
-        set(0, value);
-        return this;
+  /**
+   * Create a detached ChainRulesRecord
+   */
+  public ChainRulesRecord() {
+    super(ChainRules.CHAIN_RULES);
+  }
+
+  /**
+   * Create a detached, initialised ChainRulesRecord
+   */
+  public ChainRulesRecord(String id, String ruleChainId, String sharedRuleId, Integer sequence, String name, Integer priority, String condition, JSONB handlerConfig, Integer version, OffsetDateTime createdAt, OffsetDateTime updatedAt) {
+    super(ChainRules.CHAIN_RULES);
+
+    setId(id);
+    setRuleChainId(ruleChainId);
+    setSharedRuleId(sharedRuleId);
+    setSequence(sequence);
+    setName(name);
+    setPriority(priority);
+    setCondition(condition);
+    setHandlerConfig(handlerConfig);
+    setVersion(version);
+    setCreatedAt(createdAt);
+    setUpdatedAt(updatedAt);
+    resetTouchedOnNotNull();
+  }
+
+  /**
+   * Create a detached, initialised ChainRulesRecord
+   */
+  public ChainRulesRecord(com.zornflow.infrastructure.persistence.jooq.tables.pojos.ChainRules value) {
+    super(ChainRules.CHAIN_RULES);
+
+    if (value != null) {
+      setId(value.getId());
+      setRuleChainId(value.getRuleChainId());
+      setSharedRuleId(value.getSharedRuleId());
+      setSequence(value.getSequence());
+      setName(value.getName());
+      setPriority(value.getPriority());
+      setCondition(value.getCondition());
+      setHandlerConfig(value.getHandlerConfig());
+      setVersion(value.getVersion());
+      setCreatedAt(value.getCreatedAt());
+      setUpdatedAt(value.getUpdatedAt());
+      resetTouchedOnNotNull();
     }
+  }
 
-    /**
-     * Getter for <code>engine.chain_rules.id</code>.
-     */
-    public String getId() {
-        return (String) get(0);
-    }
+  /**
+   * Getter for <code>engine.chain_rules.id</code>.
+   */
+  public String getId() {
+    return (String) get(0);
+  }
 
-    /**
-     * Setter for <code>engine.chain_rules.rule_chain_id</code>.
-     */
-    public ChainRulesRecord setRuleChainId(String value) {
-        set(1, value);
-        return this;
-    }
+  /**
+   * Setter for <code>engine.chain_rules.id</code>.
+   */
+  public ChainRulesRecord setId(String value) {
+    set(0, value);
+    return this;
+  }
 
-    /**
-     * Getter for <code>engine.chain_rules.rule_chain_id</code>.
-     */
-    public String getRuleChainId() {
-        return (String) get(1);
-    }
+  /**
+   * Getter for <code>engine.chain_rules.rule_chain_id</code>.
+   */
+  public String getRuleChainId() {
+    return (String) get(1);
+  }
 
-    /**
-     * Setter for <code>engine.chain_rules.shared_rule_id</code>.
-     */
-    public ChainRulesRecord setSharedRuleId(String value) {
-        set(2, value);
-        return this;
-    }
+  /**
+   * Setter for <code>engine.chain_rules.rule_chain_id</code>.
+   */
+  public ChainRulesRecord setRuleChainId(String value) {
+    set(1, value);
+    return this;
+  }
 
-    /**
-     * Getter for <code>engine.chain_rules.shared_rule_id</code>.
-     */
-    public String getSharedRuleId() {
-        return (String) get(2);
-    }
+  /**
+   * Getter for <code>engine.chain_rules.shared_rule_id</code>.
+   */
+  public String getSharedRuleId() {
+    return (String) get(2);
+  }
 
-    /**
-     * Setter for <code>engine.chain_rules.sequence</code>.
-     */
-    public ChainRulesRecord setSequence(Integer value) {
-        set(3, value);
-        return this;
-    }
+  /**
+   * Setter for <code>engine.chain_rules.shared_rule_id</code>.
+   */
+  public ChainRulesRecord setSharedRuleId(String value) {
+    set(2, value);
+    return this;
+  }
 
-    /**
-     * Getter for <code>engine.chain_rules.sequence</code>.
-     */
-    public Integer getSequence() {
-        return (Integer) get(3);
-    }
+  /**
+   * Getter for <code>engine.chain_rules.sequence</code>.
+   */
+  public Integer getSequence() {
+    return (Integer) get(3);
+  }
 
-    /**
-     * Setter for <code>engine.chain_rules.name</code>.
-     */
-    public ChainRulesRecord setName(String value) {
-        set(4, value);
-        return this;
-    }
+  /**
+   * Setter for <code>engine.chain_rules.sequence</code>.
+   */
+  public ChainRulesRecord setSequence(Integer value) {
+    set(3, value);
+    return this;
+  }
 
-    /**
-     * Getter for <code>engine.chain_rules.name</code>.
-     */
-    public String getName() {
-        return (String) get(4);
-    }
+  /**
+   * Getter for <code>engine.chain_rules.name</code>.
+   */
+  public String getName() {
+    return (String) get(4);
+  }
 
-    /**
-     * Setter for <code>engine.chain_rules.priority</code>.
-     */
-    public ChainRulesRecord setPriority(Integer value) {
-        set(5, value);
-        return this;
-    }
+  /**
+   * Setter for <code>engine.chain_rules.name</code>.
+   */
+  public ChainRulesRecord setName(String value) {
+    set(4, value);
+    return this;
+  }
 
-    /**
-     * Getter for <code>engine.chain_rules.priority</code>.
-     */
-    public Integer getPriority() {
-        return (Integer) get(5);
-    }
+  /**
+   * Getter for <code>engine.chain_rules.priority</code>.
+   */
+  public Integer getPriority() {
+    return (Integer) get(5);
+  }
 
-    /**
-     * Setter for <code>engine.chain_rules.condition</code>.
-     */
-    public ChainRulesRecord setCondition(String value) {
-        set(6, value);
-        return this;
-    }
+  /**
+   * Setter for <code>engine.chain_rules.priority</code>.
+   */
+  public ChainRulesRecord setPriority(Integer value) {
+    set(5, value);
+    return this;
+  }
 
-    /**
-     * Getter for <code>engine.chain_rules.condition</code>.
-     */
-    public String getCondition() {
-        return (String) get(6);
-    }
+  /**
+   * Getter for <code>engine.chain_rules.condition</code>.
+   */
+  public String getCondition() {
+    return (String) get(6);
+  }
 
-    /**
-     * Setter for <code>engine.chain_rules.handler_config</code>.
-     */
-    public ChainRulesRecord setHandlerConfig(JSONB value) {
-        set(7, value);
-        return this;
-    }
+  /**
+   * Setter for <code>engine.chain_rules.condition</code>.
+   */
+  public ChainRulesRecord setCondition(String value) {
+    set(6, value);
+    return this;
+  }
 
-    /**
-     * Getter for <code>engine.chain_rules.handler_config</code>.
-     */
-    public JSONB getHandlerConfig() {
-        return (JSONB) get(7);
-    }
+  /**
+   * Getter for <code>engine.chain_rules.handler_config</code>.
+   */
+  public JSONB getHandlerConfig() {
+    return (JSONB) get(7);
+  }
 
-    /**
-     * Setter for <code>engine.chain_rules.version</code>.
-     */
-    public ChainRulesRecord setVersion(Integer value) {
-        set(8, value);
-        return this;
-    }
+  /**
+   * Setter for <code>engine.chain_rules.handler_config</code>.
+   */
+  public ChainRulesRecord setHandlerConfig(JSONB value) {
+    set(7, value);
+    return this;
+  }
 
-    /**
-     * Getter for <code>engine.chain_rules.version</code>.
-     */
-    public Integer getVersion() {
-        return (Integer) get(8);
-    }
+  /**
+   * Getter for <code>engine.chain_rules.version</code>.
+   */
+  public Integer getVersion() {
+    return (Integer) get(8);
+  }
 
-    /**
-     * Setter for <code>engine.chain_rules.created_at</code>.
-     */
-    public ChainRulesRecord setCreatedAt(OffsetDateTime value) {
-        set(9, value);
-        return this;
-    }
+  /**
+   * Setter for <code>engine.chain_rules.version</code>.
+   */
+  public ChainRulesRecord setVersion(Integer value) {
+    set(8, value);
+    return this;
+  }
 
-    /**
-     * Getter for <code>engine.chain_rules.created_at</code>.
-     */
-    public OffsetDateTime getCreatedAt() {
-        return (OffsetDateTime) get(9);
-    }
+  /**
+   * Getter for <code>engine.chain_rules.created_at</code>.
+   */
+  public OffsetDateTime getCreatedAt() {
+    return (OffsetDateTime) get(9);
+  }
 
-    /**
-     * Setter for <code>engine.chain_rules.updated_at</code>.
-     */
-    public ChainRulesRecord setUpdatedAt(OffsetDateTime value) {
-        set(10, value);
-        return this;
-    }
+  // -------------------------------------------------------------------------
+  // Primary key information
+  // -------------------------------------------------------------------------
 
-    /**
-     * Getter for <code>engine.chain_rules.updated_at</code>.
-     */
-    public OffsetDateTime getUpdatedAt() {
-        return (OffsetDateTime) get(10);
-    }
+  /**
+   * Setter for <code>engine.chain_rules.created_at</code>.
+   */
+  public ChainRulesRecord setCreatedAt(OffsetDateTime value) {
+    set(9, value);
+    return this;
+  }
 
-    // -------------------------------------------------------------------------
-    // Primary key information
-    // -------------------------------------------------------------------------
+  // -------------------------------------------------------------------------
+  // Constructors
+  // -------------------------------------------------------------------------
 
-    @Override
-    public Record1<String> key() {
-        return (Record1) super.key();
-    }
+  /**
+   * Getter for <code>engine.chain_rules.updated_at</code>.
+   */
+  public OffsetDateTime getUpdatedAt() {
+    return (OffsetDateTime) get(10);
+  }
 
-    // -------------------------------------------------------------------------
-    // Constructors
-    // -------------------------------------------------------------------------
+  /**
+   * Setter for <code>engine.chain_rules.updated_at</code>.
+   */
+  public ChainRulesRecord setUpdatedAt(OffsetDateTime value) {
+    set(10, value);
+    return this;
+  }
 
-    /**
-     * Create a detached ChainRulesRecord
-     */
-    public ChainRulesRecord() {
-        super(ChainRules.CHAIN_RULES);
-    }
-
-    /**
-     * Create a detached, initialised ChainRulesRecord
-     */
-    public ChainRulesRecord(String id, String ruleChainId, String sharedRuleId, Integer sequence, String name, Integer priority, String condition, JSONB handlerConfig, Integer version, OffsetDateTime createdAt, OffsetDateTime updatedAt) {
-        super(ChainRules.CHAIN_RULES);
-
-        setId(id);
-        setRuleChainId(ruleChainId);
-        setSharedRuleId(sharedRuleId);
-        setSequence(sequence);
-        setName(name);
-        setPriority(priority);
-        setCondition(condition);
-        setHandlerConfig(handlerConfig);
-        setVersion(version);
-        setCreatedAt(createdAt);
-        setUpdatedAt(updatedAt);
-        resetTouchedOnNotNull();
-    }
-
-    /**
-     * Create a detached, initialised ChainRulesRecord
-     */
-    public ChainRulesRecord(com.zornflow.infrastructure.persistence.jooq.tables.pojos.ChainRules value) {
-        super(ChainRules.CHAIN_RULES);
-
-        if (value != null) {
-            setId(value.getId());
-            setRuleChainId(value.getRuleChainId());
-            setSharedRuleId(value.getSharedRuleId());
-            setSequence(value.getSequence());
-            setName(value.getName());
-            setPriority(value.getPriority());
-            setCondition(value.getCondition());
-            setHandlerConfig(value.getHandlerConfig());
-            setVersion(value.getVersion());
-            setCreatedAt(value.getCreatedAt());
-            setUpdatedAt(value.getUpdatedAt());
-            resetTouchedOnNotNull();
-        }
-    }
+  @Override
+  public Record1<String> key() {
+    return (Record1) super.key();
+  }
 }

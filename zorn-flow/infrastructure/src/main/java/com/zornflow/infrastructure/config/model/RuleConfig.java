@@ -29,10 +29,6 @@ public record RuleConfig(
   OffsetDateTime updatedAt
 ) implements ModelConfig {
 
-  public record HandlerConfig(Type type, String handler, Map<String, Object> parameters) {
-    public enum Type {CLASS, SCRIPT, JAR}
-  }
-
   public RuleConfig mergeWithDefaults(RuleConfig defaults) {
     if (defaults == null) return this;
     return RuleConfig.builder()
@@ -47,5 +43,9 @@ public record RuleConfig(
       .createdAt(this.createdAt)
       .updatedAt(this.updatedAt)
       .build();
+  }
+
+  public record HandlerConfig(Type type, String handler, Map<String, Object> parameters) {
+    public enum Type {CLASS, SCRIPT, JAR}
   }
 }

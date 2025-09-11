@@ -12,5 +12,6 @@ import java.util.function.Predicate;
 
 public interface IdStrategy<T> {
   T generate();
+
   Predicate<T> validator();
 }

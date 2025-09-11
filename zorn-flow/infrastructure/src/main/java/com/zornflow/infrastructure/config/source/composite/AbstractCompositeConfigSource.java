@@ -171,7 +171,7 @@ public abstract sealed class AbstractCompositeConfigSource<T extends ModelConfig
   }
 
   @Override
-  public ConfigSourceType getSourceType(){
+  public ConfigSourceType getSourceType() {
     return ConfigSourceType.COMPOSITE;
   }
 }

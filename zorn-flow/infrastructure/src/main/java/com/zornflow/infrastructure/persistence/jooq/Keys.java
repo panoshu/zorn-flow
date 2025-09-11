@@ -4,21 +4,8 @@
 package com.zornflow.infrastructure.persistence.jooq;
 
 
-import com.zornflow.infrastructure.persistence.jooq.tables.ChainNodes;
-import com.zornflow.infrastructure.persistence.jooq.tables.ChainRules;
-import com.zornflow.infrastructure.persistence.jooq.tables.ProcessChains;
-import com.zornflow.infrastructure.persistence.jooq.tables.ProcessInstances;
-import com.zornflow.infrastructure.persistence.jooq.tables.RuleChains;
-import com.zornflow.infrastructure.persistence.jooq.tables.SharedNodes;
-import com.zornflow.infrastructure.persistence.jooq.tables.SharedRules;
-import com.zornflow.infrastructure.persistence.jooq.tables.records.ChainNodesRecord;
-import com.zornflow.infrastructure.persistence.jooq.tables.records.ChainRulesRecord;
-import com.zornflow.infrastructure.persistence.jooq.tables.records.ProcessChainsRecord;
-import com.zornflow.infrastructure.persistence.jooq.tables.records.ProcessInstancesRecord;
-import com.zornflow.infrastructure.persistence.jooq.tables.records.RuleChainsRecord;
-import com.zornflow.infrastructure.persistence.jooq.tables.records.SharedNodesRecord;
-import com.zornflow.infrastructure.persistence.jooq.tables.records.SharedRulesRecord;
-
+import com.zornflow.infrastructure.persistence.jooq.tables.*;
+import com.zornflow.infrastructure.persistence.jooq.tables.records.*;
 import org.jooq.ForeignKey;
 import org.jooq.TableField;
 import org.jooq.UniqueKey;
@@ -31,33 +18,33 @@ import org.jooq.impl.QOM.ForeignKeyRule;
  * A class modelling foreign key relationships and constraints of tables in
  * engine.
  */
-@SuppressWarnings({ "all", "unchecked", "rawtypes", "this-escape" })
+@SuppressWarnings({"all", "unchecked", "rawtypes", "this-escape"})
 public class Keys {
 
-    // -------------------------------------------------------------------------
-    // UNIQUE and PRIMARY KEY definitions
-    // -------------------------------------------------------------------------
+  // -------------------------------------------------------------------------
+  // UNIQUE and PRIMARY KEY definitions
+  // -------------------------------------------------------------------------
 
-    public static final UniqueKey<ChainNodesRecord> CHAIN_NODES_PKEY = Internal.createUniqueKey(ChainNodes.CHAIN_NODES, DSL.name("chain_nodes_pkey"), new TableField[] { ChainNodes.CHAIN_NODES.ID }, true);
-    public static final UniqueKey<ChainNodesRecord> CHAIN_NODES_PROCESS_CHAIN_ID_SEQUENCE_KEY = Internal.createUniqueKey(ChainNodes.CHAIN_NODES, DSL.name("chain_nodes_process_chain_id_sequence_key"), new TableField[] { ChainNodes.CHAIN_NODES.PROCESS_CHAIN_ID, ChainNodes.CHAIN_NODES.SEQUENCE }, true);
-    public static final UniqueKey<ChainRulesRecord> CHAIN_RULES_PKEY = Internal.createUniqueKey(ChainRules.CHAIN_RULES, DSL.name("chain_rules_pkey"), new TableField[] { ChainRules.CHAIN_RULES.ID }, true);
-    public static final UniqueKey<ChainRulesRecord> CHAIN_RULES_RULE_CHAIN_ID_SEQUENCE_KEY = Internal.createUniqueKey(ChainRules.CHAIN_RULES, DSL.name("chain_rules_rule_chain_id_sequence_key"), new TableField[] { ChainRules.CHAIN_RULES.RULE_CHAIN_ID, ChainRules.CHAIN_RULES.SEQUENCE }, true);
-    public static final UniqueKey<ProcessChainsRecord> PROCESS_CHAINS_PKEY = Internal.createUniqueKey(ProcessChains.PROCESS_CHAINS, DSL.name("process_chains_pkey"), new TableField[] { ProcessChains.PROCESS_CHAINS.ID }, true);
-    public static final UniqueKey<ProcessInstancesRecord> PROCESS_INSTANCES_PKEY = Internal.createUniqueKey(ProcessInstances.PROCESS_INSTANCES, DSL.name("process_instances_pkey"), new TableField[] { ProcessInstances.PROCESS_INSTANCES.ID }, true);
-    public static final UniqueKey<RuleChainsRecord> RULE_CHAINS_PKEY = Internal.createUniqueKey(RuleChains.RULE_CHAINS, DSL.name("rule_chains_pkey"), new TableField[] { RuleChains.RULE_CHAINS.ID }, true);
-    public static final UniqueKey<SharedNodesRecord> SHARED_NODES_PKEY = Internal.createUniqueKey(SharedNodes.SHARED_NODES, DSL.name("shared_nodes_pkey"), new TableField[] { SharedNodes.SHARED_NODES.ID }, true);
-    public static final UniqueKey<SharedRulesRecord> SHARED_RULES_PKEY = Internal.createUniqueKey(SharedRules.SHARED_RULES, DSL.name("shared_rules_pkey"), new TableField[] { SharedRules.SHARED_RULES.ID }, true);
+  public static final UniqueKey<ChainNodesRecord> CHAIN_NODES_PKEY = Internal.createUniqueKey(ChainNodes.CHAIN_NODES, DSL.name("chain_nodes_pkey"), new TableField[]{ChainNodes.CHAIN_NODES.ID}, true);
+  public static final UniqueKey<ChainNodesRecord> CHAIN_NODES_PROCESS_CHAIN_ID_SEQUENCE_KEY = Internal.createUniqueKey(ChainNodes.CHAIN_NODES, DSL.name("chain_nodes_process_chain_id_sequence_key"), new TableField[]{ChainNodes.CHAIN_NODES.PROCESS_CHAIN_ID, ChainNodes.CHAIN_NODES.SEQUENCE}, true);
+  public static final UniqueKey<ChainRulesRecord> CHAIN_RULES_PKEY = Internal.createUniqueKey(ChainRules.CHAIN_RULES, DSL.name("chain_rules_pkey"), new TableField[]{ChainRules.CHAIN_RULES.ID}, true);
+  public static final UniqueKey<ChainRulesRecord> CHAIN_RULES_RULE_CHAIN_ID_SEQUENCE_KEY = Internal.createUniqueKey(ChainRules.CHAIN_RULES, DSL.name("chain_rules_rule_chain_id_sequence_key"), new TableField[]{ChainRules.CHAIN_RULES.RULE_CHAIN_ID, ChainRules.CHAIN_RULES.SEQUENCE}, true);
+  public static final UniqueKey<ProcessChainsRecord> PROCESS_CHAINS_PKEY = Internal.createUniqueKey(ProcessChains.PROCESS_CHAINS, DSL.name("process_chains_pkey"), new TableField[]{ProcessChains.PROCESS_CHAINS.ID}, true);
+  public static final UniqueKey<ProcessInstancesRecord> PROCESS_INSTANCES_PKEY = Internal.createUniqueKey(ProcessInstances.PROCESS_INSTANCES, DSL.name("process_instances_pkey"), new TableField[]{ProcessInstances.PROCESS_INSTANCES.ID}, true);
+  public static final UniqueKey<RuleChainsRecord> RULE_CHAINS_PKEY = Internal.createUniqueKey(RuleChains.RULE_CHAINS, DSL.name("rule_chains_pkey"), new TableField[]{RuleChains.RULE_CHAINS.ID}, true);
+  public static final UniqueKey<SharedNodesRecord> SHARED_NODES_PKEY = Internal.createUniqueKey(SharedNodes.SHARED_NODES, DSL.name("shared_nodes_pkey"), new TableField[]{SharedNodes.SHARED_NODES.ID}, true);
+  public static final UniqueKey<SharedRulesRecord> SHARED_RULES_PKEY = Internal.createUniqueKey(SharedRules.SHARED_RULES, DSL.name("shared_rules_pkey"), new TableField[]{SharedRules.SHARED_RULES.ID}, true);
 
-    // -------------------------------------------------------------------------
-    // FOREIGN KEY definitions
-    // -------------------------------------------------------------------------
+  // -------------------------------------------------------------------------
+  // FOREIGN KEY definitions
+  // -------------------------------------------------------------------------
 
-    public static final ForeignKey<ChainNodesRecord, ProcessChainsRecord> CHAIN_NODES__CHAIN_NODES_PROCESS_CHAIN_ID_FKEY = Internal.createForeignKey(ChainNodes.CHAIN_NODES, DSL.name("chain_nodes_process_chain_id_fkey"), new TableField[] { ChainNodes.CHAIN_NODES.PROCESS_CHAIN_ID }, Keys.PROCESS_CHAINS_PKEY, new TableField[] { ProcessChains.PROCESS_CHAINS.ID }, true, ForeignKeyRule.NO_ACTION, ForeignKeyRule.NO_ACTION);
-    public static final ForeignKey<ChainNodesRecord, RuleChainsRecord> CHAIN_NODES__CHAIN_NODES_RULE_CHAIN_ID_FKEY = Internal.createForeignKey(ChainNodes.CHAIN_NODES, DSL.name("chain_nodes_rule_chain_id_fkey"), new TableField[] { ChainNodes.CHAIN_NODES.RULE_CHAIN_ID }, Keys.RULE_CHAINS_PKEY, new TableField[] { RuleChains.RULE_CHAINS.ID }, true, ForeignKeyRule.NO_ACTION, ForeignKeyRule.NO_ACTION);
-    public static final ForeignKey<ChainNodesRecord, SharedNodesRecord> CHAIN_NODES__CHAIN_NODES_SHARED_NODE_ID_FKEY = Internal.createForeignKey(ChainNodes.CHAIN_NODES, DSL.name("chain_nodes_shared_node_id_fkey"), new TableField[] { ChainNodes.CHAIN_NODES.SHARED_NODE_ID }, Keys.SHARED_NODES_PKEY, new TableField[] { SharedNodes.SHARED_NODES.ID }, true, ForeignKeyRule.NO_ACTION, ForeignKeyRule.NO_ACTION);
-    public static final ForeignKey<ChainRulesRecord, RuleChainsRecord> CHAIN_RULES__CHAIN_RULES_RULE_CHAIN_ID_FKEY = Internal.createForeignKey(ChainRules.CHAIN_RULES, DSL.name("chain_rules_rule_chain_id_fkey"), new TableField[] { ChainRules.CHAIN_RULES.RULE_CHAIN_ID }, Keys.RULE_CHAINS_PKEY, new TableField[] { RuleChains.RULE_CHAINS.ID }, true, ForeignKeyRule.NO_ACTION, ForeignKeyRule.NO_ACTION);
-    public static final ForeignKey<ChainRulesRecord, SharedRulesRecord> CHAIN_RULES__CHAIN_RULES_SHARED_RULE_ID_FKEY = Internal.createForeignKey(ChainRules.CHAIN_RULES, DSL.name("chain_rules_shared_rule_id_fkey"), new TableField[] { ChainRules.CHAIN_RULES.SHARED_RULE_ID }, Keys.SHARED_RULES_PKEY, new TableField[] { SharedRules.SHARED_RULES.ID }, true, ForeignKeyRule.NO_ACTION, ForeignKeyRule.NO_ACTION);
-    public static final ForeignKey<ProcessInstancesRecord, ChainNodesRecord> PROCESS_INSTANCES__PROCESS_INSTANCES_CURRENT_NODE_ID_FKEY = Internal.createForeignKey(ProcessInstances.PROCESS_INSTANCES, DSL.name("process_instances_current_node_id_fkey"), new TableField[] { ProcessInstances.PROCESS_INSTANCES.CURRENT_NODE_ID }, Keys.CHAIN_NODES_PKEY, new TableField[] { ChainNodes.CHAIN_NODES.ID }, true, ForeignKeyRule.NO_ACTION, ForeignKeyRule.NO_ACTION);
-    public static final ForeignKey<ProcessInstancesRecord, ProcessChainsRecord> PROCESS_INSTANCES__PROCESS_INSTANCES_PROCESS_CHAIN_ID_FKEY = Internal.createForeignKey(ProcessInstances.PROCESS_INSTANCES, DSL.name("process_instances_process_chain_id_fkey"), new TableField[] { ProcessInstances.PROCESS_INSTANCES.PROCESS_CHAIN_ID }, Keys.PROCESS_CHAINS_PKEY, new TableField[] { ProcessChains.PROCESS_CHAINS.ID }, true, ForeignKeyRule.NO_ACTION, ForeignKeyRule.NO_ACTION);
-    public static final ForeignKey<SharedNodesRecord, RuleChainsRecord> SHARED_NODES__SHARED_NODES_RULE_CHAIN_ID_FKEY = Internal.createForeignKey(SharedNodes.SHARED_NODES, DSL.name("shared_nodes_rule_chain_id_fkey"), new TableField[] { SharedNodes.SHARED_NODES.RULE_CHAIN_ID }, Keys.RULE_CHAINS_PKEY, new TableField[] { RuleChains.RULE_CHAINS.ID }, true, ForeignKeyRule.NO_ACTION, ForeignKeyRule.NO_ACTION);
+  public static final ForeignKey<ChainNodesRecord, ProcessChainsRecord> CHAIN_NODES__CHAIN_NODES_PROCESS_CHAIN_ID_FKEY = Internal.createForeignKey(ChainNodes.CHAIN_NODES, DSL.name("chain_nodes_process_chain_id_fkey"), new TableField[]{ChainNodes.CHAIN_NODES.PROCESS_CHAIN_ID}, Keys.PROCESS_CHAINS_PKEY, new TableField[]{ProcessChains.PROCESS_CHAINS.ID}, true, ForeignKeyRule.NO_ACTION, ForeignKeyRule.NO_ACTION);
+  public static final ForeignKey<ChainNodesRecord, RuleChainsRecord> CHAIN_NODES__CHAIN_NODES_RULE_CHAIN_ID_FKEY = Internal.createForeignKey(ChainNodes.CHAIN_NODES, DSL.name("chain_nodes_rule_chain_id_fkey"), new TableField[]{ChainNodes.CHAIN_NODES.RULE_CHAIN_ID}, Keys.RULE_CHAINS_PKEY, new TableField[]{RuleChains.RULE_CHAINS.ID}, true, ForeignKeyRule.NO_ACTION, ForeignKeyRule.NO_ACTION);
+  public static final ForeignKey<ChainNodesRecord, SharedNodesRecord> CHAIN_NODES__CHAIN_NODES_SHARED_NODE_ID_FKEY = Internal.createForeignKey(ChainNodes.CHAIN_NODES, DSL.name("chain_nodes_shared_node_id_fkey"), new TableField[]{ChainNodes.CHAIN_NODES.SHARED_NODE_ID}, Keys.SHARED_NODES_PKEY, new TableField[]{SharedNodes.SHARED_NODES.ID}, true, ForeignKeyRule.NO_ACTION, ForeignKeyRule.NO_ACTION);
+  public static final ForeignKey<ChainRulesRecord, RuleChainsRecord> CHAIN_RULES__CHAIN_RULES_RULE_CHAIN_ID_FKEY = Internal.createForeignKey(ChainRules.CHAIN_RULES, DSL.name("chain_rules_rule_chain_id_fkey"), new TableField[]{ChainRules.CHAIN_RULES.RULE_CHAIN_ID}, Keys.RULE_CHAINS_PKEY, new TableField[]{RuleChains.RULE_CHAINS.ID}, true, ForeignKeyRule.NO_ACTION, ForeignKeyRule.NO_ACTION);
+  public static final ForeignKey<ChainRulesRecord, SharedRulesRecord> CHAIN_RULES__CHAIN_RULES_SHARED_RULE_ID_FKEY = Internal.createForeignKey(ChainRules.CHAIN_RULES, DSL.name("chain_rules_shared_rule_id_fkey"), new TableField[]{ChainRules.CHAIN_RULES.SHARED_RULE_ID}, Keys.SHARED_RULES_PKEY, new TableField[]{SharedRules.SHARED_RULES.ID}, true, ForeignKeyRule.NO_ACTION, ForeignKeyRule.NO_ACTION);
+  public static final ForeignKey<ProcessInstancesRecord, ChainNodesRecord> PROCESS_INSTANCES__PROCESS_INSTANCES_CURRENT_NODE_ID_FKEY = Internal.createForeignKey(ProcessInstances.PROCESS_INSTANCES, DSL.name("process_instances_current_node_id_fkey"), new TableField[]{ProcessInstances.PROCESS_INSTANCES.CURRENT_NODE_ID}, Keys.CHAIN_NODES_PKEY, new TableField[]{ChainNodes.CHAIN_NODES.ID}, true, ForeignKeyRule.NO_ACTION, ForeignKeyRule.NO_ACTION);
+  public static final ForeignKey<ProcessInstancesRecord, ProcessChainsRecord> PROCESS_INSTANCES__PROCESS_INSTANCES_PROCESS_CHAIN_ID_FKEY = Internal.createForeignKey(ProcessInstances.PROCESS_INSTANCES, DSL.name("process_instances_process_chain_id_fkey"), new TableField[]{ProcessInstances.PROCESS_INSTANCES.PROCESS_CHAIN_ID}, Keys.PROCESS_CHAINS_PKEY, new TableField[]{ProcessChains.PROCESS_CHAINS.ID}, true, ForeignKeyRule.NO_ACTION, ForeignKeyRule.NO_ACTION);
+  public static final ForeignKey<SharedNodesRecord, RuleChainsRecord> SHARED_NODES__SHARED_NODES_RULE_CHAIN_ID_FKEY = Internal.createForeignKey(SharedNodes.SHARED_NODES, DSL.name("shared_nodes_rule_chain_id_fkey"), new TableField[]{SharedNodes.SHARED_NODES.RULE_CHAIN_ID}, Keys.RULE_CHAINS_PKEY, new TableField[]{RuleChains.RULE_CHAINS.ID}, true, ForeignKeyRule.NO_ACTION, ForeignKeyRule.NO_ACTION);
 }

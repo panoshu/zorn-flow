@@ -50,7 +50,7 @@ public non-sealed class DatabaseRuleChainConfigSource extends AbstractDatabaseCo
   protected Optional<RuleChainConfig> loadById(String id) {
     RuleChainsRecord chainRecord = dsl.selectFrom(RULE_CHAINS)
       .where(RULE_CHAINS.ID.eq(id)
-            .and(RULE_CHAINS.RECORD_STATUS.eq(RecordStatus.ACTIVE.getDbValue())))
+        .and(RULE_CHAINS.RECORD_STATUS.eq(RecordStatus.ACTIVE.getDbValue())))
       .fetchOne();
 
     if (chainRecord == null) {

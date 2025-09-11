@@ -32,19 +32,22 @@ import static org.mockito.Mockito.*;
 @DisplayName("DefaultProcessOrchestrationService 领域服务单元测试")
 class DefaultProcessOrchestrationServiceTest {
 
-  @Mock private ProcessChainRepository processChainRepository;
-  @Mock private RuleChainRepository ruleChainRepository;
-  @Mock private RuleChainExecutionService ruleChainExecutionService;
-  @Mock private GatewayProcessor gatewayProcessor;
-  @Mock private ProcessInstance instance;
-
-  @InjectMocks
-  private DefaultProcessOrchestrationService orchestrationService;
-
   private final ProcessChainId chainId = ProcessChainId.of("p-chain-1");
   private final com.zornflow.domain.rule.types.RuleChainId ruleChainId = com.zornflow.domain.rule.types.RuleChainId.of("r-chain-1");
   private final ProcessNodeId currentNodeId = ProcessNodeId.of("node-current");
   private final ProcessNodeId nextNodeId = ProcessNodeId.of("node-next");
+  @Mock
+  private ProcessChainRepository processChainRepository;
+  @Mock
+  private RuleChainRepository ruleChainRepository;
+  @Mock
+  private RuleChainExecutionService ruleChainExecutionService;
+  @Mock
+  private GatewayProcessor gatewayProcessor;
+  @Mock
+  private ProcessInstance instance;
+  @InjectMocks
+  private DefaultProcessOrchestrationService orchestrationService;
   private BusinessContext originalContext;
   private BusinessContext updatedContext;
 

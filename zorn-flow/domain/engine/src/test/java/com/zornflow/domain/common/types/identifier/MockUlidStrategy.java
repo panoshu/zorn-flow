@@ -13,6 +13,14 @@ import java.util.function.Predicate;
 
 public class MockUlidStrategy implements IdStrategy<String> {
   private static final AtomicLong COUNTER = new AtomicLong(0);
-  @Override public String generate() { return "01TEST" + String.format("%020d", COUNTER.getAndIncrement()); }
-  @Override public Predicate<String> validator() { return s -> s.length() == 26 && s.startsWith("01TEST"); }
+
+  @Override
+  public String generate() {
+    return "01TEST" + String.format("%020d", COUNTER.getAndIncrement());
+  }
+
+  @Override
+  public Predicate<String> validator() {
+    return s -> s.length() == 26 && s.startsWith("01TEST");
+  }
 }

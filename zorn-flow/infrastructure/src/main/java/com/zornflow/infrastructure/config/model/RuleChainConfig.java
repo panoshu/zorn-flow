@@ -23,4 +23,5 @@ public record RuleChainConfig(
   Integer version,
   OffsetDateTime createdAt,
   OffsetDateTime updatedAt
-) implements ModelConfig { }
+) implements ModelConfig {
+}

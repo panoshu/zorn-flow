@@ -10,343 +10,313 @@ import com.zornflow.infrastructure.persistence.jooq.Keys;
 import com.zornflow.infrastructure.persistence.jooq.tables.RuleChains.RuleChainsPath;
 import com.zornflow.infrastructure.persistence.jooq.tables.SharedRules.SharedRulesPath;
 import com.zornflow.infrastructure.persistence.jooq.tables.records.ChainRulesRecord;
+import org.jooq.*;
+import org.jooq.Record;
+import org.jooq.impl.DSL;
+import org.jooq.impl.SQLDataType;
+import org.jooq.impl.TableImpl;
 
 import java.time.OffsetDateTime;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
-import org.jooq.Condition;
-import org.jooq.Field;
-import org.jooq.ForeignKey;
-import org.jooq.Index;
-import org.jooq.InverseForeignKey;
-import org.jooq.JSONB;
-import org.jooq.Name;
-import org.jooq.Path;
-import org.jooq.PlainSQL;
-import org.jooq.QueryPart;
-import org.jooq.Record;
-import org.jooq.SQL;
-import org.jooq.Schema;
-import org.jooq.Select;
-import org.jooq.Stringly;
-import org.jooq.Table;
-import org.jooq.TableField;
-import org.jooq.TableOptions;
-import org.jooq.UniqueKey;
-import org.jooq.impl.DSL;
-import org.jooq.impl.SQLDataType;
-import org.jooq.impl.TableImpl;
-
 
 /**
  * 规则在链中的具体实例，存储顺序、与共享模板的链接以及属性覆盖
  */
-@SuppressWarnings({ "all", "unchecked", "rawtypes", "this-escape" })
+@SuppressWarnings({"all", "unchecked", "rawtypes", "this-escape"})
 public class ChainRules extends TableImpl<ChainRulesRecord> {
+
+  /**
+   * The reference instance of <code>engine.chain_rules</code>
+   */
+  public static final ChainRules CHAIN_RULES = new ChainRules();
+  private static final long serialVersionUID = 1L;
+  /**
+   * The column <code>engine.chain_rules.id</code>.
+   */
+  public final TableField<ChainRulesRecord, String> ID = createField(DSL.name("id"), SQLDataType.VARCHAR(40).nullable(false), this, "");
+  /**
+   * The column <code>engine.chain_rules.rule_chain_id</code>.
+   */
+  public final TableField<ChainRulesRecord, String> RULE_CHAIN_ID = createField(DSL.name("rule_chain_id"), SQLDataType.VARCHAR(40).nullable(false), this, "");
+  /**
+   * The column <code>engine.chain_rules.shared_rule_id</code>.
+   */
+  public final TableField<ChainRulesRecord, String> SHARED_RULE_ID = createField(DSL.name("shared_rule_id"), SQLDataType.VARCHAR(40), this, "");
+  /**
+   * The column <code>engine.chain_rules.sequence</code>.
+   */
+  public final TableField<ChainRulesRecord, Integer> SEQUENCE = createField(DSL.name("sequence"), SQLDataType.INTEGER.nullable(false), this, "");
+  /**
+   * The column <code>engine.chain_rules.name</code>.
+   */
+  public final TableField<ChainRulesRecord, String> NAME = createField(DSL.name("name"), SQLDataType.VARCHAR(255), this, "");
+  /**
+   * The column <code>engine.chain_rules.priority</code>.
+   */
+  public final TableField<ChainRulesRecord, Integer> PRIORITY = createField(DSL.name("priority"), SQLDataType.INTEGER, this, "");
+  /**
+   * The column <code>engine.chain_rules.condition</code>.
+   */
+  public final TableField<ChainRulesRecord, String> CONDITION = createField(DSL.name("condition"), SQLDataType.CLOB, this, "");
+  /**
+   * The column <code>engine.chain_rules.handler_config</code>.
+   */
+  public final TableField<ChainRulesRecord, JSONB> HANDLER_CONFIG = createField(DSL.name("handler_config"), SQLDataType.JSONB, this, "");
+  /**
+   * The column <code>engine.chain_rules.version</code>.
+   */
+  public final TableField<ChainRulesRecord, Integer> VERSION = createField(DSL.name("version"), SQLDataType.INTEGER, this, "");
+  /**
+   * The column <code>engine.chain_rules.created_at</code>.
+   */
+  public final TableField<ChainRulesRecord, OffsetDateTime> CREATED_AT = createField(DSL.name("created_at"), SQLDataType.TIMESTAMPWITHTIMEZONE(6).nullable(false).defaultValue(DSL.field(DSL.raw("now()"), SQLDataType.TIMESTAMPWITHTIMEZONE)), this, "");
+  /**
+   * The column <code>engine.chain_rules.updated_at</code>.
+   */
+  public final TableField<ChainRulesRecord, OffsetDateTime> UPDATED_AT = createField(DSL.name("updated_at"), SQLDataType.TIMESTAMPWITHTIMEZONE(6).nullable(false).defaultValue(DSL.field(DSL.raw("now()"), SQLDataType.TIMESTAMPWITHTIMEZONE)), this, "");
+  private transient RuleChainsPath _ruleChains;
+  private transient SharedRulesPath _sharedRules;
+
+  private ChainRules(Name alias, Table<ChainRulesRecord> aliased) {
+    this(alias, aliased, (Field<?>[]) null, null);
+  }
+
+  private ChainRules(Name alias, Table<ChainRulesRecord> aliased, Field<?>[] parameters, Condition where) {
+    super(alias, null, aliased, parameters, DSL.comment("规则在链中的具体实例，存储顺序、与共享模板的链接以及属性覆盖"), TableOptions.table(), where);
+  }
+
+  /**
+   * Create an aliased <code>engine.chain_rules</code> table reference
+   */
+  public ChainRules(String alias) {
+    this(DSL.name(alias), CHAIN_RULES);
+  }
+
+  /**
+   * Create an aliased <code>engine.chain_rules</code> table reference
+   */
+  public ChainRules(Name alias) {
+    this(alias, CHAIN_RULES);
+  }
+
+  /**
+   * Create a <code>engine.chain_rules</code> table reference
+   */
+  public ChainRules() {
+    this(DSL.name("chain_rules"), null);
+  }
+
+  public <O extends Record> ChainRules(Table<O> path, ForeignKey<O, ChainRulesRecord> childPath, InverseForeignKey<O, ChainRulesRecord> parentPath) {
+    super(path, childPath, parentPath, CHAIN_RULES);
+  }
+
+  /**
+   * The class holding records for this type
+   */
+  @Override
+  public Class<ChainRulesRecord> getRecordType() {
+    return ChainRulesRecord.class;
+  }
+
+  @Override
+  public Schema getSchema() {
+    return aliased() ? null : Engine.ENGINE;
+  }
+
+  @Override
+  public List<Index> getIndexes() {
+    return Arrays.asList(Indexes.IDX_CHAIN_RULES_RULE_CHAIN_ID, Indexes.IDX_CHAIN_RULES_SHARED_RULE_ID);
+  }
+
+  @Override
+  public UniqueKey<ChainRulesRecord> getPrimaryKey() {
+    return Keys.CHAIN_RULES_PKEY;
+  }
+
+  @Override
+  public List<UniqueKey<ChainRulesRecord>> getUniqueKeys() {
+    return Arrays.asList(Keys.CHAIN_RULES_RULE_CHAIN_ID_SEQUENCE_KEY);
+  }
+
+  @Override
+  public List<ForeignKey<ChainRulesRecord, ?>> getReferences() {
+    return Arrays.asList(Keys.CHAIN_RULES__CHAIN_RULES_RULE_CHAIN_ID_FKEY, Keys.CHAIN_RULES__CHAIN_RULES_SHARED_RULE_ID_FKEY);
+  }
+
+  /**
+   * Get the implicit join path to the <code>engine.rule_chains</code> table.
+   */
+  public RuleChainsPath ruleChains() {
+    if (_ruleChains == null)
+      _ruleChains = new RuleChainsPath(this, Keys.CHAIN_RULES__CHAIN_RULES_RULE_CHAIN_ID_FKEY, null);
+
+    return _ruleChains;
+  }
+
+  /**
+   * Get the implicit join path to the <code>engine.shared_rules</code> table.
+   */
+  public SharedRulesPath sharedRules() {
+    if (_sharedRules == null)
+      _sharedRules = new SharedRulesPath(this, Keys.CHAIN_RULES__CHAIN_RULES_SHARED_RULE_ID_FKEY, null);
+
+    return _sharedRules;
+  }
+
+  @Override
+  public ChainRules as(String alias) {
+    return new ChainRules(DSL.name(alias), this);
+  }
+
+  @Override
+  public ChainRules as(Name alias) {
+    return new ChainRules(alias, this);
+  }
+
+  @Override
+  public ChainRules as(Table<?> alias) {
+    return new ChainRules(alias.getQualifiedName(), this);
+  }
+
+  /**
+   * Rename this table
+   */
+  @Override
+  public ChainRules rename(String name) {
+    return new ChainRules(DSL.name(name), null);
+  }
+
+  /**
+   * Rename this table
+   */
+  @Override
+  public ChainRules rename(Name name) {
+    return new ChainRules(name, null);
+  }
+
+  /**
+   * Rename this table
+   */
+  @Override
+  public ChainRules rename(Table<?> name) {
+    return new ChainRules(name.getQualifiedName(), null);
+  }
+
+  /**
+   * Create an inline derived table from this table
+   */
+  @Override
+  public ChainRules where(Condition condition) {
+    return new ChainRules(getQualifiedName(), aliased() ? this : null, null, condition);
+  }
+
+  /**
+   * Create an inline derived table from this table
+   */
+  @Override
+  public ChainRules where(Collection<? extends Condition> conditions) {
+    return where(DSL.and(conditions));
+  }
+
+  /**
+   * Create an inline derived table from this table
+   */
+  @Override
+  public ChainRules where(Condition... conditions) {
+    return where(DSL.and(conditions));
+  }
+
+  /**
+   * Create an inline derived table from this table
+   */
+  @Override
+  public ChainRules where(Field<Boolean> condition) {
+    return where(DSL.condition(condition));
+  }
+
+  /**
+   * Create an inline derived table from this table
+   */
+  @Override
+  @PlainSQL
+  public ChainRules where(SQL condition) {
+    return where(DSL.condition(condition));
+  }
+
+  /**
+   * Create an inline derived table from this table
+   */
+  @Override
+  @PlainSQL
+  public ChainRules where(@Stringly.SQL String condition) {
+    return where(DSL.condition(condition));
+  }
+
+  /**
+   * Create an inline derived table from this table
+   */
+  @Override
+  @PlainSQL
+  public ChainRules where(@Stringly.SQL String condition, Object... binds) {
+    return where(DSL.condition(condition, binds));
+  }
+
+  /**
+   * Create an inline derived table from this table
+   */
+  @Override
+  @PlainSQL
+  public ChainRules where(@Stringly.SQL String condition, QueryPart... parts) {
+    return where(DSL.condition(condition, parts));
+  }
+
+  /**
+   * Create an inline derived table from this table
+   */
+  @Override
+  public ChainRules whereExists(Select<?> select) {
+    return where(DSL.exists(select));
+  }
+
+  /**
+   * Create an inline derived table from this table
+   */
+  @Override
+  public ChainRules whereNotExists(Select<?> select) {
+    return where(DSL.notExists(select));
+  }
+
+  /**
+   * A subtype implementing {@link Path} for simplified path-based joins.
+   */
+  public static class ChainRulesPath extends ChainRules implements Path<ChainRulesRecord> {
 
     private static final long serialVersionUID = 1L;
 
-    /**
-     * The reference instance of <code>engine.chain_rules</code>
-     */
-    public static final ChainRules CHAIN_RULES = new ChainRules();
-
-    /**
-     * The class holding records for this type
-     */
-    @Override
-    public Class<ChainRulesRecord> getRecordType() {
-        return ChainRulesRecord.class;
+    public <O extends Record> ChainRulesPath(Table<O> path, ForeignKey<O, ChainRulesRecord> childPath, InverseForeignKey<O, ChainRulesRecord> parentPath) {
+      super(path, childPath, parentPath);
     }
 
-    /**
-     * The column <code>engine.chain_rules.id</code>.
-     */
-    public final TableField<ChainRulesRecord, String> ID = createField(DSL.name("id"), SQLDataType.VARCHAR(40).nullable(false), this, "");
-
-    /**
-     * The column <code>engine.chain_rules.rule_chain_id</code>.
-     */
-    public final TableField<ChainRulesRecord, String> RULE_CHAIN_ID = createField(DSL.name("rule_chain_id"), SQLDataType.VARCHAR(40).nullable(false), this, "");
-
-    /**
-     * The column <code>engine.chain_rules.shared_rule_id</code>.
-     */
-    public final TableField<ChainRulesRecord, String> SHARED_RULE_ID = createField(DSL.name("shared_rule_id"), SQLDataType.VARCHAR(40), this, "");
-
-    /**
-     * The column <code>engine.chain_rules.sequence</code>.
-     */
-    public final TableField<ChainRulesRecord, Integer> SEQUENCE = createField(DSL.name("sequence"), SQLDataType.INTEGER.nullable(false), this, "");
-
-    /**
-     * The column <code>engine.chain_rules.name</code>.
-     */
-    public final TableField<ChainRulesRecord, String> NAME = createField(DSL.name("name"), SQLDataType.VARCHAR(255), this, "");
-
-    /**
-     * The column <code>engine.chain_rules.priority</code>.
-     */
-    public final TableField<ChainRulesRecord, Integer> PRIORITY = createField(DSL.name("priority"), SQLDataType.INTEGER, this, "");
-
-    /**
-     * The column <code>engine.chain_rules.condition</code>.
-     */
-    public final TableField<ChainRulesRecord, String> CONDITION = createField(DSL.name("condition"), SQLDataType.CLOB, this, "");
-
-    /**
-     * The column <code>engine.chain_rules.handler_config</code>.
-     */
-    public final TableField<ChainRulesRecord, JSONB> HANDLER_CONFIG = createField(DSL.name("handler_config"), SQLDataType.JSONB, this, "");
-
-    /**
-     * The column <code>engine.chain_rules.version</code>.
-     */
-    public final TableField<ChainRulesRecord, Integer> VERSION = createField(DSL.name("version"), SQLDataType.INTEGER, this, "");
-
-    /**
-     * The column <code>engine.chain_rules.created_at</code>.
-     */
-    public final TableField<ChainRulesRecord, OffsetDateTime> CREATED_AT = createField(DSL.name("created_at"), SQLDataType.TIMESTAMPWITHTIMEZONE(6).nullable(false).defaultValue(DSL.field(DSL.raw("now()"), SQLDataType.TIMESTAMPWITHTIMEZONE)), this, "");
-
-    /**
-     * The column <code>engine.chain_rules.updated_at</code>.
-     */
-    public final TableField<ChainRulesRecord, OffsetDateTime> UPDATED_AT = createField(DSL.name("updated_at"), SQLDataType.TIMESTAMPWITHTIMEZONE(6).nullable(false).defaultValue(DSL.field(DSL.raw("now()"), SQLDataType.TIMESTAMPWITHTIMEZONE)), this, "");
-
-    private ChainRules(Name alias, Table<ChainRulesRecord> aliased) {
-        this(alias, aliased, (Field<?>[]) null, null);
-    }
-
-    private ChainRules(Name alias, Table<ChainRulesRecord> aliased, Field<?>[] parameters, Condition where) {
-        super(alias, null, aliased, parameters, DSL.comment("规则在链中的具体实例，存储顺序、与共享模板的链接以及属性覆盖"), TableOptions.table(), where);
-    }
-
-    /**
-     * Create an aliased <code>engine.chain_rules</code> table reference
-     */
-    public ChainRules(String alias) {
-        this(DSL.name(alias), CHAIN_RULES);
-    }
-
-    /**
-     * Create an aliased <code>engine.chain_rules</code> table reference
-     */
-    public ChainRules(Name alias) {
-        this(alias, CHAIN_RULES);
-    }
-
-    /**
-     * Create a <code>engine.chain_rules</code> table reference
-     */
-    public ChainRules() {
-        this(DSL.name("chain_rules"), null);
-    }
-
-    public <O extends Record> ChainRules(Table<O> path, ForeignKey<O, ChainRulesRecord> childPath, InverseForeignKey<O, ChainRulesRecord> parentPath) {
-        super(path, childPath, parentPath, CHAIN_RULES);
-    }
-
-    /**
-     * A subtype implementing {@link Path} for simplified path-based joins.
-     */
-    public static class ChainRulesPath extends ChainRules implements Path<ChainRulesRecord> {
-
-        private static final long serialVersionUID = 1L;
-        public <O extends Record> ChainRulesPath(Table<O> path, ForeignKey<O, ChainRulesRecord> childPath, InverseForeignKey<O, ChainRulesRecord> parentPath) {
-            super(path, childPath, parentPath);
-        }
-        private ChainRulesPath(Name alias, Table<ChainRulesRecord> aliased) {
-            super(alias, aliased);
-        }
-
-        @Override
-        public ChainRulesPath as(String alias) {
-            return new ChainRulesPath(DSL.name(alias), this);
-        }
-
-        @Override
-        public ChainRulesPath as(Name alias) {
-            return new ChainRulesPath(alias, this);
-        }
-
-        @Override
-        public ChainRulesPath as(Table<?> alias) {
-            return new ChainRulesPath(alias.getQualifiedName(), this);
-        }
+    private ChainRulesPath(Name alias, Table<ChainRulesRecord> aliased) {
+      super(alias, aliased);
     }
 
     @Override
-    public Schema getSchema() {
-        return aliased() ? null : Engine.ENGINE;
+    public ChainRulesPath as(String alias) {
+      return new ChainRulesPath(DSL.name(alias), this);
     }
 
     @Override
-    public List<Index> getIndexes() {
-        return Arrays.asList(Indexes.IDX_CHAIN_RULES_RULE_CHAIN_ID, Indexes.IDX_CHAIN_RULES_SHARED_RULE_ID);
+    public ChainRulesPath as(Name alias) {
+      return new ChainRulesPath(alias, this);
     }
 
     @Override
-    public UniqueKey<ChainRulesRecord> getPrimaryKey() {
-        return Keys.CHAIN_RULES_PKEY;
+    public ChainRulesPath as(Table<?> alias) {
+      return new ChainRulesPath(alias.getQualifiedName(), this);
     }
-
-    @Override
-    public List<UniqueKey<ChainRulesRecord>> getUniqueKeys() {
-        return Arrays.asList(Keys.CHAIN_RULES_RULE_CHAIN_ID_SEQUENCE_KEY);
-    }
-
-    @Override
-    public List<ForeignKey<ChainRulesRecord, ?>> getReferences() {
-        return Arrays.asList(Keys.CHAIN_RULES__CHAIN_RULES_RULE_CHAIN_ID_FKEY, Keys.CHAIN_RULES__CHAIN_RULES_SHARED_RULE_ID_FKEY);
-    }
-
-    private transient RuleChainsPath _ruleChains;
-
-    /**
-     * Get the implicit join path to the <code>engine.rule_chains</code> table.
-     */
-    public RuleChainsPath ruleChains() {
-        if (_ruleChains == null)
-            _ruleChains = new RuleChainsPath(this, Keys.CHAIN_RULES__CHAIN_RULES_RULE_CHAIN_ID_FKEY, null);
-
-        return _ruleChains;
-    }
-
-    private transient SharedRulesPath _sharedRules;
-
-    /**
-     * Get the implicit join path to the <code>engine.shared_rules</code> table.
-     */
-    public SharedRulesPath sharedRules() {
-        if (_sharedRules == null)
-            _sharedRules = new SharedRulesPath(this, Keys.CHAIN_RULES__CHAIN_RULES_SHARED_RULE_ID_FKEY, null);
-
-        return _sharedRules;
-    }
-
-    @Override
-    public ChainRules as(String alias) {
-        return new ChainRules(DSL.name(alias), this);
-    }
-
-    @Override
-    public ChainRules as(Name alias) {
-        return new ChainRules(alias, this);
-    }
-
-    @Override
-    public ChainRules as(Table<?> alias) {
-        return new ChainRules(alias.getQualifiedName(), this);
-    }
-
-    /**
-     * Rename this table
-     */
-    @Override
-    public ChainRules rename(String name) {
-        return new ChainRules(DSL.name(name), null);
-    }
-
-    /**
-     * Rename this table
-     */
-    @Override
-    public ChainRules rename(Name name) {
-        return new ChainRules(name, null);
-    }
-
-    /**
-     * Rename this table
-     */
-    @Override
-    public ChainRules rename(Table<?> name) {
-        return new ChainRules(name.getQualifiedName(), null);
-    }
-
-    /**
-     * Create an inline derived table from this table
-     */
-    @Override
-    public ChainRules where(Condition condition) {
-        return new ChainRules(getQualifiedName(), aliased() ? this : null, null, condition);
-    }
-
-    /**
-     * Create an inline derived table from this table
-     */
-    @Override
-    public ChainRules where(Collection<? extends Condition> conditions) {
-        return where(DSL.and(conditions));
-    }
-
-    /**
-     * Create an inline derived table from this table
-     */
-    @Override
-    public ChainRules where(Condition... conditions) {
-        return where(DSL.and(conditions));
-    }
-
-    /**
-     * Create an inline derived table from this table
-     */
-    @Override
-    public ChainRules where(Field<Boolean> condition) {
-        return where(DSL.condition(condition));
-    }
-
-    /**
-     * Create an inline derived table from this table
-     */
-    @Override
-    @PlainSQL
-    public ChainRules where(SQL condition) {
-        return where(DSL.condition(condition));
-    }
-
-    /**
-     * Create an inline derived table from this table
-     */
-    @Override
-    @PlainSQL
-    public ChainRules where(@Stringly.SQL String condition) {
-        return where(DSL.condition(condition));
-    }
-
-    /**
-     * Create an inline derived table from this table
-     */
-    @Override
-    @PlainSQL
-    public ChainRules where(@Stringly.SQL String condition, Object... binds) {
-        return where(DSL.condition(condition, binds));
-    }
-
-    /**
-     * Create an inline derived table from this table
-     */
-    @Override
-    @PlainSQL
-    public ChainRules where(@Stringly.SQL String condition, QueryPart... parts) {
-        return where(DSL.condition(condition, parts));
-    }
-
-    /**
-     * Create an inline derived table from this table
-     */
-    @Override
-    public ChainRules whereExists(Select<?> select) {
-        return where(DSL.exists(select));
-    }
-
-    /**
-     * Create an inline derived table from this table
-     */
-    @Override
-    public ChainRules whereNotExists(Select<?> select) {
-        return where(DSL.notExists(select));
-    }
+  }
 }

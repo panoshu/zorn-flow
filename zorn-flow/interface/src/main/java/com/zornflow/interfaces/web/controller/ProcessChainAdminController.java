@@ -24,6 +24,7 @@ public class ProcessChainAdminController {
 
   /**
    * API端点：创建一个新的流程链。
+   *
    * @param request 包含新流程链数据的请求体
    * @return 成功时返回 201 Created 和新创建的流程链数据
    */
@@ -36,6 +37,7 @@ public class ProcessChainAdminController {
 
   /**
    * API端点：根据ID获取一个流程链。
+   *
    * @param id 流程链的ID
    * @return 成功时返回 200 OK 和流程链数据，找不到则返回 404 Not Found
    */
@@ -48,6 +50,7 @@ public class ProcessChainAdminController {
 
   /**
    * API端点：根据ID删除一个流程链。
+   *
    * @param id 流程链的ID
    */
   @DeleteMapping("/{id}")

@@ -21,6 +21,7 @@ public final class DomainIds {
   public static void register(Map<Class<? extends EntityId>, IdStrategy<?>> map) {
     POOL.putAll(map);
   }
+
   @SuppressWarnings("unchecked")
   private static <T> IdStrategy<T> strategyOf(Class<?> idType) {
     IdStrategy<?> s = POOL.get(idType);
@@ -28,7 +29,9 @@ public final class DomainIds {
     return (IdStrategy<T>) s;
   }
 
-  /** 生成新ID（含非空+格式校验） */
+  /**
+   * 生成新ID（含非空+格式校验）
+   */
   public static <T extends EntityId> T next(Class<T> idClass, Function<String, T> constructor) {
     IdStrategy<String> st = strategyOf(idClass);
     String raw = Objects.requireNonNull(st.generate(), "Generated value null");
@@ -39,7 +42,9 @@ public final class DomainIds {
     return constructor.apply(raw);
   }
 
-  /** 外部字符复原ID（含格式校验） */
+  /**
+   * 外部字符复原ID（含格式校验）
+   */
   public static <T extends EntityId> T of(String raw, Class<T> idClass, Function<String, T> constructor) {
     Objects.requireNonNull(raw, "Input ID value cannot be null");
     IdStrategy<Object> st = strategyOf(idClass);

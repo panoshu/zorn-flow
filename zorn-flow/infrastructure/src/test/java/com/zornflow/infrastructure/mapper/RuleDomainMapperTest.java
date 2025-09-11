@@ -6,7 +6,6 @@ import com.zornflow.domain.rule.types.*;
 import com.zornflow.domain.rule.valueobject.Handler;
 import com.zornflow.infrastructure.config.model.RuleChainConfig;
 import com.zornflow.infrastructure.config.model.RuleConfig;
-import com.zornflow.infrastructure.mapper.RuleDomainMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,11 +22,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DisplayName("RuleConfigMapper 单元测试 (最佳实践)")
 @SpringJUnitConfig
 class RuleDomainMapperTest {
-
-  @Configuration
-  @ComponentScan("com.zornflow.infrastructure.mapper")
-  static class TestConfig {
-  }
 
   @Autowired
   private RuleDomainMapper mapper;
@@ -104,5 +98,10 @@ class RuleDomainMapperTest {
     assertThat(ruleDto.handle().type()).isEqualTo(RuleConfig.HandlerConfig.Type.SCRIPT);
     assertThat(ruleDto.handle().handler()).isEqualTo("myScript");
     assertThat(ruleDto.handle().parameters()).containsEntry("timeout", 500);
+  }
+
+  @Configuration
+  @ComponentScan("com.zornflow.infrastructure.mapper")
+  static class TestConfig {
   }
 }

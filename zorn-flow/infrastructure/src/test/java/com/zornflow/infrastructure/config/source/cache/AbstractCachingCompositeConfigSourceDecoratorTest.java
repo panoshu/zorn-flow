@@ -51,7 +51,7 @@ class AbstractCachingCompositeConfigSourceDecoratorTest {
 
     sampleConfig1 = new RuleChainConfig("id-1", "Chain 1", "Desc 1",
       Collections.singletonList(RuleConfig.builder().id("rule-1").build()),
-      RecordStatus.ACTIVE.getDbValue(), 0,null, null);
+      RecordStatus.ACTIVE.getDbValue(), 0, null, null);
     sampleConfig2 = new RuleChainConfig("id-2", "Chain 2", "Desc 2",
       Collections.singletonList(RuleConfig.builder().id("rule-2").build()),
       RecordStatus.ACTIVE.getDbValue(), 0, null, null);
@@ -111,7 +111,7 @@ class AbstractCachingCompositeConfigSourceDecoratorTest {
     cachingDecorator.load("id-1");
     cachingDecorator.loadAll();
     RuleChainConfig updatedConfig = new RuleChainConfig("id-1", "Updated Chain", "New Desc",
-      List.of(), RecordStatus.ACTIVE.getDbValue(), 0,null, null);
+      List.of(), RecordStatus.ACTIVE.getDbValue(), 0, null, null);
 
     // Act
     cachingDecorator.save(updatedConfig);

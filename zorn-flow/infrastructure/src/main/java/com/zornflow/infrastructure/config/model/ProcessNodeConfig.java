@@ -31,15 +31,6 @@ public record ProcessNodeConfig(
   OffsetDateTime updatedAt
 ) implements ModelConfig {
 
-  public enum NodeType {
-    BUSINESS, APPROVAL, GATEWAY
-  }
-
-  public record GatewayConditionConfig(
-    String condition,
-    String next) {
-  }
-
   public ProcessNodeConfig mergeWithDefaults(ProcessNodeConfig defaults) {
     if (defaults == null) return this;
     return ProcessNodeConfig.builder()
@@ -56,5 +47,14 @@ public record ProcessNodeConfig(
       .createdAt(this.createdAt)
       .updatedAt(this.updatedAt)
       .build();
+  }
+
+  public enum NodeType {
+    BUSINESS, APPROVAL, GATEWAY
+  }
+
+  public record GatewayConditionConfig(
+    String condition,
+    String next) {
   }
 }

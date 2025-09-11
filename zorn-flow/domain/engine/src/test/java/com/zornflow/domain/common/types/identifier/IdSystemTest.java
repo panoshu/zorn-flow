@@ -1,23 +1,14 @@
 package com.zornflow.domain.common.types.identifier;
 
-/**
- * description
- *
- * @author <a href="mailto: me@panoshu.top">panoshu</a>
- * @version 1.0
- * @since 2025/9/11 20:10
- **/
-
 import com.zornflow.domain.process.entity.ProcessInstance;
 import com.zornflow.domain.process.types.ProcessInstanceId;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 
-import java.util.List;
 import java.util.Map;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class IdSystemTest {
 
@@ -60,7 +51,7 @@ class IdSystemTest {
   @Test
   void createOrderWithFixedId() {
     ProcessInstanceId fixed = ProcessInstanceId.of("01TEST12345678901234567890");
-    ProcessInstance processInstance = ProcessInstance.builder().processInstanceId(fixed).build();;
+    ProcessInstance processInstance = ProcessInstance.builder().processInstanceId(fixed).build();
 
     assertThat(processInstance.getId().value()).isEqualTo("01TEST12345678901234567890");
   }

@@ -15,4 +15,5 @@ public record CreateProcessChainRequest(
   @NotBlank @Size(max = 40) String name,
   String description,
   @NotEmpty List<ProcessNodeConfig> nodes
-) {}
+) {
+}

@@ -14,5 +14,6 @@ import java.util.Optional;
  */
 public non-sealed interface WriteableConfigSource<T extends ModelConfig> extends ConfigSource<T> {
   Optional<T> save(T modelConfig) throws IOException;        // 仅可写源实现
+
   void delete(String id);
 }

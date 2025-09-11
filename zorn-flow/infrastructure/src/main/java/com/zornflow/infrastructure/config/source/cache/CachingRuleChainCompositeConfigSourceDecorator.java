@@ -25,7 +25,8 @@ public class CachingRuleChainCompositeConfigSourceDecorator extends AbstractCach
 
   /**
    * 构造函数。
-   * @param delegate 被装饰的原始组合数据源。使用@Qualifier来精确指定注入非Primary的Bean。
+   *
+   * @param delegate     被装饰的原始组合数据源。使用@Qualifier来精确指定注入非Primary的Bean。
    * @param cacheManager Spring的缓存管理器。
    */
   public CachingRuleChainCompositeConfigSourceDecorator(

@@ -22,17 +22,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringJUnitConfig
 class RulePersistenceMapperTest {
 
-  @Configuration
-  // 扫描 mapper 包，Spring 会自动装配 RuleMapper 和它依赖的 JsonbMapperHelper
-  @ComponentScan("com.zornflow.infrastructure.persistence.mapper")
-  static class TestConfig {
-    // JsonbMapperHelper 依赖 ObjectMapper，所以我们在这里提供一个 Bean
-    @Bean
-    public ObjectMapper objectMapper() {
-      return new ObjectMapper();
-    }
-  }
-
   @Autowired
   private RulePersistenceMapper mapper;
 
@@ -115,5 +104,16 @@ class RulePersistenceMapperTest {
     assertThat(record.getPriority()).isEqualTo(150);
     assertThat(record.getCondition()).isEqualTo("dto_condition");
     assertThat(record.getHandlerConfig().data()).contains("\"type\":\"JAR\"");
+  }
+
+  @Configuration
+  // 扫描 mapper 包，Spring 会自动装配 RuleMapper 和它依赖的 JsonbMapperHelper
+  @ComponentScan("com.zornflow.infrastructure.persistence.mapper")
+  static class TestConfig {
+    // JsonbMapperHelper 依赖 ObjectMapper，所以我们在这里提供一个 Bean
+    @Bean
+    public ObjectMapper objectMapper() {
+      return new ObjectMapper();
+    }
   }
 }

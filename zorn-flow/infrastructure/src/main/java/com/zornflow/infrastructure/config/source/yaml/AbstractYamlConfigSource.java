@@ -29,7 +29,7 @@ import java.util.Optional;
 @Slf4j
 @RequiredArgsConstructor
 public abstract sealed class AbstractYamlConfigSource<C extends ModelConfig, I extends ModelConfig> implements ReadableConfigSource<C>
-permits YamlRuleChainConfigSource, YamlProcessChainConfigSource{
+  permits YamlRuleChainConfigSource, YamlProcessChainConfigSource {
 
   protected final ObjectMapper yamlMapper = new ObjectMapper(new YAMLFactory());
   protected final ResourcePatternResolver resourceResolver = new PathMatchingResourcePatternResolver();
@@ -70,20 +70,35 @@ permits YamlRuleChainConfigSource, YamlProcessChainConfigSource{
 
   // --- 子类必须实现的抽象方法 ---
 
-  /** @return 共享项（规则/节点）的名称，用于日志记录 */
+  /**
+   * @return 共享项（规则/节点）的名称，用于日志记录
+   */
   protected abstract String getItemName();
-  /** @return 共享项的配置文件路径 */
+
+  /**
+   * @return 共享项的配置文件路径
+   */
   protected abstract String getSharedItemsPath();
-  /** @return 链的配置文件路径 */
+
+  /**
+   * @return 链的配置文件路径
+   */
   protected abstract String getChainsPath();
-  /** @return 共享项的TypeReference，用于反序列化 */
+
+  /**
+   * @return 共享项的TypeReference，用于反序列化
+   */
   protected abstract TypeReference<Map<String, I>> getSharedItemTypeReference();
-  /** @return 链的TypeReference，用于反序列化 */
+
+  /**
+   * @return 链的TypeReference，用于反序列化
+   */
   protected abstract TypeReference<Map<String, C>> getChainTypeReference();
 
   /**
    * 合并单个链与所有共享项
-   * @param chain 待处理的链
+   *
+   * @param chain       待处理的链
    * @param sharedItems 所有共享项
    * @return 合并后的新链实例
    */

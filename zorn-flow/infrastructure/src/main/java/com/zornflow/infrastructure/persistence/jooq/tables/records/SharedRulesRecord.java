@@ -5,212 +5,211 @@ package com.zornflow.infrastructure.persistence.jooq.tables.records;
 
 
 import com.zornflow.infrastructure.persistence.jooq.tables.SharedRules;
-
-import java.time.OffsetDateTime;
-
 import org.jooq.JSONB;
 import org.jooq.Record1;
 import org.jooq.impl.UpdatableRecordImpl;
+
+import java.time.OffsetDateTime;
 
 
 /**
  * 可复用的共享规则模板
  */
-@SuppressWarnings({ "all", "unchecked", "rawtypes", "this-escape" })
+@SuppressWarnings({"all", "unchecked", "rawtypes", "this-escape"})
 public class SharedRulesRecord extends UpdatableRecordImpl<SharedRulesRecord> {
 
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    /**
-     * Setter for <code>engine.shared_rules.id</code>.
-     */
-    public SharedRulesRecord setId(String value) {
-        set(0, value);
-        return this;
+  /**
+   * Create a detached SharedRulesRecord
+   */
+  public SharedRulesRecord() {
+    super(SharedRules.SHARED_RULES);
+  }
+
+  /**
+   * Create a detached, initialised SharedRulesRecord
+   */
+  public SharedRulesRecord(String id, String name, Integer priority, String condition, JSONB handlerConfig, String recordStatus, Integer version, OffsetDateTime createdAt, OffsetDateTime updatedAt) {
+    super(SharedRules.SHARED_RULES);
+
+    setId(id);
+    setName(name);
+    setPriority(priority);
+    setCondition(condition);
+    setHandlerConfig(handlerConfig);
+    setRecordStatus(recordStatus);
+    setVersion(version);
+    setCreatedAt(createdAt);
+    setUpdatedAt(updatedAt);
+    resetTouchedOnNotNull();
+  }
+
+  /**
+   * Create a detached, initialised SharedRulesRecord
+   */
+  public SharedRulesRecord(com.zornflow.infrastructure.persistence.jooq.tables.pojos.SharedRules value) {
+    super(SharedRules.SHARED_RULES);
+
+    if (value != null) {
+      setId(value.getId());
+      setName(value.getName());
+      setPriority(value.getPriority());
+      setCondition(value.getCondition());
+      setHandlerConfig(value.getHandlerConfig());
+      setRecordStatus(value.getRecordStatus());
+      setVersion(value.getVersion());
+      setCreatedAt(value.getCreatedAt());
+      setUpdatedAt(value.getUpdatedAt());
+      resetTouchedOnNotNull();
     }
+  }
 
-    /**
-     * Getter for <code>engine.shared_rules.id</code>.
-     */
-    public String getId() {
-        return (String) get(0);
-    }
+  /**
+   * Getter for <code>engine.shared_rules.id</code>.
+   */
+  public String getId() {
+    return (String) get(0);
+  }
 
-    /**
-     * Setter for <code>engine.shared_rules.name</code>.
-     */
-    public SharedRulesRecord setName(String value) {
-        set(1, value);
-        return this;
-    }
+  /**
+   * Setter for <code>engine.shared_rules.id</code>.
+   */
+  public SharedRulesRecord setId(String value) {
+    set(0, value);
+    return this;
+  }
 
-    /**
-     * Getter for <code>engine.shared_rules.name</code>.
-     */
-    public String getName() {
-        return (String) get(1);
-    }
+  /**
+   * Getter for <code>engine.shared_rules.name</code>.
+   */
+  public String getName() {
+    return (String) get(1);
+  }
 
-    /**
-     * Setter for <code>engine.shared_rules.priority</code>.
-     */
-    public SharedRulesRecord setPriority(Integer value) {
-        set(2, value);
-        return this;
-    }
+  /**
+   * Setter for <code>engine.shared_rules.name</code>.
+   */
+  public SharedRulesRecord setName(String value) {
+    set(1, value);
+    return this;
+  }
 
-    /**
-     * Getter for <code>engine.shared_rules.priority</code>.
-     */
-    public Integer getPriority() {
-        return (Integer) get(2);
-    }
+  /**
+   * Getter for <code>engine.shared_rules.priority</code>.
+   */
+  public Integer getPriority() {
+    return (Integer) get(2);
+  }
 
-    /**
-     * Setter for <code>engine.shared_rules.condition</code>.
-     */
-    public SharedRulesRecord setCondition(String value) {
-        set(3, value);
-        return this;
-    }
+  /**
+   * Setter for <code>engine.shared_rules.priority</code>.
+   */
+  public SharedRulesRecord setPriority(Integer value) {
+    set(2, value);
+    return this;
+  }
 
-    /**
-     * Getter for <code>engine.shared_rules.condition</code>.
-     */
-    public String getCondition() {
-        return (String) get(3);
-    }
+  /**
+   * Getter for <code>engine.shared_rules.condition</code>.
+   */
+  public String getCondition() {
+    return (String) get(3);
+  }
 
-    /**
-     * Setter for <code>engine.shared_rules.handler_config</code>.
-     */
-    public SharedRulesRecord setHandlerConfig(JSONB value) {
-        set(4, value);
-        return this;
-    }
+  /**
+   * Setter for <code>engine.shared_rules.condition</code>.
+   */
+  public SharedRulesRecord setCondition(String value) {
+    set(3, value);
+    return this;
+  }
 
-    /**
-     * Getter for <code>engine.shared_rules.handler_config</code>.
-     */
-    public JSONB getHandlerConfig() {
-        return (JSONB) get(4);
-    }
+  /**
+   * Getter for <code>engine.shared_rules.handler_config</code>.
+   */
+  public JSONB getHandlerConfig() {
+    return (JSONB) get(4);
+  }
 
-    /**
-     * Setter for <code>engine.shared_rules.record_status</code>.
-     */
-    public SharedRulesRecord setRecordStatus(String value) {
-        set(5, value);
-        return this;
-    }
+  /**
+   * Setter for <code>engine.shared_rules.handler_config</code>.
+   */
+  public SharedRulesRecord setHandlerConfig(JSONB value) {
+    set(4, value);
+    return this;
+  }
 
-    /**
-     * Getter for <code>engine.shared_rules.record_status</code>.
-     */
-    public String getRecordStatus() {
-        return (String) get(5);
-    }
+  /**
+   * Getter for <code>engine.shared_rules.record_status</code>.
+   */
+  public String getRecordStatus() {
+    return (String) get(5);
+  }
 
-    /**
-     * Setter for <code>engine.shared_rules.version</code>.
-     */
-    public SharedRulesRecord setVersion(Integer value) {
-        set(6, value);
-        return this;
-    }
+  /**
+   * Setter for <code>engine.shared_rules.record_status</code>.
+   */
+  public SharedRulesRecord setRecordStatus(String value) {
+    set(5, value);
+    return this;
+  }
 
-    /**
-     * Getter for <code>engine.shared_rules.version</code>.
-     */
-    public Integer getVersion() {
-        return (Integer) get(6);
-    }
+  /**
+   * Getter for <code>engine.shared_rules.version</code>.
+   */
+  public Integer getVersion() {
+    return (Integer) get(6);
+  }
 
-    /**
-     * Setter for <code>engine.shared_rules.created_at</code>.
-     */
-    public SharedRulesRecord setCreatedAt(OffsetDateTime value) {
-        set(7, value);
-        return this;
-    }
+  /**
+   * Setter for <code>engine.shared_rules.version</code>.
+   */
+  public SharedRulesRecord setVersion(Integer value) {
+    set(6, value);
+    return this;
+  }
 
-    /**
-     * Getter for <code>engine.shared_rules.created_at</code>.
-     */
-    public OffsetDateTime getCreatedAt() {
-        return (OffsetDateTime) get(7);
-    }
+  /**
+   * Getter for <code>engine.shared_rules.created_at</code>.
+   */
+  public OffsetDateTime getCreatedAt() {
+    return (OffsetDateTime) get(7);
+  }
 
-    /**
-     * Setter for <code>engine.shared_rules.updated_at</code>.
-     */
-    public SharedRulesRecord setUpdatedAt(OffsetDateTime value) {
-        set(8, value);
-        return this;
-    }
+  // -------------------------------------------------------------------------
+  // Primary key information
+  // -------------------------------------------------------------------------
 
-    /**
-     * Getter for <code>engine.shared_rules.updated_at</code>.
-     */
-    public OffsetDateTime getUpdatedAt() {
-        return (OffsetDateTime) get(8);
-    }
+  /**
+   * Setter for <code>engine.shared_rules.created_at</code>.
+   */
+  public SharedRulesRecord setCreatedAt(OffsetDateTime value) {
+    set(7, value);
+    return this;
+  }
 
-    // -------------------------------------------------------------------------
-    // Primary key information
-    // -------------------------------------------------------------------------
+  // -------------------------------------------------------------------------
+  // Constructors
+  // -------------------------------------------------------------------------
 
-    @Override
-    public Record1<String> key() {
-        return (Record1) super.key();
-    }
+  /**
+   * Getter for <code>engine.shared_rules.updated_at</code>.
+   */
+  public OffsetDateTime getUpdatedAt() {
+    return (OffsetDateTime) get(8);
+  }
 
-    // -------------------------------------------------------------------------
-    // Constructors
-    // -------------------------------------------------------------------------
+  /**
+   * Setter for <code>engine.shared_rules.updated_at</code>.
+   */
+  public SharedRulesRecord setUpdatedAt(OffsetDateTime value) {
+    set(8, value);
+    return this;
+  }
 
-    /**
-     * Create a detached SharedRulesRecord
-     */
-    public SharedRulesRecord() {
-        super(SharedRules.SHARED_RULES);
-    }
-
-    /**
-     * Create a detached, initialised SharedRulesRecord
-     */
-    public SharedRulesRecord(String id, String name, Integer priority, String condition, JSONB handlerConfig, String recordStatus, Integer version, OffsetDateTime createdAt, OffsetDateTime updatedAt) {
-        super(SharedRules.SHARED_RULES);
-
-        setId(id);
-        setName(name);
-        setPriority(priority);
-        setCondition(condition);
-        setHandlerConfig(handlerConfig);
-        setRecordStatus(recordStatus);
-        setVersion(version);
-        setCreatedAt(createdAt);
-        setUpdatedAt(updatedAt);
-        resetTouchedOnNotNull();
-    }
-
-    /**
-     * Create a detached, initialised SharedRulesRecord
-     */
-    public SharedRulesRecord(com.zornflow.infrastructure.persistence.jooq.tables.pojos.SharedRules value) {
-        super(SharedRules.SHARED_RULES);
-
-        if (value != null) {
-            setId(value.getId());
-            setName(value.getName());
-            setPriority(value.getPriority());
-            setCondition(value.getCondition());
-            setHandlerConfig(value.getHandlerConfig());
-            setRecordStatus(value.getRecordStatus());
-            setVersion(value.getVersion());
-            setCreatedAt(value.getCreatedAt());
-            setUpdatedAt(value.getUpdatedAt());
-            resetTouchedOnNotNull();
-        }
-    }
+  @Override
+  public Record1<String> key() {
+    return (Record1) super.key();
+  }
 }

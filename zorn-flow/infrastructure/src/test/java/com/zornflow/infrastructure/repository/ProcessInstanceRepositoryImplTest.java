@@ -7,9 +7,8 @@ import com.zornflow.domain.process.types.ProcessChainId;
 import com.zornflow.domain.process.types.ProcessInstanceId;
 import com.zornflow.domain.process.types.ProcessNodeId;
 import com.zornflow.infrastructure.adapter.identifier.TestUlidStrategy;
-import com.zornflow.infrastructure.persistence.jooq.tables.records.ProcessInstancesRecord;
 import com.zornflow.infrastructure.mapper.ProcessInstanceMapper;
-import com.zornflow.infrastructure.repository.ProcessInstanceRepositoryImpl;
+import com.zornflow.infrastructure.persistence.jooq.tables.records.ProcessInstancesRecord;
 import org.jooq.DSLContext;
 import org.jooq.Result;
 import org.jooq.SelectConditionStep;
@@ -81,7 +80,8 @@ public class ProcessInstanceRepositoryImplTest {
 
   @Test
   @DisplayName("findById: 当记录存在时，应返回映射后的领域实体")
-  @SuppressWarnings("unchecked") // 必须保留，因为 Mockito 对泛型的处理方式
+  @SuppressWarnings("unchecked")
+    // 必须保留，因为 Mockito 对泛型的处理方式
   void findById_shouldReturnEntity_whenRecordExists() {
     // Arrange
     // 1. 为链式调用中的每一步都创建 Mock 对象，并指定正确的泛型

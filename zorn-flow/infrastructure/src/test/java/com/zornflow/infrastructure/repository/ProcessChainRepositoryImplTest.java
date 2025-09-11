@@ -10,7 +10,6 @@ import com.zornflow.infrastructure.config.model.ProcessChainConfig;
 import com.zornflow.infrastructure.config.model.ProcessNodeConfig;
 import com.zornflow.infrastructure.config.source.cache.CachingProcessChainCompositeConfigSourceDecorator;
 import com.zornflow.infrastructure.mapper.ProcessDomainMapper;
-import com.zornflow.infrastructure.repository.ProcessChainRepositoryImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -26,7 +25,8 @@ import java.util.Map;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class ProcessChainRepositoryImplTest {

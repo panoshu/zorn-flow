@@ -28,15 +28,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringJUnitConfig
 class ProcessDomainMapperTest {
 
-  // 2. 在测试类内部定义一个静态的配置类
-  //    这个配置类只为本次测试服务
-  @Configuration
-  // 3. 核心：使用 @ComponentScan 告诉 Spring 去扫描指定的包
-  //    Spring 会自动找到 ProcessConfigMapperImpl 和 CommonTypeMapper
-  @ComponentScan("com.zornflow.infrastructure.mapper")
-  static class TestConfig {
-  }
-
   // 4. 像往常一样，面向接口进行注入。
   //    Spring 容器会因为上面的扫描，自动注入 ProcessConfigMapperImpl 的实例。
   //    这里不再有任何对 ...Impl 类的直接引用！
@@ -120,5 +111,14 @@ class ProcessDomainMapperTest {
 
     assertThat(config.createdAt()).isNotNull();
     assertThat(config.updatedAt()).isNotNull();
+  }
+
+  // 2. 在测试类内部定义一个静态的配置类
+  //    这个配置类只为本次测试服务
+  @Configuration
+  // 3. 核心：使用 @ComponentScan 告诉 Spring 去扫描指定的包
+  //    Spring 会自动找到 ProcessConfigMapperImpl 和 CommonTypeMapper
+  @ComponentScan("com.zornflow.infrastructure.mapper")
+  static class TestConfig {
   }
 }

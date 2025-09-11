@@ -27,8 +27,8 @@ public class ProcessInstance extends AggregateRoot<ProcessInstanceId> {
 
   @Builder
   public ProcessInstance(ProcessInstanceId processInstanceId, ProcessChainId processChainId,
-                            ProcessInstanceStatus status,
-                            BusinessContext initialContext, ProcessNodeId startNodeId) {
+                         ProcessInstanceStatus status,
+                         BusinessContext initialContext, ProcessNodeId startNodeId) {
     super(processInstanceId);
     this.processChainId = processChainId;
     this.status = status;
@@ -75,10 +75,6 @@ public class ProcessInstance extends AggregateRoot<ProcessInstanceId> {
     }
   }
 
-  public enum ProcessInstanceStatus {
-    RUNNING, COMPLETED, FAILED, SUSPENDED
-  }
-
   @Override
   public Integer getVersion() {
     return super.getVersion();
@@ -92,5 +88,9 @@ public class ProcessInstance extends AggregateRoot<ProcessInstanceId> {
   @Override
   public Instant getUpdatedAt() {
     return super.getUpdatedAt();
+  }
+
+  public enum ProcessInstanceStatus {
+    RUNNING, COMPLETED, FAILED, SUSPENDED
   }
 }

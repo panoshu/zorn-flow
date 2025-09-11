@@ -18,6 +18,13 @@ import java.util.function.Predicate;
 @IdAlgorithm(value = "uuid", isDefault = true)
 @Component
 public class UuidStrategy implements IdStrategy<String> {
-  @Override public String generate() { return UUID.randomUUID().toString(); }
-  @Override public Predicate<String> validator() { return s -> true; }
+  @Override
+  public String generate() {
+    return UUID.randomUUID().toString();
+  }
+
+  @Override
+  public Predicate<String> validator() {
+    return s -> true;
+  }
 }

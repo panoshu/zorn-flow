@@ -25,6 +25,7 @@ public class GlobalExceptionHandler {
 
   /**
    * 处理由 @Valid 注解触发的验证错误。
+   *
    * @param ex MethodArgumentNotValidException 异常实例
    * @return 包含所有字段验证错误的 400 Bad Request 响应
    */
@@ -49,6 +50,7 @@ public class GlobalExceptionHandler {
   /**
    * 处理为了返回特定 HTTP 状态码而主动抛出的 ResponseStatusException。
    * 例如，在服务层找不到某个资源时 `throw new ResponseStatusException(HttpStatus.NOT_FOUND, "...")`
+   *
    * @param ex ResponseStatusException 异常实例
    * @return 对应状态码和错误信息的响应
    */
@@ -67,6 +69,7 @@ public class GlobalExceptionHandler {
 
   /**
    * 处理所有其他未被捕获的服务器内部异常。
+   *
    * @param ex Exception 异常实例
    * @return 统一的 500 Internal Server Error 响应
    */

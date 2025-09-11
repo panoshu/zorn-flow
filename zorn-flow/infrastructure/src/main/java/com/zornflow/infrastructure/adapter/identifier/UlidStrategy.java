@@ -7,7 +7,6 @@ import com.zornflow.domain.common.types.identifier.IdStrategy;
 import org.springframework.stereotype.Component;
 
 import java.util.function.Predicate;
-import java.util.regex.Pattern;
 
 /**
  * description
@@ -20,6 +19,13 @@ import java.util.regex.Pattern;
 @IdAlgorithm(value = "ulid", isDefault = true)
 @Component
 public class UlidStrategy implements IdStrategy<String> {
-  @Override public String generate() { return UlidCreator.getUlid().toString(); }
-  @Override public Predicate<String> validator() { return Ulid::isValid; }
+  @Override
+  public String generate() {
+    return UlidCreator.getUlid().toString();
+  }
+
+  @Override
+  public Predicate<String> validator() {
+    return Ulid::isValid;
+  }
 }

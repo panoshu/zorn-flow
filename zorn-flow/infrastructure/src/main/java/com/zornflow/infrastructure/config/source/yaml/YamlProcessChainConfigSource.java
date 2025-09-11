@@ -44,12 +44,14 @@ public non-sealed class YamlProcessChainConfigSource extends AbstractYamlConfigS
 
   @Override
   protected TypeReference<Map<String, ProcessNodeConfig>> getSharedItemTypeReference() {
-    return new TypeReference<>() {};
+    return new TypeReference<>() {
+    };
   }
 
   @Override
   protected TypeReference<Map<String, ProcessChainConfig>> getChainTypeReference() {
-    return new TypeReference<>() {};
+    return new TypeReference<>() {
+    };
   }
 
   @Override

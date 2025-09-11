@@ -52,7 +52,8 @@ public interface RulePersistenceMapper {
 
   @Named("jsonbToHandlerConfig")
   default RuleConfig.HandlerConfig jsonbToHandlerConfig(JSONB jsonb, @Context JsonbMapperHelper helper) {
-    return helper.fromJsonb(jsonb, new TypeReference<>() {});
+    return helper.fromJsonb(jsonb, new TypeReference<>() {
+    });
   }
 
   default RuleConfig.HandlerConfig mergeHandlerConfig(JSONB instanceJsonb, SharedRulesRecord template, @Context JsonbMapperHelper helper) {
@@ -60,6 +61,7 @@ public interface RulePersistenceMapper {
     if (instanceHandler != null) {
       return instanceHandler;
     }
-    return helper.fromJsonb(template.getHandlerConfig(), new TypeReference<>() {});
+    return helper.fromJsonb(template.getHandlerConfig(), new TypeReference<>() {
+    });
   }
 }

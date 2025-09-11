@@ -71,10 +71,6 @@ public class LoanApplication extends AggregateRoot<LoanApplicationId> {
 
   // ... 其他业务方法 ...
 
-  public enum ApplicationStatus {
-    DRAFT, SUBMITTED, APPROVED, REJECTED
-  }
-
   @Override
   protected void validateInvariants() {
     // 可以在此添加更复杂的跨字段业务规则校验
@@ -93,5 +89,9 @@ public class LoanApplication extends AggregateRoot<LoanApplicationId> {
   @Override
   public Instant getUpdatedAt() {
     return super.getUpdatedAt();
+  }
+
+  public enum ApplicationStatus {
+    DRAFT, SUBMITTED, APPROVED, REJECTED
   }
 }

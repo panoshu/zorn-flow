@@ -16,4 +16,5 @@ public record ProcessChainResponse(
   List<ProcessNodeConfig> nodes,
   Instant createdAt,
   Instant updatedAt
-) {}
+) {
+}

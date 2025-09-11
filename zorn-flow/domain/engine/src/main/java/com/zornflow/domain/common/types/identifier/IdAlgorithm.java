@@ -23,6 +23,8 @@ public @interface IdAlgorithm {
    */
   String value();
 
-  /** 是否兜底算法，只能有一个true */
+  /**
+   * 是否兜底算法，只能有一个true
+   */
   boolean isDefault() default false;
 }

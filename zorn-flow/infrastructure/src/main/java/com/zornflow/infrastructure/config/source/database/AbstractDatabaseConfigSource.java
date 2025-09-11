@@ -19,7 +19,7 @@ import java.util.Optional;
 
 @RequiredArgsConstructor
 public sealed abstract class AbstractDatabaseConfigSource<T extends ModelConfig> implements ReadWriteConfigSource<T>
-permits DatabaseRuleChainConfigSource, DatabaseProcessChainConfigSource{
+  permits DatabaseRuleChainConfigSource, DatabaseProcessChainConfigSource {
 
   protected final DSLContext dsl;
 
@@ -38,6 +38,7 @@ permits DatabaseRuleChainConfigSource, DatabaseProcessChainConfigSource{
 
   /**
    * Checks if the database source is available by executing a simple query.
+   *
    * @return true if the database is reachable, false otherwise.
    */
   @Override

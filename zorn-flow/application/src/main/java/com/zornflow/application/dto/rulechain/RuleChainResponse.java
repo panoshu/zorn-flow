@@ -1,6 +1,7 @@
 package com.zornflow.application.dto.rulechain;
 
 import com.zornflow.infrastructure.config.model.RuleConfig;
+
 import java.time.Instant;
 import java.util.List;
 
@@ -13,4 +14,5 @@ public record RuleChainResponse(
   List<RuleConfig> rules,
   Instant createdAt,
   Instant updatedAt
-) {}
+) {
+}

@@ -1,9 +1,9 @@
 package com.zornflow.infrastructure.config.source.yaml;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.zornflow.infrastructure.config.model.RecordStatus;
 import com.zornflow.infrastructure.config.model.RuleChainConfig;
 import com.zornflow.infrastructure.config.model.RuleConfig;
-import com.zornflow.infrastructure.config.model.RecordStatus;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -24,7 +24,7 @@ import java.util.Optional;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public non-sealed class YamlRuleChainConfigSource extends AbstractYamlConfigSource<RuleChainConfig, RuleConfig>{
+public non-sealed class YamlRuleChainConfigSource extends AbstractYamlConfigSource<RuleChainConfig, RuleConfig> {
 
   private final YamlConfigProperties yamlConfigProperties;
 
@@ -45,12 +45,14 @@ public non-sealed class YamlRuleChainConfigSource extends AbstractYamlConfigSour
 
   @Override
   protected TypeReference<Map<String, RuleConfig>> getSharedItemTypeReference() {
-    return new TypeReference<>() {};
+    return new TypeReference<>() {
+    };
   }
 
   @Override
   protected TypeReference<Map<String, RuleChainConfig>> getChainTypeReference() {
-    return new TypeReference<>() {};
+    return new TypeReference<>() {
+    };
   }
 
   @Override

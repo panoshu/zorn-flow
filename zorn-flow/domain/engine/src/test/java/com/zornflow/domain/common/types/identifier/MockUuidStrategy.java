@@ -12,6 +12,13 @@ import java.util.function.Predicate;
  **/
 
 public class MockUuidStrategy implements IdStrategy<String> {
-  @Override public String generate() { return "uuid-" + UUID.randomUUID(); }
-  @Override public Predicate<String> validator() { return s -> s.startsWith("uuid-"); }
+  @Override
+  public String generate() {
+    return "uuid-" + UUID.randomUUID();
+  }
+
+  @Override
+  public Predicate<String> validator() {
+    return s -> s.startsWith("uuid-");
+  }
 }

@@ -9,5 +9,5 @@ import com.zornflow.domain.common.config.model.ModelConfig;
  * @version 1.0
  * @since 2025/8/31 3:49
  */
-public interface ReadWriteConfigSource<T extends ModelConfig> extends ReadableConfigSource<T>, WriteableConfigSource<T>{
+public interface ReadWriteConfigSource<T extends ModelConfig> extends ReadableConfigSource<T>, WriteableConfigSource<T> {
 }

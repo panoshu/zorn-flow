@@ -16,6 +16,7 @@ public record LoanApplicationId(String value) implements EntityId {
   public static LoanApplicationId generate() {
     return DomainIds.next(LoanApplicationId.class, LoanApplicationId::new);
   }
+
   public static LoanApplicationId of(String raw) {
     return DomainIds.of(raw, LoanApplicationId.class, LoanApplicationId::new);
   }

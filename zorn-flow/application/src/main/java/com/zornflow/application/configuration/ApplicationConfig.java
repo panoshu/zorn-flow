@@ -24,7 +24,7 @@ import org.springframework.context.annotation.Configuration;
 public class ApplicationConfig {
 
   @Bean
-  public RuleChainExecutionService  ruleChainExecutionService(
+  public RuleChainExecutionService ruleChainExecutionService(
     ConditionEvaluator conditionEvaluator,
     HandlerExecutorFactory handlerExecutorFactory
   ) {
@@ -32,7 +32,7 @@ public class ApplicationConfig {
   }
 
   @Bean
-  public ProcessOrchestrationService  processOrchestrationService(
+  public ProcessOrchestrationService processOrchestrationService(
     ProcessChainRepository definitionRepository,
     RuleChainRepository ruleChainRepository,
     RuleChainExecutionService ruleChainExecutionService,

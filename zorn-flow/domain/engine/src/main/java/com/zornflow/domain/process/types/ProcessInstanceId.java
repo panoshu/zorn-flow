@@ -1,7 +1,5 @@
 package com.zornflow.domain.process.types;
 
-import com.domain.contract.valueobject.DomainPrimitive;
-import com.domain.contract.valueobject.EntityId;
 import com.zornflow.domain.common.types.identifier.DomainIds;
 import com.zornflow.domain.common.types.identifier.SortableEntityId;
 import lombok.NonNull;

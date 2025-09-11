@@ -10,6 +10,6 @@ import java.io.Serializable;
  * @since 2025/8/25 21:34
  **/
 
-public interface EntityId extends DomainPrimitive, Serializable{
+public interface EntityId extends DomainPrimitive, Serializable {
   String value();
 }

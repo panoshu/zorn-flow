@@ -1,9 +1,9 @@
 package com.zornflow.infrastructure.persistence.mapper;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.zornflow.infrastructure.config.model.ProcessNodeConfig.GatewayConditionConfig;
 import com.zornflow.infrastructure.config.model.ProcessChainConfig;
 import com.zornflow.infrastructure.config.model.ProcessNodeConfig;
+import com.zornflow.infrastructure.config.model.ProcessNodeConfig.GatewayConditionConfig;
 import com.zornflow.infrastructure.persistence.jooq.tables.records.ChainNodesRecord;
 import com.zornflow.infrastructure.persistence.jooq.tables.records.ProcessChainsRecord;
 import com.zornflow.infrastructure.persistence.jooq.tables.records.SharedNodesRecord;
@@ -76,21 +76,25 @@ public interface ProcessPersistenceMapper {
 
   @Named("jsonbToConditions")
   default List<GatewayConditionConfig> jsonbToConditions(JSONB jsonb, @Context JsonbMapperHelper helper) {
-    return helper.fromJsonb(jsonb, new TypeReference<>() {});
+    return helper.fromJsonb(jsonb, new TypeReference<>() {
+    });
   }
 
   default List<GatewayConditionConfig> mergeConditions(JSONB instanceJsonb, SharedNodesRecord template, @Context JsonbMapperHelper helper) {
     List<GatewayConditionConfig> instanceConditions = jsonbToConditions(instanceJsonb, helper);
-    return instanceConditions != null && !instanceConditions.isEmpty() ? instanceConditions : helper.fromJsonb(template.getConditions(), new TypeReference<>() {});
+    return instanceConditions != null && !instanceConditions.isEmpty() ? instanceConditions : helper.fromJsonb(template.getConditions(), new TypeReference<>() {
+    });
   }
 
   @Named("jsonbToProperties")
   default Map<String, Object> jsonbToProperties(JSONB jsonb, @Context JsonbMapperHelper helper) {
-    return helper.fromJsonb(jsonb, new TypeReference<>() {});
+    return helper.fromJsonb(jsonb, new TypeReference<>() {
+    });
   }
 
   default Map<String, Object> mergeProperties(JSONB instanceJsonb, SharedNodesRecord template, @Context JsonbMapperHelper helper) {
     Map<String, Object> instanceProperties = jsonbToProperties(instanceJsonb, helper);
-    return instanceProperties != null ? instanceProperties : helper.fromJsonb(template.getProperties(), new TypeReference<>() {});
+    return instanceProperties != null ? instanceProperties : helper.fromJsonb(template.getProperties(), new TypeReference<>() {
+    });
   }
 }

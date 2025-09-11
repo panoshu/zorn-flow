@@ -2,8 +2,10 @@
 -- CREATE EXTENSION IF NOT EXISTS "pgx_ulid";
 
 SELECT current_database();
-SET search_path TO engine;
-SHOW search_path;
+SET
+search_path TO engine;
+SHOW
+search_path;
 
 -- =================================================================
 --  Rule Definition Tables
@@ -16,7 +18,7 @@ CREATE TABLE engine.shared_rules
   priority       INT                              DEFAULT 100,
   condition      TEXT,
   handler_config JSONB,
-  record_status         VARCHAR(20)  NOT NULL DEFAULT 'ACTIVE',
+  record_status  VARCHAR(20)             NOT NULL DEFAULT 'ACTIVE',
   version        INT,
   created_at     TIMESTAMPTZ             NOT NULL DEFAULT NOW(),
   updated_at     TIMESTAMPTZ             NOT NULL DEFAULT NOW()
@@ -27,13 +29,13 @@ ON TABLE shared_rules IS '可复用的共享规则模板';
 -- 规则链表
 CREATE TABLE engine.rule_chains
 (
-  id          VARCHAR(40) PRIMARY KEY NOT NULL,
-  name        VARCHAR(255)            NOT NULL,
-  description TEXT,
-  record_status         VARCHAR(20)  NOT NULL DEFAULT 'ACTIVE',
-  version     INT,
-  created_at  TIMESTAMPTZ             NOT NULL DEFAULT NOW(),
-  updated_at  TIMESTAMPTZ             NOT NULL DEFAULT NOW()
+  id            VARCHAR(40) PRIMARY KEY NOT NULL,
+  name          VARCHAR(255)            NOT NULL,
+  description   TEXT,
+  record_status VARCHAR(20)             NOT NULL DEFAULT 'ACTIVE',
+  version       INT,
+  created_at    TIMESTAMPTZ             NOT NULL DEFAULT NOW(),
+  updated_at    TIMESTAMPTZ             NOT NULL DEFAULT NOW()
 );
 
 -- 链中的规则实例表
@@ -70,7 +72,7 @@ CREATE TABLE engine.shared_nodes
   rule_chain_id VARCHAR(40) REFERENCES rule_chains (id), -- FIX: 外键约束
   conditions    JSONB,
   properties    JSONB,
-  record_status         VARCHAR(20)  NOT NULL DEFAULT 'ACTIVE',
+  record_status VARCHAR(20)             NOT NULL DEFAULT 'ACTIVE',
   version       INT,
   created_at    TIMESTAMPTZ             NOT NULL DEFAULT NOW(),
   updated_at    TIMESTAMPTZ             NOT NULL DEFAULT NOW()
@@ -81,13 +83,13 @@ ON TABLE shared_nodes IS '可复用的共享流程节点模板';
 -- 流程链表
 CREATE TABLE engine.process_chains
 (
-  id          VARCHAR(40) PRIMARY KEY NOT NULL,
-  name        VARCHAR(255)            NOT NULL,
-  description TEXT,
-  record_status         VARCHAR(20)  NOT NULL DEFAULT 'ACTIVE',
-  version     INT,
-  created_at  TIMESTAMPTZ             NOT NULL DEFAULT NOW(),
-  updated_at  TIMESTAMPTZ             NOT NULL DEFAULT NOW()
+  id            VARCHAR(40) PRIMARY KEY NOT NULL,
+  name          VARCHAR(255)            NOT NULL,
+  description   TEXT,
+  record_status VARCHAR(20)             NOT NULL DEFAULT 'ACTIVE',
+  version       INT,
+  created_at    TIMESTAMPTZ             NOT NULL DEFAULT NOW(),
+  updated_at    TIMESTAMPTZ             NOT NULL DEFAULT NOW()
 );
 
 -- 链中的节点实例表

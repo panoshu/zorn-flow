@@ -7,7 +7,7 @@ import com.zornflow.domain.process.entity.ProcessNode;
 import com.zornflow.domain.process.repository.ProcessChainRepository;
 import com.zornflow.domain.process.types.ProcessChainId;
 import com.zornflow.domain.process.types.ProcessChainName;
-import com.zornflow.infrastructure.mapper.ProcessDomainMapper; // 确保使用重命名后的 Mapper
+import com.zornflow.infrastructure.mapper.ProcessDomainMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,6 +29,7 @@ public class ProcessChainAdminService {
 
   /**
    * 创建一个新的流程链。
+   *
    * @param request 创建请求的数据
    * @return 创建成功后的流程链响应对象
    */
@@ -52,6 +53,7 @@ public class ProcessChainAdminService {
 
   /**
    * 根据ID查询流程链。
+   *
    * @param id 流程链的ID
    * @return 如果找到，则返回包含流程链信息的Optional
    */
@@ -63,6 +65,7 @@ public class ProcessChainAdminService {
 
   /**
    * 根据ID删除流程链。
+   *
    * @param id 要删除的流程链的ID
    */
   @Transactional

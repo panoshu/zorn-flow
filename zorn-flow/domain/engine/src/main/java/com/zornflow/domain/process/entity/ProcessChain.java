@@ -46,6 +46,7 @@ public class ProcessChain extends AggregateRoot<ProcessChainId> {
   /**
    * [新增] 从输入的节点列表构建一个有序的、可快速查找的 Map。
    * 这个方法封装了数据结构转换的实现细节。
+   *
    * @param nodeList 必须是有序的、非空的节点列表
    * @return 一个保留了插入顺序的 LinkedHashMap
    */

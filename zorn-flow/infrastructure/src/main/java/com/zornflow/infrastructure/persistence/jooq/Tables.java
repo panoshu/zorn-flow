@@ -4,53 +4,47 @@
 package com.zornflow.infrastructure.persistence.jooq;
 
 
-import com.zornflow.infrastructure.persistence.jooq.tables.ChainNodes;
-import com.zornflow.infrastructure.persistence.jooq.tables.ChainRules;
-import com.zornflow.infrastructure.persistence.jooq.tables.ProcessChains;
-import com.zornflow.infrastructure.persistence.jooq.tables.ProcessInstances;
-import com.zornflow.infrastructure.persistence.jooq.tables.RuleChains;
-import com.zornflow.infrastructure.persistence.jooq.tables.SharedNodes;
-import com.zornflow.infrastructure.persistence.jooq.tables.SharedRules;
+import com.zornflow.infrastructure.persistence.jooq.tables.*;
 
 
 /**
  * Convenience access to all tables in engine.
  */
-@SuppressWarnings({ "all", "unchecked", "rawtypes", "this-escape" })
+@SuppressWarnings({"all", "unchecked", "rawtypes", "this-escape"})
 public class Tables {
 
-    /**
-     * 节点在链中的具体实例，存储顺序、与共享模板的链接以及属性覆盖
-     */
-    public static final ChainNodes CHAIN_NODES = ChainNodes.CHAIN_NODES;
+  /**
+   * 节点在链中的具体实例，存储顺序、与共享模板的链接以及属性覆盖
+   */
+  public static final ChainNodes CHAIN_NODES = ChainNodes.CHAIN_NODES;
 
-    /**
-     * 规则在链中的具体实例，存储顺序、与共享模板的链接以及属性覆盖
-     */
-    public static final ChainRules CHAIN_RULES = ChainRules.CHAIN_RULES;
+  /**
+   * 规则在链中的具体实例，存储顺序、与共享模板的链接以及属性覆盖
+   */
+  public static final ChainRules CHAIN_RULES = ChainRules.CHAIN_RULES;
 
-    /**
-     * The table <code>engine.process_chains</code>.
-     */
-    public static final ProcessChains PROCESS_CHAINS = ProcessChains.PROCESS_CHAINS;
+  /**
+   * The table <code>engine.process_chains</code>.
+   */
+  public static final ProcessChains PROCESS_CHAINS = ProcessChains.PROCESS_CHAINS;
 
-    /**
-     * 流程实例
-     */
-    public static final ProcessInstances PROCESS_INSTANCES = ProcessInstances.PROCESS_INSTANCES;
+  /**
+   * 流程实例
+   */
+  public static final ProcessInstances PROCESS_INSTANCES = ProcessInstances.PROCESS_INSTANCES;
 
-    /**
-     * The table <code>engine.rule_chains</code>.
-     */
-    public static final RuleChains RULE_CHAINS = RuleChains.RULE_CHAINS;
+  /**
+   * The table <code>engine.rule_chains</code>.
+   */
+  public static final RuleChains RULE_CHAINS = RuleChains.RULE_CHAINS;
 
-    /**
-     * 可复用的共享流程节点模板
-     */
-    public static final SharedNodes SHARED_NODES = SharedNodes.SHARED_NODES;
+  /**
+   * 可复用的共享流程节点模板
+   */
+  public static final SharedNodes SHARED_NODES = SharedNodes.SHARED_NODES;
 
-    /**
-     * 可复用的共享规则模板
-     */
-    public static final SharedRules SHARED_RULES = SharedRules.SHARED_RULES;
+  /**
+   * 可复用的共享规则模板
+   */
+  public static final SharedRules SHARED_RULES = SharedRules.SHARED_RULES;
 }

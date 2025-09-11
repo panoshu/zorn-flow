@@ -22,15 +22,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringJUnitConfig
 class ProcessPersistenceMapperTest {
 
-  @Configuration
-  @ComponentScan("com.zornflow.infrastructure.persistence.mapper")
-  static class TestConfig {
-    @Bean
-    public ObjectMapper objectMapper() {
-      return new ObjectMapper();
-    }
-  }
-
   @Autowired
   private ProcessPersistenceMapper mapper;
 
@@ -111,5 +102,14 @@ class ProcessPersistenceMapperTest {
     assertThat(record.getNodeType()).isEqualTo("APPROVAL");
     assertThat(record.getNextNodeId()).isEqualTo("end-node");
     assertThat(record.getProperties().data()).contains("\"approver\":\"manager\"");
+  }
+
+  @Configuration
+  @ComponentScan("com.zornflow.infrastructure.persistence.mapper")
+  static class TestConfig {
+    @Bean
+    public ObjectMapper objectMapper() {
+      return new ObjectMapper();
+    }
   }
 }

@@ -4,300 +4,287 @@
 package com.zornflow.infrastructure.persistence.jooq.tables.pojos;
 
 
+import org.jooq.JSONB;
+
 import java.io.Serializable;
 import java.time.OffsetDateTime;
-
-import org.jooq.JSONB;
 
 
 /**
  * 节点在链中的具体实例，存储顺序、与共享模板的链接以及属性覆盖
  */
-@SuppressWarnings({ "all", "unchecked", "rawtypes", "this-escape" })
+@SuppressWarnings({"all", "unchecked", "rawtypes", "this-escape"})
 public class ChainNodes implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    private final String id;
-    private final String processChainId;
-    private final String sharedNodeId;
-    private final Integer sequence;
-    private final String name;
-    private final String nextNodeId;
-    private final String nodeType;
-    private final String ruleChainId;
-    private final JSONB conditions;
-    private final JSONB properties;
-    private final Integer version;
-    private final OffsetDateTime createdAt;
-    private final OffsetDateTime updatedAt;
+  private final String id;
+  private final String processChainId;
+  private final String sharedNodeId;
+  private final Integer sequence;
+  private final String name;
+  private final String nextNodeId;
+  private final String nodeType;
+  private final String ruleChainId;
+  private final JSONB conditions;
+  private final JSONB properties;
+  private final Integer version;
+  private final OffsetDateTime createdAt;
+  private final OffsetDateTime updatedAt;
 
-    public ChainNodes(ChainNodes value) {
-        this.id = value.id;
-        this.processChainId = value.processChainId;
-        this.sharedNodeId = value.sharedNodeId;
-        this.sequence = value.sequence;
-        this.name = value.name;
-        this.nextNodeId = value.nextNodeId;
-        this.nodeType = value.nodeType;
-        this.ruleChainId = value.ruleChainId;
-        this.conditions = value.conditions;
-        this.properties = value.properties;
-        this.version = value.version;
-        this.createdAt = value.createdAt;
-        this.updatedAt = value.updatedAt;
-    }
+  public ChainNodes(ChainNodes value) {
+    this.id = value.id;
+    this.processChainId = value.processChainId;
+    this.sharedNodeId = value.sharedNodeId;
+    this.sequence = value.sequence;
+    this.name = value.name;
+    this.nextNodeId = value.nextNodeId;
+    this.nodeType = value.nodeType;
+    this.ruleChainId = value.ruleChainId;
+    this.conditions = value.conditions;
+    this.properties = value.properties;
+    this.version = value.version;
+    this.createdAt = value.createdAt;
+    this.updatedAt = value.updatedAt;
+  }
 
-    public ChainNodes(
-        String id,
-        String processChainId,
-        String sharedNodeId,
-        Integer sequence,
-        String name,
-        String nextNodeId,
-        String nodeType,
-        String ruleChainId,
-        JSONB conditions,
-        JSONB properties,
-        Integer version,
-        OffsetDateTime createdAt,
-        OffsetDateTime updatedAt
-    ) {
-        this.id = id;
-        this.processChainId = processChainId;
-        this.sharedNodeId = sharedNodeId;
-        this.sequence = sequence;
-        this.name = name;
-        this.nextNodeId = nextNodeId;
-        this.nodeType = nodeType;
-        this.ruleChainId = ruleChainId;
-        this.conditions = conditions;
-        this.properties = properties;
-        this.version = version;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
-    }
+  public ChainNodes(
+    String id,
+    String processChainId,
+    String sharedNodeId,
+    Integer sequence,
+    String name,
+    String nextNodeId,
+    String nodeType,
+    String ruleChainId,
+    JSONB conditions,
+    JSONB properties,
+    Integer version,
+    OffsetDateTime createdAt,
+    OffsetDateTime updatedAt
+  ) {
+    this.id = id;
+    this.processChainId = processChainId;
+    this.sharedNodeId = sharedNodeId;
+    this.sequence = sequence;
+    this.name = name;
+    this.nextNodeId = nextNodeId;
+    this.nodeType = nodeType;
+    this.ruleChainId = ruleChainId;
+    this.conditions = conditions;
+    this.properties = properties;
+    this.version = version;
+    this.createdAt = createdAt;
+    this.updatedAt = updatedAt;
+  }
 
-    /**
-     * Getter for <code>engine.chain_nodes.id</code>.
-     */
-    public String getId() {
-        return this.id;
-    }
+  /**
+   * Getter for <code>engine.chain_nodes.id</code>.
+   */
+  public String getId() {
+    return this.id;
+  }
 
-    /**
-     * Getter for <code>engine.chain_nodes.process_chain_id</code>.
-     */
-    public String getProcessChainId() {
-        return this.processChainId;
-    }
+  /**
+   * Getter for <code>engine.chain_nodes.process_chain_id</code>.
+   */
+  public String getProcessChainId() {
+    return this.processChainId;
+  }
 
-    /**
-     * Getter for <code>engine.chain_nodes.shared_node_id</code>.
-     */
-    public String getSharedNodeId() {
-        return this.sharedNodeId;
-    }
+  /**
+   * Getter for <code>engine.chain_nodes.shared_node_id</code>.
+   */
+  public String getSharedNodeId() {
+    return this.sharedNodeId;
+  }
 
-    /**
-     * Getter for <code>engine.chain_nodes.sequence</code>.
-     */
-    public Integer getSequence() {
-        return this.sequence;
-    }
+  /**
+   * Getter for <code>engine.chain_nodes.sequence</code>.
+   */
+  public Integer getSequence() {
+    return this.sequence;
+  }
 
-    /**
-     * Getter for <code>engine.chain_nodes.name</code>.
-     */
-    public String getName() {
-        return this.name;
-    }
+  /**
+   * Getter for <code>engine.chain_nodes.name</code>.
+   */
+  public String getName() {
+    return this.name;
+  }
 
-    /**
-     * Getter for <code>engine.chain_nodes.next_node_id</code>.
-     */
-    public String getNextNodeId() {
-        return this.nextNodeId;
-    }
+  /**
+   * Getter for <code>engine.chain_nodes.next_node_id</code>.
+   */
+  public String getNextNodeId() {
+    return this.nextNodeId;
+  }
 
-    /**
-     * Getter for <code>engine.chain_nodes.node_type</code>.
-     */
-    public String getNodeType() {
-        return this.nodeType;
-    }
+  /**
+   * Getter for <code>engine.chain_nodes.node_type</code>.
+   */
+  public String getNodeType() {
+    return this.nodeType;
+  }
 
-    /**
-     * Getter for <code>engine.chain_nodes.rule_chain_id</code>.
-     */
-    public String getRuleChainId() {
-        return this.ruleChainId;
-    }
+  /**
+   * Getter for <code>engine.chain_nodes.rule_chain_id</code>.
+   */
+  public String getRuleChainId() {
+    return this.ruleChainId;
+  }
 
-    /**
-     * Getter for <code>engine.chain_nodes.conditions</code>.
-     */
-    public JSONB getConditions() {
-        return this.conditions;
-    }
+  /**
+   * Getter for <code>engine.chain_nodes.conditions</code>.
+   */
+  public JSONB getConditions() {
+    return this.conditions;
+  }
 
-    /**
-     * Getter for <code>engine.chain_nodes.properties</code>.
-     */
-    public JSONB getProperties() {
-        return this.properties;
-    }
+  /**
+   * Getter for <code>engine.chain_nodes.properties</code>.
+   */
+  public JSONB getProperties() {
+    return this.properties;
+  }
 
-    /**
-     * Getter for <code>engine.chain_nodes.version</code>.
-     */
-    public Integer getVersion() {
-        return this.version;
-    }
+  /**
+   * Getter for <code>engine.chain_nodes.version</code>.
+   */
+  public Integer getVersion() {
+    return this.version;
+  }
 
-    /**
-     * Getter for <code>engine.chain_nodes.created_at</code>.
-     */
-    public OffsetDateTime getCreatedAt() {
-        return this.createdAt;
-    }
+  /**
+   * Getter for <code>engine.chain_nodes.created_at</code>.
+   */
+  public OffsetDateTime getCreatedAt() {
+    return this.createdAt;
+  }
 
-    /**
-     * Getter for <code>engine.chain_nodes.updated_at</code>.
-     */
-    public OffsetDateTime getUpdatedAt() {
-        return this.updatedAt;
-    }
+  /**
+   * Getter for <code>engine.chain_nodes.updated_at</code>.
+   */
+  public OffsetDateTime getUpdatedAt() {
+    return this.updatedAt;
+  }
 
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
-        final ChainNodes other = (ChainNodes) obj;
-        if (this.id == null) {
-            if (other.id != null)
-                return false;
-        }
-        else if (!this.id.equals(other.id))
-            return false;
-        if (this.processChainId == null) {
-            if (other.processChainId != null)
-                return false;
-        }
-        else if (!this.processChainId.equals(other.processChainId))
-            return false;
-        if (this.sharedNodeId == null) {
-            if (other.sharedNodeId != null)
-                return false;
-        }
-        else if (!this.sharedNodeId.equals(other.sharedNodeId))
-            return false;
-        if (this.sequence == null) {
-            if (other.sequence != null)
-                return false;
-        }
-        else if (!this.sequence.equals(other.sequence))
-            return false;
-        if (this.name == null) {
-            if (other.name != null)
-                return false;
-        }
-        else if (!this.name.equals(other.name))
-            return false;
-        if (this.nextNodeId == null) {
-            if (other.nextNodeId != null)
-                return false;
-        }
-        else if (!this.nextNodeId.equals(other.nextNodeId))
-            return false;
-        if (this.nodeType == null) {
-            if (other.nodeType != null)
-                return false;
-        }
-        else if (!this.nodeType.equals(other.nodeType))
-            return false;
-        if (this.ruleChainId == null) {
-            if (other.ruleChainId != null)
-                return false;
-        }
-        else if (!this.ruleChainId.equals(other.ruleChainId))
-            return false;
-        if (this.conditions == null) {
-            if (other.conditions != null)
-                return false;
-        }
-        else if (!this.conditions.equals(other.conditions))
-            return false;
-        if (this.properties == null) {
-            if (other.properties != null)
-                return false;
-        }
-        else if (!this.properties.equals(other.properties))
-            return false;
-        if (this.version == null) {
-            if (other.version != null)
-                return false;
-        }
-        else if (!this.version.equals(other.version))
-            return false;
-        if (this.createdAt == null) {
-            if (other.createdAt != null)
-                return false;
-        }
-        else if (!this.createdAt.equals(other.createdAt))
-            return false;
-        if (this.updatedAt == null) {
-            if (other.updatedAt != null)
-                return false;
-        }
-        else if (!this.updatedAt.equals(other.updatedAt))
-            return false;
-        return true;
-    }
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj)
+      return true;
+    if (obj == null)
+      return false;
+    if (getClass() != obj.getClass())
+      return false;
+    final ChainNodes other = (ChainNodes) obj;
+    if (this.id == null) {
+      if (other.id != null)
+        return false;
+    } else if (!this.id.equals(other.id))
+      return false;
+    if (this.processChainId == null) {
+      if (other.processChainId != null)
+        return false;
+    } else if (!this.processChainId.equals(other.processChainId))
+      return false;
+    if (this.sharedNodeId == null) {
+      if (other.sharedNodeId != null)
+        return false;
+    } else if (!this.sharedNodeId.equals(other.sharedNodeId))
+      return false;
+    if (this.sequence == null) {
+      if (other.sequence != null)
+        return false;
+    } else if (!this.sequence.equals(other.sequence))
+      return false;
+    if (this.name == null) {
+      if (other.name != null)
+        return false;
+    } else if (!this.name.equals(other.name))
+      return false;
+    if (this.nextNodeId == null) {
+      if (other.nextNodeId != null)
+        return false;
+    } else if (!this.nextNodeId.equals(other.nextNodeId))
+      return false;
+    if (this.nodeType == null) {
+      if (other.nodeType != null)
+        return false;
+    } else if (!this.nodeType.equals(other.nodeType))
+      return false;
+    if (this.ruleChainId == null) {
+      if (other.ruleChainId != null)
+        return false;
+    } else if (!this.ruleChainId.equals(other.ruleChainId))
+      return false;
+    if (this.conditions == null) {
+      if (other.conditions != null)
+        return false;
+    } else if (!this.conditions.equals(other.conditions))
+      return false;
+    if (this.properties == null) {
+      if (other.properties != null)
+        return false;
+    } else if (!this.properties.equals(other.properties))
+      return false;
+    if (this.version == null) {
+      if (other.version != null)
+        return false;
+    } else if (!this.version.equals(other.version))
+      return false;
+    if (this.createdAt == null) {
+      if (other.createdAt != null)
+        return false;
+    } else if (!this.createdAt.equals(other.createdAt))
+      return false;
+    if (this.updatedAt == null) {
+      if (other.updatedAt != null)
+        return false;
+    } else if (!this.updatedAt.equals(other.updatedAt))
+      return false;
+    return true;
+  }
 
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((this.id == null) ? 0 : this.id.hashCode());
-        result = prime * result + ((this.processChainId == null) ? 0 : this.processChainId.hashCode());
-        result = prime * result + ((this.sharedNodeId == null) ? 0 : this.sharedNodeId.hashCode());
-        result = prime * result + ((this.sequence == null) ? 0 : this.sequence.hashCode());
-        result = prime * result + ((this.name == null) ? 0 : this.name.hashCode());
-        result = prime * result + ((this.nextNodeId == null) ? 0 : this.nextNodeId.hashCode());
-        result = prime * result + ((this.nodeType == null) ? 0 : this.nodeType.hashCode());
-        result = prime * result + ((this.ruleChainId == null) ? 0 : this.ruleChainId.hashCode());
-        result = prime * result + ((this.conditions == null) ? 0 : this.conditions.hashCode());
-        result = prime * result + ((this.properties == null) ? 0 : this.properties.hashCode());
-        result = prime * result + ((this.version == null) ? 0 : this.version.hashCode());
-        result = prime * result + ((this.createdAt == null) ? 0 : this.createdAt.hashCode());
-        result = prime * result + ((this.updatedAt == null) ? 0 : this.updatedAt.hashCode());
-        return result;
-    }
+  @Override
+  public int hashCode() {
+    final int prime = 31;
+    int result = 1;
+    result = prime * result + ((this.id == null) ? 0 : this.id.hashCode());
+    result = prime * result + ((this.processChainId == null) ? 0 : this.processChainId.hashCode());
+    result = prime * result + ((this.sharedNodeId == null) ? 0 : this.sharedNodeId.hashCode());
+    result = prime * result + ((this.sequence == null) ? 0 : this.sequence.hashCode());
+    result = prime * result + ((this.name == null) ? 0 : this.name.hashCode());
+    result = prime * result + ((this.nextNodeId == null) ? 0 : this.nextNodeId.hashCode());
+    result = prime * result + ((this.nodeType == null) ? 0 : this.nodeType.hashCode());
+    result = prime * result + ((this.ruleChainId == null) ? 0 : this.ruleChainId.hashCode());
+    result = prime * result + ((this.conditions == null) ? 0 : this.conditions.hashCode());
+    result = prime * result + ((this.properties == null) ? 0 : this.properties.hashCode());
+    result = prime * result + ((this.version == null) ? 0 : this.version.hashCode());
+    result = prime * result + ((this.createdAt == null) ? 0 : this.createdAt.hashCode());
+    result = prime * result + ((this.updatedAt == null) ? 0 : this.updatedAt.hashCode());
+    return result;
+  }
 
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder("ChainNodes (");
+  @Override
+  public String toString() {
+    StringBuilder sb = new StringBuilder("ChainNodes (");
 
-        sb.append(id);
-        sb.append(", ").append(processChainId);
-        sb.append(", ").append(sharedNodeId);
-        sb.append(", ").append(sequence);
-        sb.append(", ").append(name);
-        sb.append(", ").append(nextNodeId);
-        sb.append(", ").append(nodeType);
-        sb.append(", ").append(ruleChainId);
-        sb.append(", ").append(conditions);
-        sb.append(", ").append(properties);
-        sb.append(", ").append(version);
-        sb.append(", ").append(createdAt);
-        sb.append(", ").append(updatedAt);
+    sb.append(id);
+    sb.append(", ").append(processChainId);
+    sb.append(", ").append(sharedNodeId);
+    sb.append(", ").append(sequence);
+    sb.append(", ").append(name);
+    sb.append(", ").append(nextNodeId);
+    sb.append(", ").append(nodeType);
+    sb.append(", ").append(ruleChainId);
+    sb.append(", ").append(conditions);
+    sb.append(", ").append(properties);
+    sb.append(", ").append(version);
+    sb.append(", ").append(createdAt);
+    sb.append(", ").append(updatedAt);
 
-        sb.append(")");
-        return sb.toString();
-    }
+    sb.append(")");
+    return sb.toString();
+  }
 }

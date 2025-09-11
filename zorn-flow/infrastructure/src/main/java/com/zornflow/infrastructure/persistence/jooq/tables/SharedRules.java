@@ -8,304 +8,278 @@ import com.zornflow.infrastructure.persistence.jooq.Engine;
 import com.zornflow.infrastructure.persistence.jooq.Keys;
 import com.zornflow.infrastructure.persistence.jooq.tables.ChainRules.ChainRulesPath;
 import com.zornflow.infrastructure.persistence.jooq.tables.records.SharedRulesRecord;
-
-import java.time.OffsetDateTime;
-import java.util.Collection;
-
-import org.jooq.Condition;
-import org.jooq.Field;
-import org.jooq.ForeignKey;
-import org.jooq.InverseForeignKey;
-import org.jooq.JSONB;
-import org.jooq.Name;
-import org.jooq.Path;
-import org.jooq.PlainSQL;
-import org.jooq.QueryPart;
+import org.jooq.*;
 import org.jooq.Record;
-import org.jooq.SQL;
-import org.jooq.Schema;
-import org.jooq.Select;
-import org.jooq.Stringly;
-import org.jooq.Table;
-import org.jooq.TableField;
-import org.jooq.TableOptions;
-import org.jooq.UniqueKey;
 import org.jooq.impl.DSL;
 import org.jooq.impl.SQLDataType;
 import org.jooq.impl.TableImpl;
+
+import java.time.OffsetDateTime;
+import java.util.Collection;
 
 
 /**
  * 可复用的共享规则模板
  */
-@SuppressWarnings({ "all", "unchecked", "rawtypes", "this-escape" })
+@SuppressWarnings({"all", "unchecked", "rawtypes", "this-escape"})
 public class SharedRules extends TableImpl<SharedRulesRecord> {
+
+  /**
+   * The reference instance of <code>engine.shared_rules</code>
+   */
+  public static final SharedRules SHARED_RULES = new SharedRules();
+  private static final long serialVersionUID = 1L;
+  /**
+   * The column <code>engine.shared_rules.id</code>.
+   */
+  public final TableField<SharedRulesRecord, String> ID = createField(DSL.name("id"), SQLDataType.VARCHAR(40).nullable(false), this, "");
+  /**
+   * The column <code>engine.shared_rules.name</code>.
+   */
+  public final TableField<SharedRulesRecord, String> NAME = createField(DSL.name("name"), SQLDataType.VARCHAR(255).nullable(false), this, "");
+  /**
+   * The column <code>engine.shared_rules.priority</code>.
+   */
+  public final TableField<SharedRulesRecord, Integer> PRIORITY = createField(DSL.name("priority"), SQLDataType.INTEGER.defaultValue(DSL.field(DSL.raw("100"), SQLDataType.INTEGER)), this, "");
+  /**
+   * The column <code>engine.shared_rules.condition</code>.
+   */
+  public final TableField<SharedRulesRecord, String> CONDITION = createField(DSL.name("condition"), SQLDataType.CLOB, this, "");
+  /**
+   * The column <code>engine.shared_rules.handler_config</code>.
+   */
+  public final TableField<SharedRulesRecord, JSONB> HANDLER_CONFIG = createField(DSL.name("handler_config"), SQLDataType.JSONB, this, "");
+  /**
+   * The column <code>engine.shared_rules.record_status</code>.
+   */
+  public final TableField<SharedRulesRecord, String> RECORD_STATUS = createField(DSL.name("record_status"), SQLDataType.VARCHAR(20).nullable(false).defaultValue(DSL.field(DSL.raw("'ACTIVE'::character varying"), SQLDataType.VARCHAR)), this, "");
+  /**
+   * The column <code>engine.shared_rules.version</code>.
+   */
+  public final TableField<SharedRulesRecord, Integer> VERSION = createField(DSL.name("version"), SQLDataType.INTEGER, this, "");
+  /**
+   * The column <code>engine.shared_rules.created_at</code>.
+   */
+  public final TableField<SharedRulesRecord, OffsetDateTime> CREATED_AT = createField(DSL.name("created_at"), SQLDataType.TIMESTAMPWITHTIMEZONE(6).nullable(false).defaultValue(DSL.field(DSL.raw("now()"), SQLDataType.TIMESTAMPWITHTIMEZONE)), this, "");
+  /**
+   * The column <code>engine.shared_rules.updated_at</code>.
+   */
+  public final TableField<SharedRulesRecord, OffsetDateTime> UPDATED_AT = createField(DSL.name("updated_at"), SQLDataType.TIMESTAMPWITHTIMEZONE(6).nullable(false).defaultValue(DSL.field(DSL.raw("now()"), SQLDataType.TIMESTAMPWITHTIMEZONE)), this, "");
+  private transient ChainRulesPath _chainRules;
+
+  private SharedRules(Name alias, Table<SharedRulesRecord> aliased) {
+    this(alias, aliased, (Field<?>[]) null, null);
+  }
+
+  private SharedRules(Name alias, Table<SharedRulesRecord> aliased, Field<?>[] parameters, Condition where) {
+    super(alias, null, aliased, parameters, DSL.comment("可复用的共享规则模板"), TableOptions.table(), where);
+  }
+
+  /**
+   * Create an aliased <code>engine.shared_rules</code> table reference
+   */
+  public SharedRules(String alias) {
+    this(DSL.name(alias), SHARED_RULES);
+  }
+
+  /**
+   * Create an aliased <code>engine.shared_rules</code> table reference
+   */
+  public SharedRules(Name alias) {
+    this(alias, SHARED_RULES);
+  }
+
+  /**
+   * Create a <code>engine.shared_rules</code> table reference
+   */
+  public SharedRules() {
+    this(DSL.name("shared_rules"), null);
+  }
+
+  public <O extends Record> SharedRules(Table<O> path, ForeignKey<O, SharedRulesRecord> childPath, InverseForeignKey<O, SharedRulesRecord> parentPath) {
+    super(path, childPath, parentPath, SHARED_RULES);
+  }
+
+  /**
+   * The class holding records for this type
+   */
+  @Override
+  public Class<SharedRulesRecord> getRecordType() {
+    return SharedRulesRecord.class;
+  }
+
+  @Override
+  public Schema getSchema() {
+    return aliased() ? null : Engine.ENGINE;
+  }
+
+  @Override
+  public UniqueKey<SharedRulesRecord> getPrimaryKey() {
+    return Keys.SHARED_RULES_PKEY;
+  }
+
+  /**
+   * Get the implicit to-many join path to the <code>engine.chain_rules</code>
+   * table
+   */
+  public ChainRulesPath chainRules() {
+    if (_chainRules == null)
+      _chainRules = new ChainRulesPath(this, null, Keys.CHAIN_RULES__CHAIN_RULES_SHARED_RULE_ID_FKEY.getInverseKey());
+
+    return _chainRules;
+  }
+
+  @Override
+  public SharedRules as(String alias) {
+    return new SharedRules(DSL.name(alias), this);
+  }
+
+  @Override
+  public SharedRules as(Name alias) {
+    return new SharedRules(alias, this);
+  }
+
+  @Override
+  public SharedRules as(Table<?> alias) {
+    return new SharedRules(alias.getQualifiedName(), this);
+  }
+
+  /**
+   * Rename this table
+   */
+  @Override
+  public SharedRules rename(String name) {
+    return new SharedRules(DSL.name(name), null);
+  }
+
+  /**
+   * Rename this table
+   */
+  @Override
+  public SharedRules rename(Name name) {
+    return new SharedRules(name, null);
+  }
+
+  /**
+   * Rename this table
+   */
+  @Override
+  public SharedRules rename(Table<?> name) {
+    return new SharedRules(name.getQualifiedName(), null);
+  }
+
+  /**
+   * Create an inline derived table from this table
+   */
+  @Override
+  public SharedRules where(Condition condition) {
+    return new SharedRules(getQualifiedName(), aliased() ? this : null, null, condition);
+  }
+
+  /**
+   * Create an inline derived table from this table
+   */
+  @Override
+  public SharedRules where(Collection<? extends Condition> conditions) {
+    return where(DSL.and(conditions));
+  }
+
+  /**
+   * Create an inline derived table from this table
+   */
+  @Override
+  public SharedRules where(Condition... conditions) {
+    return where(DSL.and(conditions));
+  }
+
+  /**
+   * Create an inline derived table from this table
+   */
+  @Override
+  public SharedRules where(Field<Boolean> condition) {
+    return where(DSL.condition(condition));
+  }
+
+  /**
+   * Create an inline derived table from this table
+   */
+  @Override
+  @PlainSQL
+  public SharedRules where(SQL condition) {
+    return where(DSL.condition(condition));
+  }
+
+  /**
+   * Create an inline derived table from this table
+   */
+  @Override
+  @PlainSQL
+  public SharedRules where(@Stringly.SQL String condition) {
+    return where(DSL.condition(condition));
+  }
+
+  /**
+   * Create an inline derived table from this table
+   */
+  @Override
+  @PlainSQL
+  public SharedRules where(@Stringly.SQL String condition, Object... binds) {
+    return where(DSL.condition(condition, binds));
+  }
+
+  /**
+   * Create an inline derived table from this table
+   */
+  @Override
+  @PlainSQL
+  public SharedRules where(@Stringly.SQL String condition, QueryPart... parts) {
+    return where(DSL.condition(condition, parts));
+  }
+
+  /**
+   * Create an inline derived table from this table
+   */
+  @Override
+  public SharedRules whereExists(Select<?> select) {
+    return where(DSL.exists(select));
+  }
+
+  /**
+   * Create an inline derived table from this table
+   */
+  @Override
+  public SharedRules whereNotExists(Select<?> select) {
+    return where(DSL.notExists(select));
+  }
+
+  /**
+   * A subtype implementing {@link Path} for simplified path-based joins.
+   */
+  public static class SharedRulesPath extends SharedRules implements Path<SharedRulesRecord> {
 
     private static final long serialVersionUID = 1L;
 
-    /**
-     * The reference instance of <code>engine.shared_rules</code>
-     */
-    public static final SharedRules SHARED_RULES = new SharedRules();
-
-    /**
-     * The class holding records for this type
-     */
-    @Override
-    public Class<SharedRulesRecord> getRecordType() {
-        return SharedRulesRecord.class;
+    public <O extends Record> SharedRulesPath(Table<O> path, ForeignKey<O, SharedRulesRecord> childPath, InverseForeignKey<O, SharedRulesRecord> parentPath) {
+      super(path, childPath, parentPath);
     }
 
-    /**
-     * The column <code>engine.shared_rules.id</code>.
-     */
-    public final TableField<SharedRulesRecord, String> ID = createField(DSL.name("id"), SQLDataType.VARCHAR(40).nullable(false), this, "");
-
-    /**
-     * The column <code>engine.shared_rules.name</code>.
-     */
-    public final TableField<SharedRulesRecord, String> NAME = createField(DSL.name("name"), SQLDataType.VARCHAR(255).nullable(false), this, "");
-
-    /**
-     * The column <code>engine.shared_rules.priority</code>.
-     */
-    public final TableField<SharedRulesRecord, Integer> PRIORITY = createField(DSL.name("priority"), SQLDataType.INTEGER.defaultValue(DSL.field(DSL.raw("100"), SQLDataType.INTEGER)), this, "");
-
-    /**
-     * The column <code>engine.shared_rules.condition</code>.
-     */
-    public final TableField<SharedRulesRecord, String> CONDITION = createField(DSL.name("condition"), SQLDataType.CLOB, this, "");
-
-    /**
-     * The column <code>engine.shared_rules.handler_config</code>.
-     */
-    public final TableField<SharedRulesRecord, JSONB> HANDLER_CONFIG = createField(DSL.name("handler_config"), SQLDataType.JSONB, this, "");
-
-    /**
-     * The column <code>engine.shared_rules.record_status</code>.
-     */
-    public final TableField<SharedRulesRecord, String> RECORD_STATUS = createField(DSL.name("record_status"), SQLDataType.VARCHAR(20).nullable(false).defaultValue(DSL.field(DSL.raw("'ACTIVE'::character varying"), SQLDataType.VARCHAR)), this, "");
-
-    /**
-     * The column <code>engine.shared_rules.version</code>.
-     */
-    public final TableField<SharedRulesRecord, Integer> VERSION = createField(DSL.name("version"), SQLDataType.INTEGER, this, "");
-
-    /**
-     * The column <code>engine.shared_rules.created_at</code>.
-     */
-    public final TableField<SharedRulesRecord, OffsetDateTime> CREATED_AT = createField(DSL.name("created_at"), SQLDataType.TIMESTAMPWITHTIMEZONE(6).nullable(false).defaultValue(DSL.field(DSL.raw("now()"), SQLDataType.TIMESTAMPWITHTIMEZONE)), this, "");
-
-    /**
-     * The column <code>engine.shared_rules.updated_at</code>.
-     */
-    public final TableField<SharedRulesRecord, OffsetDateTime> UPDATED_AT = createField(DSL.name("updated_at"), SQLDataType.TIMESTAMPWITHTIMEZONE(6).nullable(false).defaultValue(DSL.field(DSL.raw("now()"), SQLDataType.TIMESTAMPWITHTIMEZONE)), this, "");
-
-    private SharedRules(Name alias, Table<SharedRulesRecord> aliased) {
-        this(alias, aliased, (Field<?>[]) null, null);
-    }
-
-    private SharedRules(Name alias, Table<SharedRulesRecord> aliased, Field<?>[] parameters, Condition where) {
-        super(alias, null, aliased, parameters, DSL.comment("可复用的共享规则模板"), TableOptions.table(), where);
-    }
-
-    /**
-     * Create an aliased <code>engine.shared_rules</code> table reference
-     */
-    public SharedRules(String alias) {
-        this(DSL.name(alias), SHARED_RULES);
-    }
-
-    /**
-     * Create an aliased <code>engine.shared_rules</code> table reference
-     */
-    public SharedRules(Name alias) {
-        this(alias, SHARED_RULES);
-    }
-
-    /**
-     * Create a <code>engine.shared_rules</code> table reference
-     */
-    public SharedRules() {
-        this(DSL.name("shared_rules"), null);
-    }
-
-    public <O extends Record> SharedRules(Table<O> path, ForeignKey<O, SharedRulesRecord> childPath, InverseForeignKey<O, SharedRulesRecord> parentPath) {
-        super(path, childPath, parentPath, SHARED_RULES);
-    }
-
-    /**
-     * A subtype implementing {@link Path} for simplified path-based joins.
-     */
-    public static class SharedRulesPath extends SharedRules implements Path<SharedRulesRecord> {
-
-        private static final long serialVersionUID = 1L;
-        public <O extends Record> SharedRulesPath(Table<O> path, ForeignKey<O, SharedRulesRecord> childPath, InverseForeignKey<O, SharedRulesRecord> parentPath) {
-            super(path, childPath, parentPath);
-        }
-        private SharedRulesPath(Name alias, Table<SharedRulesRecord> aliased) {
-            super(alias, aliased);
-        }
-
-        @Override
-        public SharedRulesPath as(String alias) {
-            return new SharedRulesPath(DSL.name(alias), this);
-        }
-
-        @Override
-        public SharedRulesPath as(Name alias) {
-            return new SharedRulesPath(alias, this);
-        }
-
-        @Override
-        public SharedRulesPath as(Table<?> alias) {
-            return new SharedRulesPath(alias.getQualifiedName(), this);
-        }
+    private SharedRulesPath(Name alias, Table<SharedRulesRecord> aliased) {
+      super(alias, aliased);
     }
 
     @Override
-    public Schema getSchema() {
-        return aliased() ? null : Engine.ENGINE;
+    public SharedRulesPath as(String alias) {
+      return new SharedRulesPath(DSL.name(alias), this);
     }
 
     @Override
-    public UniqueKey<SharedRulesRecord> getPrimaryKey() {
-        return Keys.SHARED_RULES_PKEY;
-    }
-
-    private transient ChainRulesPath _chainRules;
-
-    /**
-     * Get the implicit to-many join path to the <code>engine.chain_rules</code>
-     * table
-     */
-    public ChainRulesPath chainRules() {
-        if (_chainRules == null)
-            _chainRules = new ChainRulesPath(this, null, Keys.CHAIN_RULES__CHAIN_RULES_SHARED_RULE_ID_FKEY.getInverseKey());
-
-        return _chainRules;
+    public SharedRulesPath as(Name alias) {
+      return new SharedRulesPath(alias, this);
     }
 
     @Override
-    public SharedRules as(String alias) {
-        return new SharedRules(DSL.name(alias), this);
+    public SharedRulesPath as(Table<?> alias) {
+      return new SharedRulesPath(alias.getQualifiedName(), this);
     }
-
-    @Override
-    public SharedRules as(Name alias) {
-        return new SharedRules(alias, this);
-    }
-
-    @Override
-    public SharedRules as(Table<?> alias) {
-        return new SharedRules(alias.getQualifiedName(), this);
-    }
-
-    /**
-     * Rename this table
-     */
-    @Override
-    public SharedRules rename(String name) {
-        return new SharedRules(DSL.name(name), null);
-    }
-
-    /**
-     * Rename this table
-     */
-    @Override
-    public SharedRules rename(Name name) {
-        return new SharedRules(name, null);
-    }
-
-    /**
-     * Rename this table
-     */
-    @Override
-    public SharedRules rename(Table<?> name) {
-        return new SharedRules(name.getQualifiedName(), null);
-    }
-
-    /**
-     * Create an inline derived table from this table
-     */
-    @Override
-    public SharedRules where(Condition condition) {
-        return new SharedRules(getQualifiedName(), aliased() ? this : null, null, condition);
-    }
-
-    /**
-     * Create an inline derived table from this table
-     */
-    @Override
-    public SharedRules where(Collection<? extends Condition> conditions) {
-        return where(DSL.and(conditions));
-    }
-
-    /**
-     * Create an inline derived table from this table
-     */
-    @Override
-    public SharedRules where(Condition... conditions) {
-        return where(DSL.and(conditions));
-    }
-
-    /**
-     * Create an inline derived table from this table
-     */
-    @Override
-    public SharedRules where(Field<Boolean> condition) {
-        return where(DSL.condition(condition));
-    }
-
-    /**
-     * Create an inline derived table from this table
-     */
-    @Override
-    @PlainSQL
-    public SharedRules where(SQL condition) {
-        return where(DSL.condition(condition));
-    }
-
-    /**
-     * Create an inline derived table from this table
-     */
-    @Override
-    @PlainSQL
-    public SharedRules where(@Stringly.SQL String condition) {
-        return where(DSL.condition(condition));
-    }
-
-    /**
-     * Create an inline derived table from this table
-     */
-    @Override
-    @PlainSQL
-    public SharedRules where(@Stringly.SQL String condition, Object... binds) {
-        return where(DSL.condition(condition, binds));
-    }
-
-    /**
-     * Create an inline derived table from this table
-     */
-    @Override
-    @PlainSQL
-    public SharedRules where(@Stringly.SQL String condition, QueryPart... parts) {
-        return where(DSL.condition(condition, parts));
-    }
-
-    /**
-     * Create an inline derived table from this table
-     */
-    @Override
-    public SharedRules whereExists(Select<?> select) {
-        return where(DSL.exists(select));
-    }
-
-    /**
-     * Create an inline derived table from this table
-     */
-    @Override
-    public SharedRules whereNotExists(Select<?> select) {
-        return where(DSL.notExists(select));
-    }
+  }
 }
