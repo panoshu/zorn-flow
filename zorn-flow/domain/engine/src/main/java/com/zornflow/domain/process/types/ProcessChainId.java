@@ -3,6 +3,7 @@ package com.zornflow.domain.process.types;
 import com.domain.contract.valueobject.DomainPrimitive;
 import com.domain.contract.valueobject.EntityId;
 import com.zornflow.domain.common.types.identifier.DomainIds;
+import com.zornflow.domain.rule.types.RuleId;
 
 /**
  * 流程 ID 领域原语
@@ -21,11 +22,8 @@ public record ProcessChainId(String value) implements EntityId {
     }
   }
 
-  public static ProcessChainId generate() {
-    return DomainIds.next(ProcessChainId.class, ProcessChainId::new);
-  }
   public static ProcessChainId of(String raw) {
-    return DomainIds.of(raw, ProcessChainId.class, ProcessChainId::new);
+    return new ProcessChainId(raw);
   }
 
 }

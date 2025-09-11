@@ -22,11 +22,8 @@ public record RuleId(String value) implements EntityId {
     }
   }
 
-  public static RuleId generate() {
-    return DomainIds.next(RuleId.class, RuleId::new);
-  }
   public static RuleId of(String raw) {
-    return DomainIds.of(raw, RuleId.class, RuleId::new);
+    return new RuleId(raw);
   }
 
 }

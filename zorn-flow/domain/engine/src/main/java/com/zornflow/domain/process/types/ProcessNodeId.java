@@ -21,11 +21,9 @@ public record ProcessNodeId(String value) implements EntityId {
     }
   }
 
-  public static ProcessNodeId generate() {
-    return DomainIds.next(ProcessNodeId.class, ProcessNodeId::new);
-  }
   public static ProcessNodeId of(String raw) {
-    return DomainIds.of(raw, ProcessNodeId.class, ProcessNodeId::new);
+    return new ProcessNodeId(raw);
+
   }
 
 }

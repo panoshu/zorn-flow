@@ -1,8 +1,12 @@
 package com.zornflow.domain.process.entity;
 
+import com.zornflow.domain.common.types.identifier.DomainIds;
+import com.zornflow.domain.common.types.identifier.MockUlidStrategy;
 import com.zornflow.domain.common.valueobject.BusinessContext;
 import com.zornflow.domain.process.types.ProcessChainId;
+import com.zornflow.domain.process.types.ProcessInstanceId;
 import com.zornflow.domain.process.types.ProcessNodeId;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -19,6 +23,13 @@ class ProcessInstanceTest {
   private ProcessChainId processChainId;
   private ProcessNodeId startNodeId;
   private BusinessContext initialContext;
+
+  @BeforeAll
+  static void setUpBeforeAll() throws Exception {
+    DomainIds.register(Map.of(
+      ProcessInstanceId.class, new MockUlidStrategy()
+    ));
+  }
 
   @BeforeEach
   void setUp() {

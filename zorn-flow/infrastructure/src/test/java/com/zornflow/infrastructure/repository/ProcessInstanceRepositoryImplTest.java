@@ -1,10 +1,12 @@
 package com.zornflow.infrastructure.repository;
 
+import com.zornflow.domain.common.types.identifier.DomainIds;
 import com.zornflow.domain.common.valueobject.BusinessContext;
 import com.zornflow.domain.process.entity.ProcessInstance;
 import com.zornflow.domain.process.types.ProcessChainId;
 import com.zornflow.domain.process.types.ProcessInstanceId;
 import com.zornflow.domain.process.types.ProcessNodeId;
+import com.zornflow.infrastructure.adapter.identifier.TestUlidStrategy;
 import com.zornflow.infrastructure.persistence.jooq.tables.records.ProcessInstancesRecord;
 import com.zornflow.infrastructure.mapper.ProcessInstanceMapper;
 import com.zornflow.infrastructure.repository.ProcessInstanceRepositoryImpl;
@@ -12,6 +14,7 @@ import org.jooq.DSLContext;
 import org.jooq.Result;
 import org.jooq.SelectConditionStep;
 import org.jooq.SelectWhereStep;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -53,6 +56,13 @@ public class ProcessInstanceRepositoryImplTest {
 
   private ProcessInstance domainInstance;
   private ProcessInstanceId instanceId;
+
+  @BeforeAll
+  static void setUpBeforeAll() throws Exception {
+    DomainIds.register(Map.of(
+      ProcessInstanceId.class, new TestUlidStrategy()
+    ));
+  }
 
   @BeforeEach
   void setUp() {

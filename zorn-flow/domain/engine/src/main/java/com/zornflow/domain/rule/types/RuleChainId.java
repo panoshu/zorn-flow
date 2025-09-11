@@ -22,11 +22,8 @@ public record RuleChainId(String value) implements EntityId {
     }
   }
 
-  public static RuleChainId generate() {
-    return DomainIds.next(RuleChainId.class, RuleChainId::new);
-  }
   public static RuleChainId of(String raw) {
-    return DomainIds.of(raw, RuleChainId.class, RuleChainId::new);
+    return new RuleChainId(raw);
   }
 
 }

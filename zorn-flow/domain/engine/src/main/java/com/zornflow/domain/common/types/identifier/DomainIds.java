@@ -16,9 +16,9 @@ import java.util.function.Function;
  **/
 
 public final class DomainIds {
-  private static final Map<Class<?>, IdStrategy<?>> POOL = new ConcurrentHashMap<>();
+  private static final Map<Class<? extends EntityId>, IdStrategy<?>> POOL = new ConcurrentHashMap<>();
 
-  public static void register(Map<Class<?>, IdStrategy<?>> map) {
+  public static void register(Map<Class<? extends EntityId>, IdStrategy<?>> map) {
     POOL.putAll(map);
   }
   @SuppressWarnings("unchecked")
@@ -31,19 +31,23 @@ public final class DomainIds {
   /** 生成新ID（含非空+格式校验） */
   public static <T extends EntityId> T next(Class<T> idClass, Function<String, T> constructor) {
     IdStrategy<String> st = strategyOf(idClass);
-    String raw = st.generate();
+    String raw = Objects.requireNonNull(st.generate(), "Generated value null");
+
     if (!st.validator().test(raw))
-      throw new IllegalArgumentException("Generated ID invalid");
-    return constructor.apply(Objects.requireNonNull(raw, "Generated value null"));
+      throw new IllegalArgumentException("Generated ID [ %s ] invalid".formatted(raw));
+
+    return constructor.apply(raw);
   }
 
   /** 外部字符复原ID（含格式校验） */
   public static <T extends EntityId> T of(String raw, Class<T> idClass, Function<String, T> constructor) {
     Objects.requireNonNull(raw, "Input ID value cannot be null");
-    T id = constructor.apply(raw);
     IdStrategy<Object> st = strategyOf(idClass);
-    if (!st.validator().test(id.value()))
-      throw new IllegalArgumentException("Invalid " + idClass.getSimpleName());
-    return id;
+
+    if (!st.validator().test(raw))
+      throw new IllegalArgumentException("Invalid [ %s ] [ %s ]".formatted(idClass.getSimpleName(), raw));
+
+    return constructor.apply(raw);
   }
+
 }
