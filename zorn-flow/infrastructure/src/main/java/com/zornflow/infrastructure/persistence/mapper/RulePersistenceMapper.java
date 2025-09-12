@@ -1,6 +1,7 @@
 package com.zornflow.infrastructure.persistence.mapper;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.zornflow.infrastructure.config.model.RecordStatus;
 import com.zornflow.infrastructure.config.model.RuleChainConfig;
 import com.zornflow.infrastructure.config.model.RuleConfig;
 import com.zornflow.infrastructure.persistence.jooq.tables.records.ChainRulesRecord;
@@ -8,60 +9,72 @@ import com.zornflow.infrastructure.persistence.jooq.tables.records.RuleChainsRec
 import com.zornflow.infrastructure.persistence.jooq.tables.records.SharedRulesRecord;
 import org.jooq.JSONB;
 import org.mapstruct.*;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
+import java.util.Optional;
 
-@Mapper(componentModel = MappingConstants.ComponentModel.SPRING, uses = JsonbMapperHelper.class)
-public interface RulePersistenceMapper {
+@Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
+public abstract class RulePersistenceMapper {
+
+  protected JsonbMapperHelper jsonbMapperHelper;
+
+  @Autowired
+  public void setJsonbMapperHelper(JsonbMapperHelper jsonbMapperHelper) {
+    this.jsonbMapperHelper = jsonbMapperHelper;
+  }
 
   @Mapping(target = "status", source = "record.recordStatus")
   @Mapping(target = "rules", source = "rules")
-  RuleChainConfig toDto(RuleChainsRecord record, List<RuleConfig> rules);
+  public abstract RuleChainConfig toDto(RuleChainsRecord record, List<RuleConfig> rules);
 
   @Mapping(target = "id", source = "id")
-  @Mapping(target = "recordStatus", expression = "java(java.util.Optional.ofNullable(dto.status()).orElse(com.zornflow.infrastructure.config.model.RecordStatus.ACTIVE.getDbValue()))")
-  void updateRecord(RuleChainConfig dto, @MappingTarget RuleChainsRecord record);
+  @Mapping(target = "recordStatus", source = "dto.status", qualifiedByName = "mapStatus")
+  public abstract void updateRecord(RuleChainConfig dto, @MappingTarget RuleChainsRecord record);
 
-  @Mapping(target = "id", source = "instance.id")
-  @Mapping(target = "sharedRuleId", expression = "java(java.util.Optional.of(template.getId()))")
-  @Mapping(target = "name", expression = "java(java.util.Optional.ofNullable(instance.getName()).orElse(template.getName()))")
-  @Mapping(target = "priority", expression = "java(java.util.Optional.ofNullable(instance.getPriority()).orElse(template.getPriority()))")
-  @Mapping(target = "condition", expression = "java(java.util.Optional.ofNullable(instance.getCondition()).orElse(template.getCondition()))")
-  @Mapping(target = "handle", expression = "java(mergeHandlerConfig(instance.getHandlerConfig(), template, helper))")
-  @Mapping(target = "status", source = "template.recordStatus")
-  @Mapping(target = "version", source = "instance.version")
-  @Mapping(target = "createdAt", source = "instance.createdAt")
-  @Mapping(target = "updatedAt", source = "instance.updatedAt")
-  RuleConfig toDto(SharedRulesRecord template, ChainRulesRecord instance, @Context JsonbMapperHelper helper);
-
+  // --- 单源映射：从 ChainRulesRecord (实例) 到 DTO ---
   @Mapping(target = "id", source = "id")
-  @Mapping(target = "sharedRuleId", expression = "java(java.util.Optional.empty())")
+  @Mapping(target = "sharedRuleId", expression = "java(java.util.Optional.ofNullable(instance.getSharedRuleId()))")
   @Mapping(target = "handle", source = "handlerConfig", qualifiedByName = "jsonbToHandlerConfig")
   @Mapping(target = "status", ignore = true)
-  RuleConfig toDto(ChainRulesRecord instance, @Context JsonbMapperHelper helper);
+  public abstract RuleConfig toDto(ChainRulesRecord instance);
+
+  // --- 单源映射：从 SharedRulesRecord (模板) 到 DTO ---
+  @Mapping(target = "id", source = "id")
+  @Mapping(target = "handle", source = "handlerConfig", qualifiedByName = "jsonbToHandlerConfig")
+  @Mapping(target = "status", source = "recordStatus")
+  @Mapping(target = "sharedRuleId", expression = "java(java.util.Optional.empty())")
+  public abstract RuleConfig toDto(SharedRulesRecord template);
 
   @Mapping(target = "id", source = "dto.id")
   @Mapping(target = "ruleChainId", source = "chainId")
   @Mapping(target = "sequence", source = "sequence")
-  @Mapping(target = "sharedRuleId", expression = "java(dto.sharedRuleId().orElse(null))")
+  @Mapping(target = "sharedRuleId", source = "dto.sharedRuleId", qualifiedByName = "optionalToString")
   @Mapping(target = "name", source = "dto.name")
   @Mapping(target = "priority", source = "dto.priority")
   @Mapping(target = "condition", source = "dto.condition")
-  @Mapping(target = "handlerConfig", expression = "java(helper.toJsonb(dto.handle()))")
-  ChainRulesRecord toRecord(RuleConfig dto, String chainId, int sequence, @Context JsonbMapperHelper helper);
+  @Mapping(target = "handlerConfig", source = "dto.handle", qualifiedByName = "handlerConfigToJsonb")
+  public abstract ChainRulesRecord toRecord(RuleConfig dto, String chainId, int sequence);
+
+  // region Named Methods
+  @Named("mapStatus")
+  protected String mapStatus(String status) {
+    return Optional.ofNullable(status).orElse(RecordStatus.ACTIVE.getDbValue());
+  }
+
+  @Named("optionalToString")
+  protected String optionalToString(Optional<String> optional) {
+    return optional.orElse(null);
+  }
 
   @Named("jsonbToHandlerConfig")
-  default RuleConfig.HandlerConfig jsonbToHandlerConfig(JSONB jsonb, @Context JsonbMapperHelper helper) {
-    return helper.fromJsonb(jsonb, new TypeReference<>() {
-    });
+  protected RuleConfig.HandlerConfig jsonbToHandlerConfig(JSONB jsonb) {
+    return jsonbMapperHelper.fromJsonb(jsonb, new TypeReference<>() {});
   }
 
-  default RuleConfig.HandlerConfig mergeHandlerConfig(JSONB instanceJsonb, SharedRulesRecord template, @Context JsonbMapperHelper helper) {
-    RuleConfig.HandlerConfig instanceHandler = jsonbToHandlerConfig(instanceJsonb, helper);
-    if (instanceHandler != null) {
-      return instanceHandler;
-    }
-    return helper.fromJsonb(template.getHandlerConfig(), new TypeReference<>() {
-    });
+  @Named("handlerConfigToJsonb")
+  protected JSONB handlerConfigToJsonb(RuleConfig.HandlerConfig handlerConfig) {
+    return jsonbMapperHelper.toJsonb(handlerConfig);
   }
+  // endregion
 }

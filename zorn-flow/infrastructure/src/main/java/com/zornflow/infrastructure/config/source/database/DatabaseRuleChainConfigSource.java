@@ -6,7 +6,6 @@ import com.zornflow.infrastructure.config.model.RuleConfig;
 import com.zornflow.infrastructure.persistence.jooq.tables.records.ChainRulesRecord;
 import com.zornflow.infrastructure.persistence.jooq.tables.records.RuleChainsRecord;
 import com.zornflow.infrastructure.persistence.jooq.tables.records.SharedRulesRecord;
-import com.zornflow.infrastructure.persistence.mapper.JsonbMapperHelper;
 import com.zornflow.infrastructure.persistence.mapper.RulePersistenceMapper;
 import org.jooq.DSLContext;
 import org.springframework.stereotype.Component;
@@ -22,28 +21,17 @@ import java.util.stream.Collectors;
 
 import static com.zornflow.infrastructure.persistence.jooq.Tables.*;
 
-/**
- * description
- *
- * @author <a href="mailto: me@panoshu.top">panoshu</a>
- * @version 1.0
- * @since 2025/9/1 14:54
- **/
-
 @Component
 public non-sealed class DatabaseRuleChainConfigSource extends AbstractDatabaseConfigSource<RuleChainConfig> {
 
   private final RulePersistenceMapper rulePersistenceMapper;
-  private final JsonbMapperHelper jsonbMapperHelper;
 
   public DatabaseRuleChainConfigSource(
     DSLContext dsl,
-    RulePersistenceMapper rulePersistenceMapper,
-    JsonbMapperHelper jsonbMapperHelper
+    RulePersistenceMapper rulePersistenceMapper
   ) {
     super(dsl);
     this.rulePersistenceMapper = rulePersistenceMapper;
-    this.jsonbMapperHelper = jsonbMapperHelper;
   }
 
   @Override
@@ -80,15 +68,34 @@ public non-sealed class DatabaseRuleChainConfigSource extends AbstractDatabaseCo
       .fetch()
       .stream()
       .map(record -> {
-        ChainRulesRecord instance = record.into(CHAIN_RULES);
-        SharedRulesRecord template = record.into(SHARED_RULES);
-        if (template.getId() != null) {
-          return rulePersistenceMapper.toDto(template, instance, jsonbMapperHelper);
+        ChainRulesRecord instanceRecord = record.into(CHAIN_RULES);
+        SharedRulesRecord templateRecord = record.into(SHARED_RULES);
+
+        RuleConfig instanceConfig = rulePersistenceMapper.toDto(instanceRecord);
+
+        if (templateRecord.getId() != null) {
+          RuleConfig templateConfig = rulePersistenceMapper.toDto(templateRecord);
+          return mergeRuleConfigs(instanceConfig, templateConfig);
         } else {
-          return rulePersistenceMapper.toDto(instance, jsonbMapperHelper);
+          return instanceConfig;
         }
       })
       .collect(Collectors.toList());
+  }
+
+  private RuleConfig mergeRuleConfigs(RuleConfig instance, RuleConfig template) {
+    return RuleConfig.builder()
+      .id(instance.id()) // Always from instance
+      .sharedRuleId(Optional.of(template.id())) // Link to template
+      .name(Optional.ofNullable(instance.name()).orElse(template.name()))
+      .priority(Optional.ofNullable(instance.priority()).orElse(template.priority()))
+      .condition(Optional.ofNullable(instance.condition()).orElse(template.condition()))
+      .handle(Optional.ofNullable(instance.handle()).orElse(template.handle()))
+      .status(template.status()) // Status from template
+      .version(instance.version())
+      .createdAt(instance.createdAt())
+      .updatedAt(instance.updatedAt())
+      .build();
   }
 
   @Override
@@ -99,29 +106,24 @@ public non-sealed class DatabaseRuleChainConfigSource extends AbstractDatabaseCo
     String chainId = modelConfig.id();
     OffsetDateTime now = OffsetDateTime.now();
 
-    // 1. Map DTO to a new or existing record
     RuleChainsRecord chainRecord = dsl.fetchOne(RULE_CHAINS, RULE_CHAINS.ID.eq(chainId));
     if (chainRecord == null) {
       chainRecord = dsl.newRecord(RULE_CHAINS);
-      // Set creation time only for new records
       chainRecord.setCreatedAt(now);
     }
     rulePersistenceMapper.updateRecord(modelConfig, chainRecord);
-    // Always set update time
     chainRecord.setUpdatedAt(now);
 
-    // 2. Use JOOQ's store() method for a clean insert or update
     chainRecord.store();
 
-    // 3. Handle child records (rules)
     dsl.deleteFrom(CHAIN_RULES).where(CHAIN_RULES.RULE_CHAIN_ID.eq(chainId)).execute();
 
     if (modelConfig.rules() != null && !modelConfig.rules().isEmpty()) {
       AtomicInteger sequence = new AtomicInteger(0);
       List<ChainRulesRecord> ruleRecords = modelConfig.rules().stream()
         .map(dto -> {
-          ChainRulesRecord record = rulePersistenceMapper.toRecord(dto, chainId, sequence.getAndIncrement(), jsonbMapperHelper);
-          record.setCreatedAt(now); // Also set timestamps for child records
+          ChainRulesRecord record = rulePersistenceMapper.toRecord(dto, chainId, sequence.getAndIncrement());
+          record.setCreatedAt(now);
           record.setUpdatedAt(now);
           return record;
         })

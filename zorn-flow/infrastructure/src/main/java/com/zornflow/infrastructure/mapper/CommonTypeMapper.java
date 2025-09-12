@@ -4,7 +4,7 @@ import org.springframework.stereotype.Component;
 
 import java.time.Instant;
 import java.time.OffsetDateTime;
-import java.time.ZoneOffset;
+import java.time.ZoneId;
 
 /**
  * A central MapStruct mapper for common data type conversions.
@@ -26,7 +26,7 @@ public class CommonTypeMapper {
     if (instant == null) {
       return null;
     }
-    return instant.atOffset(ZoneOffset.UTC);
+    return instant.atOffset(ZoneId.systemDefault().getRules().getOffset(instant));
   }
 
   /**

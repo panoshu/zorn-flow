@@ -18,7 +18,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@DisplayName("ProcessPersistenceMapper 单元测试 (最佳实践)")
+@DisplayName("ProcessPersistenceMapper 单源映射单元测试")
 @SpringJUnitConfig
 class ProcessPersistenceMapperTest {
 
@@ -26,54 +26,55 @@ class ProcessPersistenceMapperTest {
   private ProcessPersistenceMapper mapper;
 
   @Test
-  @DisplayName("toDto: 应能合并 SharedNodesRecord 和 ChainNodesRecord 的属性")
-  void shouldMergeSharedAndChainNodeRecordsToDto() {
+  @DisplayName("toDto: 应能将 ChainNodesRecord (实例) 正确映射到 DTO")
+  void shouldMapChainNodeRecordToDto() {
+    // Arrange
+    ChainNodesRecord instance = new ChainNodesRecord();
+    instance.setId("instance-node-1");
+    instance.setName("Instance Node");
+    instance.setNodeType("APPROVAL");
+    instance.setNextNodeId("next-node");
+    instance.setRuleChainId("instance-rule-chain");
+    instance.setSharedNodeId("shared-node-1");
+    instance.setProperties(JSONB.valueOf("{\"approver\":\"user1\"}"));
+
+    // Act
+    ProcessNodeConfig result = mapper.toDto(instance);
+
+    // Assert
+    assertThat(result.id()).isEqualTo("instance-node-1");
+    assertThat(result.name()).isEqualTo("Instance Node");
+    assertThat(result.type()).isEqualTo(ProcessNodeConfig.NodeType.APPROVAL);
+    assertThat(result.next()).isEqualTo("next-node");
+    assertThat(result.ruleChain()).isEqualTo("instance-rule-chain");
+    assertThat(result.sharedNodeId()).hasValue("shared-node-1");
+    assertThat(result.properties()).containsEntry("approver", "user1");
+  }
+
+  @Test
+  @DisplayName("toDto: 应能将 SharedNodesRecord (模板) 正确映射到 DTO")
+  void shouldMapSharedNodeRecordToDto() {
     // Arrange
     SharedNodesRecord template = new SharedNodesRecord();
     template.setId("shared-node-1");
     template.setName("Shared Node Name");
     template.setNodeType("BUSINESS");
     template.setRuleChainId("shared-rule-chain");
+    template.setRecordStatus("ACTIVE");
     template.setProperties(JSONB.valueOf("{\"timeout\":5000}"));
 
-    ChainNodesRecord instance = new ChainNodesRecord();
-    instance.setId("instance-node-1");
-    instance.setRuleChainId("instance-rule-chain"); // 覆盖 ruleChainId
-    // 其他属性为 null，应使用 template 的
-    instance.setName(null);
-
     // Act
-    ProcessNodeConfig result = mapper.toDto(template, instance, new JsonbMapperHelper(new ObjectMapper()));
+    ProcessNodeConfig result = mapper.toDto(template);
 
     // Assert
-    assertThat(result.id()).isEqualTo("instance-node-1");
-    assertThat(result.sharedNodeId()).hasValue("shared-node-1");
-    assertThat(result.name()).isEqualTo("Shared Node Name"); // 使用了 template 的 name
+    assertThat(result.id()).isEqualTo("shared-node-1");
+    assertThat(result.name()).isEqualTo("Shared Node Name");
     assertThat(result.type()).isEqualTo(ProcessNodeConfig.NodeType.BUSINESS);
-    assertThat(result.ruleChain()).isEqualTo("instance-rule-chain"); // 使用了 instance 的 ruleChain
+    assertThat(result.ruleChain()).isEqualTo("shared-rule-chain");
+    assertThat(result.status()).isEqualTo("ACTIVE");
+    assertThat(result.sharedNodeId()).isEmpty(); // `sharedNodeId` in DTO is for instance's reference
+    assertThat(result.next()).isNull(); // `next` is not part of the template
     assertThat(result.properties()).containsEntry("timeout", 5000);
-  }
-
-  @Test
-  @DisplayName("toDto: 当没有共享节点时，应能正确映射 ChainNodesRecord")
-  void shouldMapChainNodeRecordWithoutTemplate() {
-    // Arrange
-    ChainNodesRecord instance = new ChainNodesRecord();
-    instance.setId("standalone-node-1");
-    instance.setName("Standalone Node");
-    instance.setNodeType("GATEWAY");
-    instance.setNextNodeId("next-node");
-    instance.setRuleChainId("standalone-rule-chain");
-
-    // Act
-    ProcessNodeConfig result = mapper.toDto(instance, new JsonbMapperHelper(new ObjectMapper()));
-
-    // Assert
-    assertThat(result.id()).isEqualTo("standalone-node-1");
-    assertThat(result.sharedNodeId()).isEmpty();
-    assertThat(result.name()).isEqualTo("Standalone Node");
-    assertThat(result.type()).isEqualTo(ProcessNodeConfig.NodeType.GATEWAY);
-    assertThat(result.next()).isEqualTo("next-node");
   }
 
   @Test
@@ -86,13 +87,11 @@ class ProcessPersistenceMapperTest {
       .type(ProcessNodeConfig.NodeType.APPROVAL)
       .next("end-node")
       .properties(Map.of("approver", "manager"))
-      // ---  关键修正  ---
-      // 确保 Optional 字段被正确初始化，而不是为 null
-      .sharedNodeId(Optional.empty())
+      .sharedNodeId(Optional.of("shared-node-ref"))
       .build();
 
     // Act
-    ChainNodesRecord record = mapper.toRecord(dto, "proc-xyz", 3, new JsonbMapperHelper(new ObjectMapper()));
+    ChainNodesRecord record = mapper.toRecord(dto, "proc-xyz", 3);
 
     // Assert
     assertThat(record.getId()).isEqualTo("dto-node-1");
@@ -101,6 +100,7 @@ class ProcessPersistenceMapperTest {
     assertThat(record.getName()).isEqualTo("DTO Node");
     assertThat(record.getNodeType()).isEqualTo("APPROVAL");
     assertThat(record.getNextNodeId()).isEqualTo("end-node");
+    assertThat(record.getSharedNodeId()).isEqualTo("shared-node-ref");
     assertThat(record.getProperties().data()).contains("\"approver\":\"manager\"");
   }
 

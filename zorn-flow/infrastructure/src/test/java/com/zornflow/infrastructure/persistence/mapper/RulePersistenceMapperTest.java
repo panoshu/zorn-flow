@@ -18,7 +18,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@DisplayName("RulePersistenceMapper 单元测试 (最佳实践)")
+@DisplayName("RulePersistenceMapper 单源映射单元测试")
 @SpringJUnitConfig
 class RulePersistenceMapperTest {
 
@@ -26,56 +26,54 @@ class RulePersistenceMapperTest {
   private RulePersistenceMapper mapper;
 
   @Test
-  @DisplayName("toDto: 应能合并 SharedRulesRecord 和 ChainRulesRecord 的属性")
-  void shouldMergeSharedAndChainRuleRecordsToDto() {
+  @DisplayName("toDto: 应能将 ChainRulesRecord (实例) 正确映射到 DTO")
+  void shouldMapChainRuleRecordToDto() {
+    // Arrange
+    ChainRulesRecord instance = new ChainRulesRecord();
+    instance.setId("instance-rule-1");
+    instance.setName("Instance Rule Name");
+    instance.setPriority(50);
+    instance.setCondition("instance_condition");
+    instance.setSharedRuleId("shared-rule-1");
+    instance.setHandlerConfig(JSONB.valueOf("{\"type\":\"SCRIPT\",\"handler\":\"InstanceScript\"}"));
+
+    // Act
+    RuleConfig result = mapper.toDto(instance);
+
+    // Assert
+    assertThat(result.id()).isEqualTo("instance-rule-1");
+    assertThat(result.name()).isEqualTo("Instance Rule Name");
+    assertThat(result.priority()).isEqualTo(50);
+    assertThat(result.condition()).isEqualTo("instance_condition");
+    assertThat(result.sharedRuleId()).hasValue("shared-rule-1");
+    assertThat(result.handle().type()).isEqualTo(RuleConfig.HandlerConfig.Type.SCRIPT);
+    assertThat(result.handle().handler()).isEqualTo("InstanceScript");
+  }
+
+  @Test
+  @DisplayName("toDto: 应能将 SharedRulesRecord (模板) 正确映射到 DTO")
+  void shouldMapSharedRuleRecordToDto() {
     // Arrange
     SharedRulesRecord template = new SharedRulesRecord();
     template.setId("shared-rule-1");
     template.setName("Shared Rule Name");
     template.setPriority(100);
     template.setCondition("shared_condition");
+    template.setRecordStatus("ACTIVE");
     template.setHandlerConfig(JSONB.valueOf("{\"type\":\"CLASS\",\"handler\":\"SharedHandler\"}"));
 
-    ChainRulesRecord instance = new ChainRulesRecord();
-    instance.setId("instance-rule-1");
-    instance.setName("Instance Rule Name"); // 覆盖 name
-    // priority 为 null, 应使用 template 的
-    instance.setHandlerConfig(null); // handlerConfig 为 null, 应使用 template 的
-
     // Act
-    RuleConfig result = mapper.toDto(template, instance, new JsonbMapperHelper(new ObjectMapper()));
+    RuleConfig result = mapper.toDto(template);
 
     // Assert
-    assertThat(result.id()).isEqualTo("instance-rule-1");
-    assertThat(result.sharedRuleId()).hasValue("shared-rule-1");
-    assertThat(result.name()).isEqualTo("Instance Rule Name"); // 使用了 instance 的值
-    assertThat(result.priority()).isEqualTo(100); // 使用了 template 的值
-    assertThat(result.condition()).isEqualTo("shared_condition"); // 使用了 template 的值
+    assertThat(result.id()).isEqualTo("shared-rule-1");
+    assertThat(result.name()).isEqualTo("Shared Rule Name");
+    assertThat(result.priority()).isEqualTo(100);
+    assertThat(result.condition()).isEqualTo("shared_condition");
+    assertThat(result.status()).isEqualTo("ACTIVE");
+    assertThat(result.sharedRuleId()).isEmpty();
     assertThat(result.handle().type()).isEqualTo(RuleConfig.HandlerConfig.Type.CLASS);
     assertThat(result.handle().handler()).isEqualTo("SharedHandler");
-  }
-
-  @Test
-  @DisplayName("toDto: 当没有共享规则时，应能正确映射 ChainRulesRecord")
-  void shouldMapChainRuleRecordWithoutTemplate() {
-    // Arrange
-    ChainRulesRecord instance = new ChainRulesRecord();
-    instance.setId("standalone-rule-1");
-    instance.setName("Standalone Rule");
-    instance.setPriority(200);
-    instance.setCondition("standalone_condition");
-    instance.setHandlerConfig(JSONB.valueOf("{\"type\":\"SCRIPT\",\"handler\":\"my-script\"}"));
-
-    // Act
-    RuleConfig result = mapper.toDto(instance, new JsonbMapperHelper(new ObjectMapper()));
-
-    // Assert
-    assertThat(result.id()).isEqualTo("standalone-rule-1");
-    assertThat(result.sharedRuleId()).isEmpty();
-    assertThat(result.name()).isEqualTo("Standalone Rule");
-    assertThat(result.priority()).isEqualTo(200);
-    assertThat(result.condition()).isEqualTo("standalone_condition");
-    assertThat(result.handle().type()).isEqualTo(RuleConfig.HandlerConfig.Type.SCRIPT);
   }
 
   @Test
@@ -88,13 +86,11 @@ class RulePersistenceMapperTest {
       .priority(150)
       .condition("dto_condition")
       .handle(new RuleConfig.HandlerConfig(RuleConfig.HandlerConfig.Type.JAR, "my.jar", Map.of("entry", "main.class")))
-      // ---  关键修正  ---
-      // 确保 Optional 字段被正确初始化，而不是为 null
-      .sharedRuleId(Optional.empty())
+      .sharedRuleId(Optional.of("shared-rule-ref"))
       .build();
 
     // Act
-    ChainRulesRecord record = mapper.toRecord(dto, "chain-abc", 5, new JsonbMapperHelper(new ObjectMapper()));
+    ChainRulesRecord record = mapper.toRecord(dto, "chain-abc", 5);
 
     // Assert
     assertThat(record.getId()).isEqualTo("dto-rule-1");
@@ -103,14 +99,13 @@ class RulePersistenceMapperTest {
     assertThat(record.getName()).isEqualTo("DTO Rule");
     assertThat(record.getPriority()).isEqualTo(150);
     assertThat(record.getCondition()).isEqualTo("dto_condition");
+    assertThat(record.getSharedRuleId()).isEqualTo("shared-rule-ref");
     assertThat(record.getHandlerConfig().data()).contains("\"type\":\"JAR\"");
   }
 
   @Configuration
-  // 扫描 mapper 包，Spring 会自动装配 RuleMapper 和它依赖的 JsonbMapperHelper
   @ComponentScan("com.zornflow.infrastructure.persistence.mapper")
   static class TestConfig {
-    // JsonbMapperHelper 依赖 ObjectMapper，所以我们在这里提供一个 Bean
     @Bean
     public ObjectMapper objectMapper() {
       return new ObjectMapper();

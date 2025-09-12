@@ -6,7 +6,6 @@ import com.zornflow.infrastructure.config.model.RecordStatus;
 import com.zornflow.infrastructure.persistence.jooq.tables.records.ChainNodesRecord;
 import com.zornflow.infrastructure.persistence.jooq.tables.records.ProcessChainsRecord;
 import com.zornflow.infrastructure.persistence.jooq.tables.records.SharedNodesRecord;
-import com.zornflow.infrastructure.persistence.mapper.JsonbMapperHelper;
 import com.zornflow.infrastructure.persistence.mapper.ProcessPersistenceMapper;
 import org.jooq.DSLContext;
 import org.springframework.stereotype.Component;
@@ -19,28 +18,17 @@ import java.util.stream.Collectors;
 
 import static com.zornflow.infrastructure.persistence.jooq.Tables.*;
 
-/**
- * description
- *
- * @author <a href="mailto: me@panoshu.top">panoshu</a>
- * @version 1.0
- * @since 2025/9/1 15:21
- **/
-
 @Component
 public non-sealed class DatabaseProcessChainConfigSource extends AbstractDatabaseConfigSource<ProcessChainConfig> {
 
   private final ProcessPersistenceMapper processPersistenceMapper;
-  private final JsonbMapperHelper jsonbMapperHelper;
 
   public DatabaseProcessChainConfigSource(
     DSLContext dsl,
-    ProcessPersistenceMapper processPersistenceMapper,
-    JsonbMapperHelper jsonbMapperHelper
+    ProcessPersistenceMapper processPersistenceMapper
   ) {
     super(dsl);
     this.processPersistenceMapper = processPersistenceMapper;
-    this.jsonbMapperHelper = jsonbMapperHelper;
   }
 
   @Override
@@ -76,16 +64,40 @@ public non-sealed class DatabaseProcessChainConfigSource extends AbstractDatabas
       .fetch()
       .stream()
       .map(record -> {
-        ChainNodesRecord instance = record.into(CHAIN_NODES);
-        SharedNodesRecord template = record.into(SHARED_NODES);
-        if (template.getId() != null) {
-          return processPersistenceMapper.toDto(template, instance, jsonbMapperHelper);
+        ChainNodesRecord instanceRecord = record.into(CHAIN_NODES);
+        SharedNodesRecord templateRecord = record.into(SHARED_NODES);
+
+        // Step 1: Map the instance record to its DTO.
+        ProcessNodeConfig instanceConfig = processPersistenceMapper.toDto(instanceRecord);
+
+        // Step 2: If a template exists, map it and merge.
+        if (templateRecord.getId() != null) {
+          ProcessNodeConfig templateConfig = processPersistenceMapper.toDto(templateRecord);
+          return mergeNodeConfigs(instanceConfig, templateConfig);
         } else {
-          return processPersistenceMapper.toDto(instance, jsonbMapperHelper);
+          return instanceConfig;
         }
       })
       .collect(Collectors.toList());
   }
+
+  private ProcessNodeConfig mergeNodeConfigs(ProcessNodeConfig instance, ProcessNodeConfig template) {
+    return ProcessNodeConfig.builder()
+      .id(instance.id()) // Always from instance
+      .sharedNodeId(Optional.of(template.id())) // Link to template
+      .name(Optional.ofNullable(instance.name()).orElse(template.name()))
+      .next(instance.next()) // `next` only exists on the instance
+      .type(Optional.ofNullable(instance.type()).orElse(template.type()))
+      .ruleChain(Optional.ofNullable(instance.ruleChain()).orElse(template.ruleChain()))
+      .conditions(Optional.ofNullable(instance.conditions()).filter(c -> !c.isEmpty()).orElse(template.conditions()))
+      .properties(Optional.ofNullable(instance.properties()).filter(p -> !p.isEmpty()).orElse(template.properties()))
+      .status(template.status()) // Status from template
+      .version(instance.version())
+      .createdAt(instance.createdAt())
+      .updatedAt(instance.updatedAt())
+      .build();
+  }
+
 
   @Override
   @Transactional
@@ -95,29 +107,24 @@ public non-sealed class DatabaseProcessChainConfigSource extends AbstractDatabas
     String chainId = modelConfig.id();
     OffsetDateTime now = OffsetDateTime.now();
 
-    // 1. Map DTO to a new or existing record
     ProcessChainsRecord chainRecord = dsl.fetchOne(PROCESS_CHAINS, PROCESS_CHAINS.ID.eq(chainId));
     if (chainRecord == null) {
       chainRecord = dsl.newRecord(PROCESS_CHAINS);
-      // Set creation time only for new records
       chainRecord.setCreatedAt(now);
     }
     processPersistenceMapper.updateRecord(modelConfig, chainRecord);
-    // Always set update time
     chainRecord.setUpdatedAt(now);
 
-    // 2. Use JOOQ's store() method for a clean insert or update
     chainRecord.store();
 
-    // 3. Handle child records (nodes)
     dsl.deleteFrom(CHAIN_NODES).where(CHAIN_NODES.PROCESS_CHAIN_ID.eq(chainId)).execute();
 
     if (modelConfig.nodes() != null && !modelConfig.nodes().isEmpty()) {
       AtomicInteger sequence = new AtomicInteger(0);
       List<ChainNodesRecord> nodeRecords = modelConfig.nodes().stream()
         .map(dto -> {
-          ChainNodesRecord record = processPersistenceMapper.toRecord(dto, chainId, sequence.getAndIncrement(), jsonbMapperHelper);
-          record.setCreatedAt(now); // Also set timestamps for child records
+          ChainNodesRecord record = processPersistenceMapper.toRecord(dto, chainId, sequence.getAndIncrement());
+          record.setCreatedAt(now);
           record.setUpdatedAt(now);
           return record;
         })
@@ -155,7 +162,7 @@ public non-sealed class DatabaseProcessChainConfigSource extends AbstractDatabas
             throw new IllegalArgumentException("Inline node (id=" + node.id() + ") must have a type.");
           }
         }
-        if (node.next() != null && !nodeMap.containsKey(node.next())) {
+        if (node.next() != null && !node.next().isEmpty() && !nodeMap.containsKey(node.next())) {
           throw new IllegalArgumentException("Node (id=" + node.id() + ") points to a non-existent next node (id=" + node.next() + ") within the same chain.");
         }
       }
@@ -177,9 +184,9 @@ public non-sealed class DatabaseProcessChainConfigSource extends AbstractDatabas
     recursionStack.add(nodeId);
 
     ProcessNodeConfig currentNode = nodeMap.get(nodeId);
-    if (currentNode != null && currentNode.next() != null) {
+    if (currentNode != null && currentNode.next() != null && !currentNode.next().isEmpty()) {
       String nextNodeId = currentNode.next();
-      if (nodeMap.containsKey(nextNodeId)) { // Ensure next node exists before proceeding
+      if (nodeMap.containsKey(nextNodeId)) {
         if (!visited.contains(nextNodeId)) {
           if (hasCycle(nextNodeId, nodeMap, visited, recursionStack)) {
             return true;
