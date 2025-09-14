@@ -25,44 +25,34 @@ import java.util.Set;
  **/
 
 @Component
-public class ExclusionAndPreCheckFilter implements GlobalFilter, Ordered {
+public class ExclusionAndPreCheckFilter extends AbstractSecurityFilter implements Ordered { // 继承基类
 
-  private final GatewaySecurityProperties props; // 注入统一的外观
+  private final GatewaySecurityProperties props;
   private final SecurityGatewayService securityService;
-  private final Set<PathPattern> globalExcludePatterns;
   private final Set<PathPattern> replayExcludePatterns;
 
   public ExclusionAndPreCheckFilter(GatewaySecurityProperties props, SecurityGatewayService securityService) {
+    super(props.getGlobalProperties()); // 调用父类构造函数
     this.props = props;
     this.securityService = securityService;
-    this.globalExcludePatterns = ExclusionUtils.compile(props.getGlobalProperties().excludePaths());
     this.replayExcludePatterns = ExclusionUtils.compile(props.getReplayProperties().excludePaths());
   }
 
   @Override
-  public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
-    if (!props.getGlobalProperties().enabled() || ExclusionUtils.isExcluded(exchange, globalExcludePatterns)) {
-      return chain.filter(exchange);
-    }
-
+  protected Mono<Void> doFilter(ServerWebExchange exchange, GatewayFilterChain chain) {
     GatewayContext.setStartTime(exchange);
 
-    return Mono.just(exchange)
-      .map(this::checkPayloadSize)
-      .flatMap(securityService::performPreChecks)
-      .then(chain.filter(exchange));
-  }
-
-  private ServerWebExchange checkPayloadSize(ServerWebExchange exchange) {
-    long contentLength = exchange.getRequest().getHeaders().getContentLength();
-    if (contentLength > props.getCryptoProperties().maxBodySize().toBytes()) {
-      throw new ResponseStatusException(HttpStatus.PAYLOAD_TOO_LARGE);
+    Mono<Void> replayCheckMono = Mono.empty();
+    // 使用模块配置自己的 isApplicable 方法
+    if (props.getReplayProperties().isApplicable(exchange, replayExcludePatterns)) {
+      replayCheckMono = securityService.performPreChecks(exchange);
     }
-    return exchange;
+
+    return replayCheckMono.then(chain.filter(exchange));
   }
 
   @Override
   public int getOrder() {
-    return -200; // 最高的业务优先级
+    return -200;
   }
 }
