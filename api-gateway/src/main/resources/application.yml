@@ -1,0 +1,84 @@
+# /src/main/resources/application.yml
+
+spring:
+  application:
+    name: secure-api-gateway
+  # 为防重放提供专用的、高性能的Redis配置
+  data:
+    redis:
+      host: localhost
+      port: 6379
+  # Spring Cache 仍可用于其他场景，如密钥缓存
+  cache:
+    type: caffeine
+    cache-names:
+      - secretKeys # 明确定义缓存名称
+    caffeine:
+      spec: expireAfterWrite=10m # 密钥缓存时间可以长一些
+
+gateway:
+  security:
+    # 全局开关
+    enabled: true
+    # 白名单路径，支持 Ant-style 匹配
+    exclude-paths:
+      - /actuator/**
+      - /v1/public/**
+
+    # 加密模块配置
+    crypto:
+      enabled: true
+      # 策略选择：通过Bean名称指定
+      algorithm-strategy: "aesGcmEngine"
+      key-source-strategy: "CONFIG_FILE" # REMOTE_SERVICE
+      # 提供给密钥源的标识符，例如用于远程服务调用
+      key-id: "default-key"
+      max-body-size: 10485760 # 1. 限制为10MB
+      on-encrypt-failure: FAIL # 7. 响应加密失败策略 (可选: PASS_THROUGH)
+      secret-key-cache-name: "gatewaySecretKeys"
+      exclude-paths: # 加密模块的独立排除路径
+        - /api/v1/files/download/** # 例如：文件下载接口不加密
+        - /api/v1/public/**
+      # 'CONFIG_FILE' 策略的特定配置
+      config-file:
+        # 强烈建议在生产环境中使用环境变量或Vault等安全方式注入
+        secret-key: ${GATEWAY_AES_KEY:dGhpc2lzYWVzMjU2Yml0c2VjcmV0a2V5MTIzNA==} # 提供一个默认值
+      # 'remoteServiceKeySource' 策略的特定配置
+      remote-service:
+        url: http://key-service/v1/keys/{keyId}
+
+    # 防重放模块配置
+    replay:
+      enabled: true
+      # 策略选择：推荐在分布式环境中使用 redis
+      strategy: "redis"
+      # 请求时间窗口
+      ttl: 60s
+      nonce-key-prefix: "gateway:nonce:"
+      exclude-paths: # 防重放模块的独立排除路径
+        - /api/v1/public/status # 例如：状态检查接口不防重放
+        - /actuator/**
+
+    # 日志模块（为简洁起见，本次重构中未实现，但保留配置结构）
+    log:
+      enabled: true
+      publisher: "file"
+      include-payload: true
+      exclude-paths: # 日志模块的独立排除路径
+        - /actuator/health/liveness
+        - /actuator/health/readiness
+
+    cache:
+      secret-key-cache-name: "gatewaySecretKeys"
+      replay-nonce-key-prefix: "gateway:nonce:"
+
+logging:
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%thread] %logger{36} - %msg%n"
+  # 如果想让FileLogPublisher输出到特定文件并使用JSON格式
+  file:
+    name: logs/gateway.log
+  logback:
+    rollingpolicy:
+      file-name-pattern: "logs/gateway-%d{yyyy-MM-dd}.%i.log"
+      max-file-size: 10MB

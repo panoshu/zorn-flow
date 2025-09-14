@@ -15,6 +15,15 @@ spring:
       idle-timeout: 600000
       max-lifetime: 1800000
 
+  cache:
+    type: redis
+    cache-names: replay-nonce-cache # 声明缓存名称
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      time-to-live: 300s # 为所有缓存设置默认 TTL
+
   # JOOQ配置
   jooq:
     sql-dialect: POSTGRES

@@ -7,3 +7,5 @@ include("zorn-flow:application")
 include("zorn-flow:interface")
 include("zorn-flow:infrastructure")
 include("zorn-flow:bootstrap")
+
+include("api-gateway")
