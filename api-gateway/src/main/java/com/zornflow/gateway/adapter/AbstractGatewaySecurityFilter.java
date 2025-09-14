@@ -1,18 +1,11 @@
 package com.zornflow.gateway.adapter;
 
-/**
- * description
- *
- * @author <a href="mailto: me@panoshu.top">panoshu</a>
- * @version 1.0
- * @since 2025/9/14 20:29
- **/
-
 import com.zornflow.gateway.infrastructure.properties.GatewaySecurityProperties;
 import com.zornflow.gateway.infrastructure.util.ExclusionUtils;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.core.Ordered;
+import org.springframework.lang.NonNull;
 import org.springframework.web.server.ServerWebExchange;
 import org.springframework.web.util.pattern.PathPattern;
 import reactor.core.publisher.Mono;
@@ -22,7 +15,12 @@ import java.util.Set;
 /**
  * 安全过滤器的抽象基类，实现了模板方法模式.
  * 它封装了通用的“是否应用过滤器”的决策逻辑。
- */
+ *
+ * @author <a href="mailto: me@panoshu.top">panoshu</a>
+ * @version 1.0
+ * @since 2025/9/14 20:29
+ **/
+
 public abstract class AbstractGatewaySecurityFilter implements GlobalFilter, Ordered {
 
   protected final GatewaySecurityProperties props;
