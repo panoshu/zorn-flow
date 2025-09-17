@@ -1,4 +1,4 @@
-package com.zornflow.gateway.infrastructure.crypto.keysource;
+package com.zornflow.gateway.infrastructure.crypto.keysource.remote;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
@@ -10,5 +10,5 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  * @since 2025/9/14 14:11
  **/
 
-@ConfigurationProperties(prefix = "gateway.security.crypto.remote-service")
-public record RemoteCryptoConfig(String url) {}
+@ConfigurationProperties(prefix = "security.crypto.remote-service")
+record RemoteServiceConfig(String url) {}

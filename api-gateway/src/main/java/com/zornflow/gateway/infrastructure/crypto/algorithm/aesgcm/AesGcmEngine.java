@@ -1,6 +1,7 @@
-package com.zornflow.gateway.infrastructure.crypto.algorithm;
+package com.zornflow.gateway.infrastructure.crypto.algorithm.aesgcm;
 
 import com.zornflow.gateway.domain.spi.CryptoEngine;
+import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
@@ -21,24 +22,25 @@ import java.security.SecureRandom;
  **/
 
 @Component
-@ConditionalOnProperty(name = "gateway.security.crypto.algorithm", havingValue = "AES/GCM/NoPadding", matchIfMissing = true)
+@RequiredArgsConstructor
+@ConditionalOnProperty(name = "security.crypto.algorithm-strategy", havingValue = "AES", matchIfMissing = true)
 public final class AesGcmEngine implements CryptoEngine {
 
   private static final String ALGORITHM = "AES/GCM/NoPadding";
   private static final String KEY_TYPE = "AES";
-  private static final int GCM_TAG_LENGTH = 128; // in bits
-  private static final int GCM_IV_LENGTH = 12;  // in bytes (96 bits)
+
+  private final AesGcmEngineConfig config;
 
   @Override
   public Mono<byte[]> encrypt(byte[] plainText, byte[] key) {
     return Mono.fromCallable(() -> {
       // 1. 生成一个每次加密都必须不同的、随机的IV
-      byte[] iv = new byte[GCM_IV_LENGTH];
+      byte[] iv = new byte[config.ivLengthBytes()];
       new SecureRandom().nextBytes(iv);
 
       Cipher cipher = Cipher.getInstance(ALGORITHM);
       SecretKeySpec keySpec = new SecretKeySpec(key, KEY_TYPE);
-      GCMParameterSpec gcmSpec = new GCMParameterSpec(GCM_TAG_LENGTH, iv);
+      GCMParameterSpec gcmSpec = new GCMParameterSpec(config.tagLengthBits(), iv);
       cipher.init(Cipher.ENCRYPT_MODE, keySpec, gcmSpec);
 
       byte[] cipherText = cipher.doFinal(plainText);
@@ -57,14 +59,14 @@ public final class AesGcmEngine implements CryptoEngine {
     return Mono.fromCallable(() -> {
       // 1. 从接收到的数据中分离 IV 和真正的密文
       ByteBuffer bb = ByteBuffer.wrap(encryptedText);
-      byte[] iv = new byte[GCM_IV_LENGTH];
+      byte[] iv = new byte[config.ivLengthBytes()];
       bb.get(iv);
       byte[] cipherText = new byte[bb.remaining()];
       bb.get(cipherText);
 
       Cipher cipher = Cipher.getInstance(ALGORITHM);
       SecretKeySpec keySpec = new SecretKeySpec(key, KEY_TYPE);
-      GCMParameterSpec gcmSpec = new GCMParameterSpec(GCM_TAG_LENGTH, iv);
+      GCMParameterSpec gcmSpec = new GCMParameterSpec(config.tagLengthBits(), iv);
       cipher.init(Cipher.DECRYPT_MODE, keySpec, gcmSpec);
 
       // 2. 使用分离出的IV进行解密

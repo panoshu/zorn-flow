@@ -5,27 +5,21 @@ import com.zornflow.gateway.application.LoggingService;
 import com.zornflow.gateway.infrastructure.model.GatewayContext;
 import com.zornflow.gateway.infrastructure.model.ResponseLog;
 import com.zornflow.gateway.infrastructure.properties.CryptoProperties;
-import com.zornflow.gateway.infrastructure.properties.GatewaySecurityProperties;
-import com.zornflow.gateway.infrastructure.util.DataBufferJoinUtils;
-import com.zornflow.gateway.infrastructure.util.ExclusionUtils;
+import com.zornflow.gateway.infrastructure.properties.SecurityRule;
 import lombok.extern.slf4j.Slf4j;
 import org.reactivestreams.Publisher;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.core.Ordered;
 import org.springframework.core.io.buffer.DataBuffer;
-import org.springframework.core.io.buffer.DataBufferUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.server.reactive.ServerHttpResponseDecorator;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.server.ServerWebExchange;
-import org.springframework.web.util.pattern.PathPattern;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-
-import java.util.Set;
 
 /**
  * description
@@ -37,26 +31,20 @@ import java.util.Set;
 
 @Component
 @Slf4j
-public class ResponseCryptoAndLoggingFilter implements GlobalFilter, Ordered {
+public final class ResponseCryptoFilter extends AbstractSecurityFilter implements GlobalFilter, Ordered {
 
-  private final GatewaySecurityProperties props; // 注入统一的外观
   private final CryptoService cryptoService;
   private final LoggingService loggingService;
-  private final Set<PathPattern> cryptoExcludePatterns;
-  private final Set<PathPattern> logExcludePatterns;
 
-  public ResponseCryptoAndLoggingFilter(GatewaySecurityProperties props, CryptoService cryptoService, LoggingService loggingService) {
-    this.props = props;
+  public ResponseCryptoFilter(SecurityRule securityRule, CryptoService cryptoService, LoggingService loggingService) {
+    super(securityRule);
     this.cryptoService = cryptoService;
     this.loggingService = loggingService;
-    this.cryptoExcludePatterns = ExclusionUtils.compile(props.getCryptoProperties().excludePaths());
-    this.logExcludePatterns = ExclusionUtils.compile(props.getLogProperties().excludePaths());
   }
 
   @Override
-  @NonNull
-  public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
-    if (!props.getGlobalProperties().enabled()) {
+  protected Mono<Void> doFilter(ServerWebExchange exchange, GatewayFilterChain chain) {
+    if (securityRule.shouldSkipCrypto(exchange)) {
       return chain.filter(exchange);
     }
 
@@ -64,14 +52,12 @@ public class ResponseCryptoAndLoggingFilter implements GlobalFilter, Ordered {
       @Override
       @NonNull
       public Mono<Void> writeWith(@NonNull Publisher<? extends DataBuffer> body) {
-        boolean shouldLog = props.getLogProperties().enabled() && !ExclusionUtils.isExcluded(exchange, logExcludePatterns);
-        boolean shouldCrypto = props.getCryptoProperties().enabled() && !ExclusionUtils.isExcluded(exchange, cryptoExcludePatterns);
 
-        if (!shouldLog && !shouldCrypto) {
+        if(securityRule.shouldSkipCrypto(exchange) && securityRule.shouldSkipLogging(exchange)){
           return super.writeWith(body);
         }
 
-        return DataBufferJoinUtils.joinWithLimit(Flux.from(body), props.getCryptoProperties().maxBodySize().toBytes())
+        return joinWithLimit(Flux.from(body), securityRule.maxBodySize())
           .defaultIfEmpty(bufferFactory().wrap(new byte[0]))
           .flatMap(joinedBuffer -> {
             byte[] plainBytes = readBytes(joinedBuffer);
@@ -79,18 +65,20 @@ public class ResponseCryptoAndLoggingFilter implements GlobalFilter, Ordered {
             // 记录日志
             logResponse(exchange, plainBytes);
 
-            if (!props.getCryptoProperties().enabled()) {
+            if (securityRule.shouldSkipCrypto(exchange)) {
               return super.writeWith(Mono.just(bufferFactory().wrap(plainBytes)));
             }
 
             // 执行加密和失败降级
             return cryptoService.encryptForTransport(plainBytes)
-              .flatMap(transportBytes -> {
-                DataBuffer buffer = bufferFactory().wrap(transportBytes);
-                return super.writeWith(Mono.just(buffer));
+              .flatMap(encryptionResult -> {
+                getDelegate().getHeaders().set("X-Key-Version", encryptionResult.keyVersion());
+
+                DataBuffer transportBuffer = bufferFactory().wrap(encryptionResult.encryptedBytes());
+                return super.writeWith(Mono.just(transportBuffer));
               })
               .onErrorResume(e -> {
-                if (props.getCryptoProperties().onEncryptFailure() == CryptoProperties.EncryptFailureStrategy.PASS_THROUGH) {
+                if (securityRule.onEncryptFailure() == CryptoProperties.EncryptFailureStrategy.PASS_THROUGH) {
                   log.error("Failed to encrypt response, fallback to plain text as configured.", e);
                   return super.writeWith(Mono.just(bufferFactory().wrap(plainBytes)));
                 }
@@ -106,7 +94,7 @@ public class ResponseCryptoAndLoggingFilter implements GlobalFilter, Ordered {
    * 异步、非阻塞地记录响应日志。
    */
   private void logResponse(ServerWebExchange exchange, byte[] plainBodyBytes) {
-    if (!props.getLogProperties().enabled() || ExclusionUtils.isExcluded(exchange, logExcludePatterns)) {
+    if (securityRule.shouldSkipLogging(exchange)) {
       return;
     }
 
@@ -118,16 +106,6 @@ public class ResponseCryptoAndLoggingFilter implements GlobalFilter, Ordered {
     long durationMs = System.currentTimeMillis() - startTime;
 
     loggingService.logResponseAsync(ResponseLog.of(exchange, plainBodyBytes, durationMs));
-  }
-
-  /**
-   * 辅助方法，用于从DataBuffer中安全地读取字节数组并释放内存。
-   */
-  private byte[] readBytes(DataBuffer dataBuffer) {
-    byte[] bytes = new byte[dataBuffer.readableByteCount()];
-    dataBuffer.read(bytes);
-    DataBufferUtils.release(dataBuffer);
-    return bytes;
   }
 
   @Override

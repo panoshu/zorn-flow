@@ -1,15 +1,13 @@
 package com.zornflow.gateway.infrastructure.properties;
 
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.validation.annotation.Validated;
 
-import java.time.Duration;
 import java.util.List;
 
 /**
- * 防重放攻击参数配置
+ * 全局配置
  *
  * @author <a href="mailto: panoshu@gmail.com">panoshu</a>
  * @version 1.0
@@ -17,12 +15,8 @@ import java.util.List;
  */
 
 @Validated
-@ConfigurationProperties(prefix = "security.replay")
-public record ReplayProperties(
+@ConfigurationProperties(prefix = "security.global")
+public record GlobalProperties(
   @NotNull boolean enabled,
-  List<String> excludePaths,
-  @NotBlank String strategy,
-  Duration ttl,
-  String nonceKeyPrefix
-) {
-}
+  List<String> excludePaths
+) {}

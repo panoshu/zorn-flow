@@ -1,0 +1,772 @@
+你的需求已经很明确了，其实就是一个 外部系统调用审计 & 可观测性 模块，核心要解决三个问题：
+
+请求审计（报文、关键元信息、耗时）
+
+可观测性指标（成功/失败次数、状态码分布、耗时分布）
+
+响应体的可重复读取（因为响应流默认只能消费一次）
+
+下面我帮你拆一下：
+
+🔑 需要实现的拦截器
+1. 请求/响应审计拦截器
+
+功能：
+
+记录请求 URI、方法、Headers（注意脱敏）、请求体（大小 & 内容，注意只在可控大小下存储）、TraceId。
+
+记录响应状态码、耗时、响应体（可选，需注意大小 & 敏感信息）。
+
+输出到 审计日志（通常单独的 logger，落盘/落库）。
+
+实现：
+
+@Component
+public class AuditLoggingInterceptor implements ClientHttpRequestInterceptor {
+
+    @Override
+    public ClientHttpResponse intercept(HttpRequest request, byte[] body,
+                                        ClientHttpRequestExecution execution) throws IOException {
+        long start = System.currentTimeMillis();
+
+        // 请求日志
+        log.info("[AUDIT] Request: method={}, uri={}, headers={}, body={}",
+                 request.getMethod(), request.getURI(), sanitizeHeaders(request.getHeaders()), tryToRead(body));
+
+        ClientHttpResponse response = execution.execute(request, body);
+        // 包装响应，解决不可重复读问题
+        ClientHttpResponse buffered = new BufferingClientHttpResponseWrapper(response);
+
+        long elapsed = System.currentTimeMillis() - start;
+        String responseBody = StreamUtils.copyToString(buffered.getBody(), StandardCharsets.UTF_8);
+
+        log.info("[AUDIT] Response: uri={}, status={}, elapsed={}ms, body={}",
+                 request.getURI(), buffered.getStatusCode(), elapsed, truncate(responseBody));
+
+        return buffered; // 返回包装后的响应
+    }
+}
+
+2. 异常拦截器
+
+功能：
+
+捕捉外部系统连接失败、超时等异常；
+
+转换为统一的业务异常；
+
+记录异常相关的上下文信息。
+
+3. 指标采集拦截器
+
+功能：
+
+使用 Micrometer 记录调用次数、错误次数、耗时直方图；
+
+按照 外部系统名 + 接口路径 + 状态码 作为标签。
+
+实现（简化示例）：
+
+@Component
+@RequiredArgsConstructor
+public class MetricsInterceptor implements ClientHttpRequestInterceptor {
+
+    private final MeterRegistry meterRegistry;
+
+    @Override
+    public ClientHttpResponse intercept(HttpRequest request, byte[] body,
+                                        ClientHttpRequestExecution execution) throws IOException {
+        long start = System.nanoTime();
+        try {
+            ClientHttpResponse response = execution.execute(request, body);
+            record(request, response.getStatusCode().value(), start);
+            return response;
+        } catch (IOException e) {
+            record(request, 500, start);
+            throw e;
+        }
+    }
+
+    private void record(HttpRequest request, int status, long start) {
+        Timer.builder("external.http.requests")
+             .tags("system", resolveSystemName(request.getURI()),
+                   "method", request.getMethod().name(),
+                   "status", String.valueOf(status))
+             .register(meterRegistry)
+             .record(System.nanoTime() - start, TimeUnit.NANOSECONDS);
+    }
+}
+
+⚠️ 响应体不可重复读问题
+问题：
+
+Spring ClientHttpResponse 的 getBody() 是一个 流，默认只能读一次。
+
+如果你在拦截器里先读一次 body，业务层再调用 .body(Class<T>) 就会报空。
+
+解决方案：
+
+用 Spring 提供的 BufferingClientHttpResponseWrapper 包装响应，缓存字节数组后再返回。
+这样你既能在拦截器里读取 body，又能让业务层正常消费。
+
+ClientHttpResponse response = execution.execute(request, body);
+ClientHttpResponse buffered = new BufferingClientHttpResponseWrapper(response);
+
+
+但是：
+
+大响应体（文件下载、大 JSON）可能占内存 → 需要做 大小限制（比如超过 1MB 只记录前 N KB）。
+
+响应体敏感字段（token、身份证号）需要 脱敏。
+
+✅ 最佳实践总结
+
+你至少需要 三个拦截器：
+
+审计拦截器（请求 + 响应日志，带耗时）
+
+异常拦截器（异常统一包装 + 日志）
+
+指标拦截器（Micrometer 记录请求次数、响应状态分布、耗时）
+
+另外要注意：
+
+响应体重复读问题必须考虑，用 BufferingClientHttpResponseWrapper。
+
+大报文要截断/摘要存储，不然内存压力大。
+
+敏感信息要脱敏。
+
+日志和指标分开处理：日志存储审计用，指标给 Prometheus/可观测平台。
+
+要不要我帮你设计一个 完整的拦截器链（Audit + Metrics + Exception），并结合 RestClientFactory 演示如何一次性挂载到所有外部系统 client 上？
+
+您说：
+- 设计一个 完整的拦截器链（Audit + Metrics + Exception），并结合 RestClientFactory 演示如何一次性挂载到所有外部系统 client 上
+- 实现对大响应体（文件下载、大 JSON）的 大小限制
+- 支持对响应体敏感字段（token、身份证号）的 脱敏
+ChatGPT 说：
+
+好👌，我来帮你设计一个 完整的拦截器链（Audit + Metrics + Exception），同时满足以下要求：
+
+统一挂载：所有外部系统的 RestClient 都能自动带上拦截器链；
+
+大响应体限制：超过配置大小只截取前 N KB；
+
+响应体敏感字段脱敏：比如 token、身份证号等替换成 ****；
+
+分工清晰：
+
+AuditInterceptor：请求/响应日志、耗时、脱敏、大小限制
+
+MetricsInterceptor：指标采集（成功率、耗时、状态分布）
+
+ExceptionInterceptor：异常捕获、统一包装
+
+🏗️ 拦截器实现
+🔹 AuditInterceptor
+@Slf4j
+@Component
+public class AuditInterceptor implements ClientHttpRequestInterceptor {
+
+    private static final int MAX_BODY_LOG_SIZE = 1024 * 4; // 4KB
+
+    @Override
+    public ClientHttpResponse intercept(HttpRequest request, byte[] body,
+                                        ClientHttpRequestExecution execution) throws IOException {
+        long start = System.currentTimeMillis();
+
+        // 请求日志
+        log.info("[AUDIT] Request: method={}, uri={}, headers={}, body={}",
+                 request.getMethod(), request.getURI(),
+                 sanitizeHeaders(request.getHeaders()), truncateAndMask(body));
+
+        // 执行请求并包装响应，避免响应体不可重复读
+        ClientHttpResponse response = execution.execute(request, body);
+        ClientHttpResponse buffered = new BufferingClientHttpResponseWrapper(response);
+
+        long elapsed = System.currentTimeMillis() - start;
+
+        String responseBody = StreamUtils.copyToString(buffered.getBody(), StandardCharsets.UTF_8);
+        log.info("[AUDIT] Response: uri={}, status={}, elapsed={}ms, body={}",
+                 request.getURI(), buffered.getStatusCode(), elapsed,
+                 truncateAndMask(responseBody));
+
+        return buffered;
+    }
+
+    private String truncateAndMask(byte[] body) {
+        return truncateAndMask(new String(body, StandardCharsets.UTF_8));
+    }
+
+    private String truncateAndMask(String raw) {
+        if (raw == null) return "";
+        String masked = maskSensitiveFields(raw);
+        if (masked.length() > MAX_BODY_LOG_SIZE) {
+            return masked.substring(0, MAX_BODY_LOG_SIZE) + "...(truncated)";
+        }
+        return masked;
+    }
+
+    private String maskSensitiveFields(String raw) {
+        // 简单示例：token 和身份证号脱敏
+        String masked = raw.replaceAll("(?i)\"token\"\\s*:\\s*\"(.*?)\"", "\"token\":\"****\"");
+        masked = masked.replaceAll("\\d{15,18}[0-9Xx]", "****ID****");
+        return masked;
+    }
+
+    private HttpHeaders sanitizeHeaders(HttpHeaders headers) {
+        HttpHeaders safe = new HttpHeaders();
+        headers.forEach((k, v) -> {
+            if (k.equalsIgnoreCase("Authorization") || k.equalsIgnoreCase("Cookie")) {
+                safe.put(k, List.of("****"));
+            } else {
+                safe.put(k, v);
+            }
+        });
+        return safe;
+    }
+}
+
+🔹 MetricsInterceptor
+@Component
+@RequiredArgsConstructor
+public class MetricsInterceptor implements ClientHttpRequestInterceptor {
+
+    private final MeterRegistry meterRegistry;
+
+    @Override
+    public ClientHttpResponse intercept(HttpRequest request, byte[] body,
+                                        ClientHttpRequestExecution execution) throws IOException {
+        long start = System.nanoTime();
+        try {
+            ClientHttpResponse response = execution.execute(request, body);
+            record(request, response.getStatusCode().value(), start);
+            return response;
+        } catch (IOException e) {
+            record(request, 500, start);
+            throw e;
+        }
+    }
+
+    private void record(HttpRequest request, int status, long start) {
+        Timer.builder("external.http.requests")
+             .tags("system", resolveSystemName(request.getURI()),
+                   "method", request.getMethod().name(),
+                   "status", String.valueOf(status))
+             .register(meterRegistry)
+             .record(System.nanoTime() - start, TimeUnit.NANOSECONDS);
+    }
+
+    private String resolveSystemName(URI uri) {
+        // 根据域名/host 映射外部系统名
+        return uri.getHost();
+    }
+}
+
+🔹 ExceptionInterceptor
+@Slf4j
+@Component
+public class ExceptionInterceptor implements ClientHttpRequestInterceptor {
+
+    @Override
+    public ClientHttpResponse intercept(HttpRequest request, byte[] body,
+                                        ClientHttpRequestExecution execution) throws IOException {
+        try {
+            return execution.execute(request, body);
+        } catch (IOException ex) {
+            log.error("[EXTERNAL-ERROR] Request failed: method={}, uri={}, msg={}",
+                      request.getMethod(), request.getURI(), ex.getMessage(), ex);
+            throw new ExternalSystemException("外部系统调用失败", ex);
+        }
+    }
+}
+
+🔧 RestClientFactory 一次性挂载拦截器链
+@Component
+@RequiredArgsConstructor
+public class RestClientFactory {
+
+    private final AuditInterceptor auditInterceptor;
+    private final MetricsInterceptor metricsInterceptor;
+    private final ExceptionInterceptor exceptionInterceptor;
+
+    public RestClient create(ExternalSystemProperties props,
+                             List<ClientHttpRequestInterceptor> customInterceptors) {
+
+        List<ClientHttpRequestInterceptor> allInterceptors = new ArrayList<>();
+        allInterceptors.add(auditInterceptor);
+        allInterceptors.add(metricsInterceptor);
+        allInterceptors.add(exceptionInterceptor);
+        if (customInterceptors != null) {
+            allInterceptors.addAll(customInterceptors);
+        }
+
+        return RestClient.builder()
+                .baseUrl(props.getBaseUrl())
+                .requestInterceptor(allInterceptors)
+                .build();
+    }
+}
+
+✅ 使用方式（业务层调用）
+@Component
+@RequiredArgsConstructor
+public class CustomerGatewayImpl implements CustomerGateway {
+
+    private final RestClientFactory factory;
+    private final ExternalSystemProperties props;
+
+    private RestClient client;
+
+    @PostConstruct
+    void init() {
+        this.client = factory.create(props.getCustomerSystem(),
+            List.of(new AuthenticationInterceptor(props.getCustomerSystem().getApiKey()))
+        );
+    }
+
+    @Override
+    public CustomerInfo getCustomerById(String customerId) {
+        return client.get()
+                .uri("/api/customers/{id}", customerId)
+                .retrieve()
+                .body(CustomerInfo.class);
+    }
+}
+
+🎯 效果总结
+
+统一拦截器链：所有外部系统 client 默认挂载 Audit + Metrics + Exception；
+
+请求/响应审计：报文、状态、耗时可追踪；
+
+大响应体控制：日志只保留前 N KB，避免内存问题；
+
+敏感字段脱敏：token/身份证号不落库；
+
+指标采集：Prometheus / Grafana 可直接监控外部调用情况；
+
+异常统一处理：外部系统异常包装成业务可识别异常。
+
+要不要我再帮你设计一个 配置化开关（比如只对某些系统开启响应体记录，或者动态调整截断大小），这样可以避免对大文件下载接口打满日志？
+
+您说：
+再设计一个配置话开关（比如只对某些系统开启响应体记录，或者动态调整截断大小），这样可以避免对大文件下载接口打满日志
+- 改为使用 BufferingClientHttpRequestFactory 来解决不可重复的问题
+- 每个外部系统会给我们提供多个接口（对应不同的访问地址和请求方法以及返回体），如果每个都在代码中如这里的getCustomerById一样，写死get方式，uri地址（/api/customers/{id}），CustomerInfo.class，那么配置就散落在代码中了，有没有其他更优雅的解决方案
+@Override
+    public CustomerInfo getCustomerById(String customerId) {
+        return client.get()
+                .uri("/api/customers/{id}", customerId)
+                .retrieve()
+                .body(CustomerInfo.class);
+    }
+ChatGPT 说：
+
+好问题 👍 你现在考虑的是三个维度：
+
+配置化开关：日志是否记录响应体、截断大小等 → 不同外部系统可以差异化；
+
+响应体不可重复读问题：拦截器里读 body → 推荐用 BufferingClientHttpRequestFactory；
+
+接口配置散落问题：避免 getCustomerById() 这种写死 URI + HTTP 方法 + 返回类型 → 更优雅的 DSL/配置驱动方式。
+
+我分开给你梳理：
+
+1. 配置化开关
+
+可以在 application.yml 配置每个外部系统的调用策略，例如：
+
+external-systems:
+  customer:
+    base-url: "https://customer-system/api"
+    audit:
+      log-response-body: true
+      max-body-size: 4096
+  order:
+    base-url: "https://order-system/api"
+    audit:
+      log-response-body: false   # 文件下载接口，不记录body
+      max-body-size: 1024
+
+
+对应的配置类：
+
+@ConfigurationProperties(prefix = "external-systems")
+@Data
+public class ExternalSystemsProperties {
+    private Map<String, ExternalSystemConfig> systems;
+
+    @Data
+    public static class ExternalSystemConfig {
+        private String baseUrl;
+        private AuditConfig audit = new AuditConfig();
+    }
+
+    @Data
+    public static class AuditConfig {
+        private boolean logResponseBody = true;
+        private int maxBodySize = 4096; // 默认 4KB
+    }
+}
+
+
+在 AuditInterceptor 里动态读取：
+
+@Component
+@RequiredArgsConstructor
+public class AuditInterceptor implements ClientHttpRequestInterceptor {
+
+    private final ExternalSystemsProperties props;
+
+    @Override
+    public ClientHttpResponse intercept(HttpRequest request, byte[] body,
+                                        ClientHttpRequestExecution execution) throws IOException {
+        String system = resolveSystemName(request.getURI());
+        ExternalSystemsProperties.AuditConfig auditCfg =
+            props.getSystems().getOrDefault(system, new ExternalSystemsProperties.ExternalSystemConfig()).getAudit();
+
+        ClientHttpResponse response = execution.execute(request, body);
+        ClientHttpResponse buffered = new BufferingClientHttpResponseWrapper(response);
+
+        if (auditCfg.isLogResponseBody()) {
+            String responseBody = StreamUtils.copyToString(buffered.getBody(), StandardCharsets.UTF_8);
+            String loggedBody = truncateAndMask(responseBody, auditCfg.getMaxBodySize());
+            log.info("[AUDIT] system={}, uri={}, status={}, body={}", system, request.getURI(), buffered.getStatusCode(), loggedBody);
+        }
+
+        return buffered;
+    }
+
+    private String truncateAndMask(String raw, int maxSize) {
+        if (raw == null) return "";
+        String masked = maskSensitiveFields(raw);
+        if (masked.length() > maxSize) {
+            return masked.substring(0, maxSize) + "...(truncated)";
+        }
+        return masked;
+    }
+}
+
+
+这样就能按系统差异化开关日志和截断大小。
+
+2. 使用 BufferingClientHttpRequestFactory
+
+相比手动用 BufferingClientHttpResponseWrapper，推荐直接在 RestClient 创建时全局启用：
+
+@Bean
+public RestClient.Builder restClientBuilder(List<ClientHttpRequestInterceptor> interceptors) {
+    return RestClient.builder()
+        .requestFactory(new BufferingClientHttpRequestFactory(new SimpleClientHttpRequestFactory()))
+        .requestInterceptor(interceptors);
+}
+
+
+这样所有请求返回的响应体都能重复读取，拦截器里读 body 不会影响业务。
+
+⚠️ 注意：
+
+文件流下载类接口最好不要用这个 factory，否则会缓存大文件到内存；可以通过配置对某些系统关闭 body 记录。
+
+3. 避免接口调用配置散落
+
+目前的问题是：
+
+@Override
+public CustomerInfo getCustomerById(String customerId) {
+    return client.get()
+            .uri("/api/customers/{id}", customerId)
+            .retrieve()
+            .body(CustomerInfo.class);
+}
+
+
+→ 方法签名、HTTP 方法、URI、返回类型全写死在代码。
+如果外部系统很多，就会到处是 client.get().uri("/xx")...。
+
+更优雅的方式：
+方案 A: 配置驱动 + 通用调用器
+
+在配置文件里定义接口描述：
+
+external-systems:
+  customer:
+    base-url: "https://customer-system/api"
+    apis:
+      get-customer:
+        method: GET
+        uri: "/customers/{id}"
+        response-type: com.example.CustomerInfo
+      create-customer:
+        method: POST
+        uri: "/customers"
+        response-type: com.example.CustomerInfo
+
+
+封装一个 DynamicApiInvoker：
+
+@Component
+@RequiredArgsConstructor
+public class DynamicApiInvoker {
+
+    private final RestClientFactory factory;
+    private final ExternalSystemsProperties props;
+
+    public <T> T invoke(String system, String apiKey, Map<String, Object> uriVars, Object body, Class<T> responseType) {
+        ExternalSystemsProperties.ExternalSystemConfig cfg = props.getSystems().get(system);
+        ApiConfig apiCfg = cfg.getApis().get(apiKey);
+
+        RestClient client = factory.create(cfg, null);
+
+        RestClient.RequestSpec request = switch (apiCfg.getMethod().toUpperCase()) {
+            case "GET" -> client.get().uri(apiCfg.getUri(), uriVars);
+            case "POST" -> client.post().uri(apiCfg.getUri(), uriVars).body(body);
+            case "PUT" -> client.put().uri(apiCfg.getUri(), uriVars).body(body);
+            default -> throw new IllegalArgumentException("Unsupported method");
+        };
+
+        return request.retrieve().body(responseType);
+    }
+}
+
+
+业务代码就变成配置驱动的：
+
+public CustomerInfo getCustomerById(String customerId) {
+    return invoker.invoke("customer", "get-customer",
+            Map.of("id", customerId), null, CustomerInfo.class);
+}
+
+
+优点：
+
+API 规范集中在配置，不散落在代码；
+
+新增外部接口只需要改配置，不用改 Java 类；
+
+灵活度高，支持不同方法、路径、返回类型。
+
+方案 B: 借助 Feign (如果能接受依赖)
+
+Spring Cloud OpenFeign 本身就能通过接口声明式调用 + 拦截器链实现；但缺点是会带来依赖和额外代理逻辑。
+如果你项目要求 领域层不依赖框架，建议还是走 方案 A。
+
+🎯 总结
+
+配置化开关：支持系统级别控制是否记录响应体、截断大小；
+
+响应体重复读：推荐全局启用 BufferingClientHttpRequestFactory；
+
+优雅接口调用：通过配置化 API 定义 + 通用 DynamicApiInvoker，避免接口调用散落在代码中。
+
+要不要我帮你把 方案 A（配置驱动调用器） 完整展开成一个 mini 框架，包括配置类、Invoker、示例配置和业务调用示例？这样你就可以直接拿来在项目里落地。
+
+您说：
+1. 我们设计一个RestClientFactory，用来创建RestClient，这个RestClientFactory里面会注入预先定义好的公共拦截器，例如审计日志记录、可观测数据统计等
+
+2. 每个外部系统会创建一个RestClient实例，创建的时候会将这个系统接口的公共要求放进去，如base-url，超时时间等，RestClientFactory创建RestClient的时候，需要传入一个SystemConfig类型的参数，用来传入这些公共参数
+
+3. 在外部系统层面，还需要定义该系统公用的请求头、返回头
+
+4. 具体到接口层面，在请求体和返回体上标注他们属于哪个系统的哪个接口
+
+5. 在java中定义每个系统的接口名称列表时，通过注解指定他们的uri,请求方式
+
+6.在发起外部调用请求的时候，调用该系统的接口服务，传入接口名称和请求体，客户端通过系统和接口名称，找到对应的uri,请求方式和返回体，完成调用
+ChatGPT 说：
+
+很好 👍 你已经把需求拆得很清晰了。你的思路其实就是要在 系统层（SystemConfig） 和 接口层（API 元数据） 两个维度把配置抽象出来，再通过 RestClientFactory + 元数据解析 完成请求的动态构造和统一拦截器挂载。
+
+我来帮你整理成一个完整的架构方案：
+
+🔹 1. RestClientFactory
+
+负责创建带有公共拦截器的 RestClient 实例，保证 所有外部调用具备统一的可观测性和审计能力。
+
+@Component
+@RequiredArgsConstructor
+public class RestClientFactory {
+
+    private final List<ClientHttpRequestInterceptor> globalInterceptors;
+
+    public RestClient create(SystemConfig config) {
+        RestTemplate restTemplate = new RestTemplateBuilder()
+                .requestFactory(() ->
+                    new BufferingClientHttpRequestFactory(new SimpleClientHttpRequestFactory()))
+                .setConnectTimeout(config.getConnectTimeout())
+                .setReadTimeout(config.getReadTimeout())
+                .additionalInterceptors(globalInterceptors)
+                .build();
+
+        return RestClient.builder()
+                .baseUrl(config.getBaseUrl())
+                .requestFactory(restTemplate.getRequestFactory())
+                .build();
+    }
+}
+
+
+👉 全局拦截器包括：
+
+AuditInterceptor（记录请求/响应，脱敏，截断）
+
+MetricsInterceptor（耗时统计、状态码计数）
+
+ExceptionInterceptor（统一异常映射）
+
+🔹 2. SystemConfig
+
+定义每个外部系统的公共配置。
+
+@Data
+@Builder
+public class SystemConfig {
+    private String systemCode;
+    private String baseUrl;
+    private Duration connectTimeout;
+    private Duration readTimeout;
+    private Map<String, String> defaultHeaders;
+}
+
+🔹 3. API 元数据（接口定义层）
+
+通过 注解 或 配置文件 来定义接口列表，而不是在代码中写死。
+
+方式 A：注解
+@Target(ElementType.METHOD)
+@Retention(RetentionPolicy.RUNTIME)
+public @interface ApiMapping {
+    String name();      // 接口名称，如 "getCustomerById"
+    String uri();       // URI 模板
+    HttpMethod method();// GET/POST/PUT/DELETE
+    Class<?> response(); // 返回体类型
+}
+
+
+接口定义：
+
+public interface CustomerApi {
+
+    @ApiMapping(
+        name = "getCustomerById",
+        uri = "/api/customers/{id}",
+        method = HttpMethod.GET,
+        response = CustomerInfo.class
+    )
+    CustomerInfo getCustomerById(String id);
+
+    @ApiMapping(
+        name = "searchCustomers",
+        uri = "/api/customers/search",
+        method = HttpMethod.POST,
+        response = List.class
+    )
+    List<CustomerInfo> searchCustomers(CustomerSearchRequest req);
+}
+
+方式 B：配置文件（推荐给运维/动态更新）
+systems:
+  customer-system:
+    base-url: https://customer.example.com
+    apis:
+      - name: getCustomerById
+        uri: /api/customers/{id}
+        method: GET
+        response: com.example.CustomerInfo
+      - name: searchCustomers
+        uri: /api/customers/search
+        method: POST
+        response: java.util.List
+
+🔹 4. API 元数据注册中心
+
+把注解或 YAML 配置解析为 ApiDefinition，放到注册中心里。
+
+@Data
+@Builder
+public class ApiDefinition {
+    private String name;
+    private String uri;
+    private HttpMethod method;
+    private Class<?> responseType;
+}
+
+
+注册中心：
+
+@Component
+public class ApiRegistry {
+
+    private final Map<String, Map<String, ApiDefinition>> registry = new HashMap<>();
+
+    public void register(String systemCode, List<ApiDefinition> apis) {
+        registry.put(systemCode, apis.stream()
+            .collect(Collectors.toMap(ApiDefinition::getName, a -> a)));
+    }
+
+    public ApiDefinition get(String systemCode, String apiName) {
+        return registry.getOrDefault(systemCode, Map.of()).get(apiName);
+    }
+}
+
+🔹 5. 通用客户端调用入口
+
+开发者只需要传入系统和 API 名称，+ 请求参数，就能自动找到元数据发起调用。
+
+@Component
+@RequiredArgsConstructor
+public class ExternalApiClient {
+
+    private final RestClientFactory factory;
+    private final ApiRegistry apiRegistry;
+    private final Map<String, RestClient> clientCache = new ConcurrentHashMap<>();
+
+    public <T> T call(String systemCode, String apiName, Object request, Object... uriVars) {
+        SystemConfig config = loadSystemConfig(systemCode);
+        RestClient client = clientCache.computeIfAbsent(systemCode, k -> factory.create(config));
+
+        ApiDefinition api = apiRegistry.get(systemCode, apiName);
+
+        return client.method(api.getMethod())
+                .uri(api.getUri(), uriVars)
+                .headers(h -> config.getDefaultHeaders().forEach(h::add))
+                .body(request)
+                .retrieve()
+                .body(api.getResponseType());
+    }
+
+    private SystemConfig loadSystemConfig(String systemCode) {
+        // 从配置中心或数据库获取
+        return ...;
+    }
+}
+
+🔹 6. 配置化开关
+
+可以通过配置控制 是否记录响应体 / 截断大小 / 脱敏规则：
+
+audit:
+  enabled-systems: [customer-system, order-system]
+  max-body-size: 2048
+  sensitive-fields:
+    - token
+    - idCard
+
+
+AuditInterceptor 在执行时读取配置，动态决定是否记录 body，是否截断。
+
+✅ 总结
+
+这样设计后，你能做到：
+
+统一拦截器：日志、监控、异常处理只写一次，所有系统 client 自动挂载。
+
+配置驱动接口调用：接口元数据不再写死在代码，支持注解 + YAML 双模式。
+
+灵活的审计与监控：支持动态开关、body 截断、敏感字段脱敏。
+
+代码复用度高：新增一个外部系统，只需配好 SystemConfig + ApiDefinition，不需要再写 N 多 getCustomerById 方法。
+
+要不要我帮你写一个 完整示例（含拦截器链 + 审计配置开关 + 注解解析器） 的可运行 demo 代码（Spring Boot 项目骨架）？

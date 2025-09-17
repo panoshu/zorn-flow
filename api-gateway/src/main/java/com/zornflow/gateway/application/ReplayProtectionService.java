@@ -2,6 +2,7 @@ package com.zornflow.gateway.application;
 
 import com.zornflow.gateway.domain.spi.ReplayCache;
 import com.zornflow.gateway.infrastructure.properties.ReplayProperties;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -9,11 +10,6 @@ import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
 import java.time.Instant;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 /**
  * 安全网关应用服务 (Facade).
@@ -25,20 +21,11 @@ import java.util.stream.Collectors;
  **/
 
 @Service
-public class SecurityGatewayService {
+@RequiredArgsConstructor
+public class ReplayProtectionService {
 
   private final ReplayProperties props;
   private final ReplayCache activeReplayCache;
-
-  public SecurityGatewayService(ReplayProperties props, List<ReplayCache> replayCaches) {
-    this.props = props;
-
-    // 动态选择防重放策略
-    Map<String, ReplayCache> cacheMap = replayCaches.stream()
-      .collect(Collectors.toMap(c -> c.getClass().getSimpleName().toLowerCase().replace("replaycache", ""), Function.identity()));
-    this.activeReplayCache = cacheMap.get(props.strategy().toLowerCase());
-    Objects.requireNonNull(activeReplayCache, "ReplayCache not found for strategy: " + props.strategy());
-  }
 
   /**
    * 对进入的请求执行预处理检查。

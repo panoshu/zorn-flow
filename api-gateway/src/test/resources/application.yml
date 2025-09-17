@@ -30,24 +30,26 @@ spring:
         key: api-gateway-key
 
 security:
-  # 全局开关
-  enabled: true
-  # 白名单路径，支持 Ant-style 匹配
-  exclude-paths:
-    - /actuator/**
-    - /v1/public/**
+  global:
+    # 全局开关
+    enabled: true
+    # 白名单路径，支持 Ant-style 匹配
+    exclude-paths:
+      - /actuator/**
+      - /v1/public/**
 
   # 加密模块配置
   crypto:
     enabled: true
-    max-body-size: 10485760 # 1. 限制为10MB
+    max-body-size: 10MB # 1. 限制为10MB
     on-encrypt-failure: FAIL # 7. 响应加密失败策略 (可选: PASS_THROUGH)
     secret-key-cache-name: "gatewaySecretKeys"
     exclude-paths: # 加密模块的独立排除路径
       - /api/v1/files/download/** # 例如：文件下载接口不加密
       - /api/v1/public/**
+      - /api*
     # 策略选择：通过Bean名称指定
-    algorithm-strategy: "AES" # SM4
+    algorithm-strategy: AES # SM4
     # 针对 AES 策略的特定配置
     aes-gcm-engine:
       tag-length-bits: 128 # GCM 认证标签长度（位）
@@ -57,7 +59,7 @@ security:
       tag-length-bits: 128
       iv-length-bytes: 12
 
-    key-source-strategy: "CONFIG_FILE" # REMOTE_SERVICE, VAULT
+    key-source-strategy: CONFIG_FILE # REMOTE_SERVICE, VAULT
     # 提供给密钥源的标识符，例如用于远程服务调用
     key-id: "default-key"
     # 'CONFIG_FILE' 策略的特定配置
@@ -92,7 +94,7 @@ security:
   # 日志模块（为简洁起见，本次重构中未实现，但保留配置结构）
   log:
     enabled: true
-    publisher: "file"
+    publisher: file
     include-payload: true
     exclude-paths: # 日志模块的独立排除路径
       - /actuator/health/liveness

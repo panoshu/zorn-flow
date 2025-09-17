@@ -3,17 +3,11 @@ package com.zornflow.gateway.application;
 import com.zornflow.gateway.domain.spi.LogPublisher;
 import com.zornflow.gateway.infrastructure.model.RequestLog;
 import com.zornflow.gateway.infrastructure.model.ResponseLog;
-import com.zornflow.gateway.infrastructure.properties.GatewaySecurityProperties;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
-
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 /**
  * description
@@ -23,20 +17,12 @@ import java.util.stream.Collectors;
  * @since 2025/9/14 15:50
  **/
 
-@Service
 @Slf4j
+@Service
+@RequiredArgsConstructor
 public class LoggingService {
 
   private final LogPublisher activePublisher;
-  private final GatewaySecurityProperties props;
-
-  public LoggingService(GatewaySecurityProperties props, List<LogPublisher> publishers) {
-    this.props = props;
-    Map<String, LogPublisher> publisherMap = publishers.stream()
-      .collect(Collectors.toMap(p -> p.getClass().getSimpleName().toLowerCase().replace("logpublisher", ""), Function.identity()));
-    this.activePublisher = publisherMap.get(props.getLogProperties().publisher().toLowerCase());
-    Objects.requireNonNull(activePublisher, "LogPublisher not found for strategy: " + props.getLogProperties().publisher());
-  }
 
   /**
    * 异步、非阻塞地记录日志。
